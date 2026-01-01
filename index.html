@@ -3,86 +3,546 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maintenance - ScrimBase ID</title>
+    <title>BSNE Groups - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
-
-        body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: white;
-            background: linear-gradient(135deg, #4361ee 0%, #7209b7 100%);
         }
-
-        .maintenance-container {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+        
+        body {
+            background-color: #f0f5ff;
+            color: #333;
             min-height: 100vh;
-            text-align: center;
-            padding: 2rem;
+            overflow-x: hidden;
         }
-
-        .maintenance-title {
-            font-size: 3rem;
-            margin-bottom: 1.5rem;
-            animation: pulse 2s infinite;
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
         }
-
-        .maintenance-text {
-            font-size: 1.2rem;
-            max-width: 600px;
-            margin-bottom: 2rem;
+        
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #ddd;
         }
-
-        .maintenance-btn {
-            background-color: white;
-            color: #4361ee;
-            padding: 0.75rem 1.5rem;
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo i {
+            font-size: 2.5rem;
+            color: #4a6fff;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            color: #2d3e50;
+        }
+        
+        .logo span {
+            color: #4a6fff;
+        }
+        
+        /* Tombol Aksi */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 12px 25px;
             border-radius: 8px;
-            text-decoration: none;
             font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+        }
+        
+        .btn-primary {
+            background-color: #4a6fff;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #3a5fef;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 111, 255, 0.3);
+        }
+        
+        .btn-secondary {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+        
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 40px 0;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, #eef2ff, #ffffff);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+        
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #2d3e50;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        /* Konten Dashboard */
+        .dashboard-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .form-container {
+            flex: 2;
+            min-width: 300px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+        
+        .form-header {
+            background-color: #4a6fff;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .form-header h3 {
+            font-size: 1.5rem;
+        }
+        
+        .form-frame {
+            width: 100%;
+            height: 700px;
+            border: none;
+        }
+        
+        .info-panel {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+        }
+        
+        .info-panel h3 {
+            color: #2d3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f5ff;
+        }
+        
+        .contact-info {
+            margin-bottom: 30px;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8faff;
+            border-radius: 10px;
             transition: all 0.3s ease;
         }
-
-        .maintenance-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        
+        .contact-item:hover {
+            background-color: #eef2ff;
+            transform: translateX(5px);
         }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.05);
-            }
-            100% {
-                transform: scale(1);
-            }
+        
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            background-color: #4a6fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
         }
-
+        
+        .contact-text h4 {
+            margin-bottom: 5px;
+            color: #2d3e50;
+        }
+        
+        .contact-text p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .whatsapp-link {
+            display: block;
+            text-align: center;
+            background-color: #25D366;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .whatsapp-link:hover {
+            background-color: #1da851;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
+        }
+        
+        /* Gelembung melayang */
+        .floating-bubble {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 70px;
+            height: 70px;
+            background-color: #25D366;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            box-shadow: 0 5px 20px rgba(37, 211, 102, 0.5);
+            cursor: pointer;
+            z-index: 1000;
+            animation: float 3s ease-in-out infinite;
+            transition: all 0.3s ease;
+        }
+        
+        .floating-bubble:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.7);
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            position: relative;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #777;
+        }
+        
+        .modal h3 {
+            color: #2d3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .modal-links {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .modal-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background-color: #f8faff;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-link:hover {
+            background-color: #eef2ff;
+            transform: translateX(5px);
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: #777;
+            border-top: 1px solid #ddd;
+            margin-top: 30px;
+        }
+        
+        /* Responsif */
         @media (max-width: 768px) {
-            .maintenance-title {
+            header {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .action-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+            }
+            
+            .hero h2 {
                 font-size: 2rem;
             }
             
-            .maintenance-text {
-                font-size: 1rem;
+            .form-frame {
+                height: 600px;
+            }
+            
+            .floating-bubble {
+                bottom: 20px;
+                right: 20px;
+                width: 60px;
+                height: 60px;
+                font-size: 1.8rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="maintenance-container">
-        <h1 class="maintenance-title">Maaf — Saat ini halaman sedang dalam perbaikan</h1>
-        <p class="maintenance-text">Kami sedang melakukan maintenance untuk meningkatkan pengalaman pengguna. Silakan kembali ke halaman utama untuk informasi lain atau kunjungi akun sosial kami.</p>
-        <a href="index.html" class="maintenance-btn">Kembali ke Halaman Utama</a>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo">
+                <i class="fas fa-users"></i>
+                <h1>SCRIMBASE<span>ID</span></h1>
+            </div>
+            
+            <div class="action-buttons">
+                <a href="#form-section" class="btn btn-primary">
+                    <i class="fas fa-user-plus"></i> Daftar Sekarang
+                </a>
+                <button id="joinGroupBtn" class="btn btn-secondary">
+                    <i class="fab fa-whatsapp"></i> Masuk Grup
+                </button>
+            </div>
+        </header>
+        
+        <!-- Hero Section -->
+        <section class="hero">
+            <h2>Bergabunglah dengan Komunitas SCRIMBASE ID</h2>
+            <p>Tingkatkan pengetahuan dan jaringan Anda dengan bergabung dalam komunitas profesional SCRIMBASE ID. Dapatkan informasi terbaru, peluan kompetitif, dan kolaborasi dengan anggota lainnya.</p>
+            <a href="#form-section" class="btn btn-primary" style="font-size: 1.1rem; padding: 15px 30px;">
+                <i class="fas fa-arrow-down"></i> Isi Formulir Pendaftaran
+            </a>
+        </section>
+        
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            <!-- Form Container -->
+            <div class="form-container" id="form-section">
+                <div class="form-header">
+                    <h3>Formulir Pendaftaran Anggota</h3>
+                </div>
+                <iframe class="form-frame" src="https://docs.google.com/forms/d/e/1FAIpQLScQ6esjfHt_rvoaaIdIwQlbwH7K3wQIenxJcbsAS_LqXlQA6g/viewform?embedded=true"></iframe>
+            </div>
+            
+            <!-- Info Panel -->
+            <div class="info-panel">
+                <h3>Informasi Kontak</h3>
+                
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-user-headset"></i>
+                        </div>
+                        <div class="contact-text">
+                            <h4>Admin/PIC</h4>
+                            <p>Hubungi admin untuk informasi lebih lanjut</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                        <div class="contact-text">
+                            <h4>WhatsApp Admin</h4>
+                            <p>+62 889-9173-4780</p>
+                        </div>
+                    </div>
+                    
+                    <a href="https://wa.me/6288991734780" target="_blank" class="whatsapp-link">
+                        <i class="fab fa-whatsapp"></i> Hubungi via WhatsApp
+                    </a>
+                </div>
+                
+                <h3>Grup WhatsApp</h3>
+                <p>Setelah mendaftar, bergabunglah dengan grup WhatsApp kami untuk mendapatkan informasi terbaru dan berinteraksi dengan anggota lain.</p>
+                <a href="https://chat.whatsapp.com/L83TmNagTRBJIvvVyiUGAl" target="_blank" class="whatsapp-link" style="margin-top: 15px;">
+                    <i class="fab fa-whatsapp"></i> Bergabung dengan Grup WhatsApp
+                </a>
+            </div>
+        </div>
     </div>
+    
+    <!-- Floating Bubble -->
+    <div class="floating-bubble" id="waBubble">
+        <i class="fab fa-whatsapp"></i>
+    </div>
+    
+    <!-- Modal untuk Grup WhatsApp -->
+    <div class="modal" id="groupModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <h3>Bergabung dengan Grup</h3>
+            <p>Pilih opsi berikut untuk bergabung dengan komunitas kami:</p>
+            
+            <div class="modal-links">
+                <a href="https://wa.me/6288991734780" target="_blank" class="modal-link">
+                    <div class="contact-icon" style="width: 40px; height: 40px; font-size: 1.2rem;">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div>
+                        <h4>Hubungi Admin</h4>
+                        <p>Konsultasi langsung dengan admin</p>
+                    </div>
+                </a>
+                
+                <a href="https://chat.whatsapp.com/L83TmNagTRBJIvvVyiUGAl" target="_blank" class="modal-link">
+                    <div class="contact-icon" style="width: 40px; height: 40px; font-size: 1.2rem; background-color: #25D366;">
+                        <i class="fab fa-whatsapp"></i>
+                    </div>
+                    <div>
+                        <h4>Masuk Grup WhatsApp</h4>
+                        <p>Bergabung dengan grup utama kami</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 SCRIMBASE ID. Semua hak dilindungi.</p>
+        <p>Wrahtt55</p>
+    </footer>
+
+    <script>
+        // Elemen DOM
+        const joinGroupBtn = document.getElementById('joinGroupBtn');
+        const waBubble = document.getElementById('waBubble');
+        const groupModal = document.getElementById('groupModal');
+        const closeModal = document.getElementById('closeModal');
+        
+        // Buka modal ketika tombol "Masuk Grup" diklik
+        joinGroupBtn.addEventListener('click', function() {
+            groupModal.style.display = 'flex';
+        });
+        
+        // Buka modal ketika gelembung WhatsApp diklik
+        waBubble.addEventListener('click', function() {
+            groupModal.style.display = 'flex';
+        });
+        
+        // Tutup modal ketika tombol close diklik
+        closeModal.addEventListener('click', function() {
+            groupModal.style.display = 'none';
+        });
+        
+        // Tutup modal ketika klik di luar modal
+        window.addEventListener('click', function(event) {
+            if (event.target === groupModal) {
+                groupModal.style.display = 'none';
+            }
+        });
+        
+        // Smooth scroll ke formulir
+        document.querySelectorAll('a[href^="#form-section"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            });
+        });
+        
+        // Animasi untuk elemen kontak
+        const contactItems = document.querySelectorAll('.contact-item');
+        contactItems.forEach((item, index) => {
+            // Delay untuk animasi masuk
+            item.style.opacity = '0';
+            item.style.transform = 'translateX(-20px)';
+            
+            setTimeout(() => {
+                item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                item.style.opacity = '1';
+                item.style.transform = 'translateX(0)';
+            }, 300 + (index * 100));
+        });
+    </script>
 </body>
 </html>
