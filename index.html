@@ -3,37 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCRIMBASE ID - Dashboard Turnamen</title>
+    <title>SCRIMBASE ID - Esports Tournament Platform</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #7209b7;
+            --accent: #f72585;
+            --dark: #1a1a2e;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --success: #4cc9f0;
+            --warning: #ffd166;
+            --danger: #ef476f;
         }
         
         body {
-            background-color: #f0f5ff;
-            color: #333;
-            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0c0c1d 0%, #1a1a2e 100%);
+            color: var(--light);
+            line-height: 1.6;
             overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
         }
         
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 0 20px;
         }
         
-        /* Header */
-        header {
+        /* Header Styles */
+        .main-header {
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            border-bottom: 2px solid rgba(67, 97, 238, 0.3);
+            padding: 15px 0;
+        }
+        
+        .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 0;
-            margin-bottom: 30px;
-            border-bottom: 1px solid #ddd;
         }
         
         .logo {
@@ -42,480 +70,514 @@
             gap: 15px;
         }
         
-        .logo i {
-            font-size: 2.5rem;
-            color: #4a6fff;
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
         }
         
-        .logo h1 {
+        .logo-text h1 {
             font-size: 1.8rem;
-            color: #2d3e50;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 5px;
         }
         
-        .logo span {
-            color: #4a6fff;
+        .logo-text p {
+            font-size: 0.9rem;
+            color: var(--gray);
         }
         
-        /* Tombol Aksi */
-        .action-buttons {
+        .main-nav ul {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+        
+        .nav-link {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-link:hover {
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+        }
+        
+        .nav-link.active {
+            background: rgba(67, 97, 238, 0.2);
+            color: var(--primary);
+        }
+        
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 5px;
+            height: 5px;
+            background: var(--primary);
+            border-radius: 50%;
+        }
+        
+        .cta-buttons {
             display: flex;
             gap: 15px;
         }
         
         .btn {
-            padding: 12px 25px;
-            border-radius: 8px;
+            padding: 12px 28px;
+            border-radius: 10px;
             font-weight: 600;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
             transition: all 0.3s ease;
             cursor: pointer;
             border: none;
             font-size: 1rem;
+            font-family: 'Montserrat', sans-serif;
         }
         
         .btn-primary {
-            background-color: #4a6fff;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
             color: white;
         }
         
         .btn-primary:hover {
-            background-color: #3a5fef;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(74, 111, 255, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
         }
         
         .btn-secondary {
-            background-color: #28a745;
+            background: rgba(255, 255, 255, 0.1);
             color: white;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
         .btn-secondary:hover {
-            background-color: #218838;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
         }
         
-        /* Menu Navigasi */
-        .nav-tabs {
-            display: flex;
-            justify-content: center;
-            background: white;
-            border-radius: 12px;
-            padding: 10px;
-            margin-bottom: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            flex-wrap: wrap;
-        }
-        
-        .tab-btn {
-            padding: 12px 25px;
+        .mobile-menu-btn {
+            display: none;
             background: none;
             border: none;
-            font-size: 1rem;
-            font-weight: 600;
-            color: #666;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .tab-btn.active {
-            background-color: #4a6fff;
             color: white;
-        }
-        
-        .tab-btn:hover:not(.active) {
-            background-color: #f0f5ff;
-            color: #4a6fff;
-        }
-        
-        /* Konten Tab */
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.5s ease;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            font-size: 24px;
+            cursor: pointer;
         }
         
         /* Hero Section */
-        .hero {
-            text-align: center;
-            padding: 40px 0;
-            margin-bottom: 40px;
-            background: linear-gradient(135deg, #eef2ff, #ffffff);
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-        }
-        
-        .hero h2 {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            color: #2d3e50;
-        }
-        
-        .hero p {
-            font-size: 1.2rem;
-            max-width: 800px;
-            margin: 0 auto 30px;
-            color: #666;
-            line-height: 1.6;
-        }
-        
-        /* Stats Cards */
-        .stats-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-        
-        .stat-card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            text-align: center;
-            transition: transform 0.3s ease;
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-        
-        .stat-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #4a6fff, #8a2be2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.8rem;
-            margin: 0 auto 15px;
-        }
-        
-        .stat-value {
-            font-size: 2.2rem;
-            font-weight: 700;
-            color: #4a6fff;
-            margin-bottom: 5px;
-        }
-        
-        .stat-label {
-            color: #666;
-            font-size: 1rem;
-        }
-        
-        /* Konten Dashboard */
-        .dashboard-content {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 30px;
-            margin-bottom: 50px;
-        }
-        
-        .form-container {
-            flex: 2;
-            min-width: 300px;
-            background-color: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        .hero-section {
+            padding: 180px 0 100px;
+            background: radial-gradient(circle at 50% 0%, rgba(114, 9, 183, 0.2) 0%, transparent 50%);
+            position: relative;
             overflow: hidden;
         }
         
-        .form-header {
-            background-color: #4a6fff;
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--primary), var(--accent), var(--success));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.2;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 60px;
+        }
+        
+        .stat-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-item:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 15px 30px rgba(67, 97, 238, 0.2);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        
+        /* Tournament Info */
+        .tournament-info {
+            padding: 100px 0;
+            background: rgba(12, 12, 29, 0.5);
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            border-radius: 2px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        
+        .info-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+        }
+        
+        .info-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+        }
+        
+        .info-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
             color: white;
-            padding: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .info-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: white;
+        }
+        
+        .info-card p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 20px;
+        }
+        
+        /* Form Section */
+        .form-section {
+            padding: 100px 0;
+            background: rgba(26, 26, 46, 0.7);
+        }
+        
+        .form-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 25px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .form-header {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            padding: 30px;
             text-align: center;
         }
         
-        .form-header h3 {
-            font-size: 1.5rem;
+        .form-header h2 {
+            font-size: 2rem;
+            color: white;
+        }
+        
+        .form-frame-container {
+            padding: 20px;
         }
         
         .form-frame {
             width: 100%;
             height: 700px;
             border: none;
-        }
-        
-        .info-panel {
-            flex: 1;
-            min-width: 300px;
-            background-color: white;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            padding: 25px;
         }
         
-        .info-panel h3 {
-            color: #2d3e50;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #f0f5ff;
+        /* Contact Section */
+        .contact-section {
+            padding: 100px 0;
+            background: rgba(12, 12, 29, 0.5);
         }
         
-        /* Rulebook Section */
-        .rulebook-container {
-            background-color: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            padding: 30px;
-            margin-bottom: 40px;
-        }
-        
-        .rulebook-container h2 {
-            color: #2d3e50;
-            margin-bottom: 25px;
-            text-align: center;
-        }
-        
-        .rules-grid {
+        .contact-content {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-        
-        .rule-item {
-            background-color: #f8faff;
-            padding: 20px;
-            border-radius: 10px;
-            border-left: 4px solid #4a6fff;
-        }
-        
-        .rule-item h4 {
-            color: #2d3e50;
-            margin-bottom: 10px;
-            display: flex;
+            gap: 50px;
             align-items: center;
-            gap: 10px;
         }
         
-        .rule-item p {
-            color: #666;
-            line-height: 1.6;
+        .contact-info h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
         
-        /* Leaderboard Section */
-        .leaderboard-container {
-            background-color: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            padding: 30px;
-            margin-bottom: 40px;
+        .contact-list {
+            list-style: none;
+            margin-top: 30px;
         }
         
-        .leaderboard-container h2 {
-            color: #2d3e50;
-            margin-bottom: 25px;
-            text-align: center;
-        }
-        
-        .leaderboard-table {
-            width: 100%;
-            border-collapse: collapse;
-            overflow: hidden;
-            border-radius: 10px;
-        }
-        
-        .leaderboard-table th {
-            background-color: #4a6fff;
-            color: white;
-            padding: 15px;
-            text-align: left;
-        }
-        
-        .leaderboard-table td {
-            padding: 15px;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .leaderboard-table tr:nth-child(even) {
-            background-color: #f8faff;
-        }
-        
-        .leaderboard-table tr:hover {
-            background-color: #eef2ff;
-        }
-        
-        .rank {
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-        
-        .rank-1 { color: #ffd700; }
-        .rank-2 { color: #c0c0c0; }
-        .rank-3 { color: #cd7f32; }
-        
-        /* Teams Section */
-        .teams-container {
-            background-color: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            padding: 30px;
-            margin-bottom: 40px;
-        }
-        
-        .teams-container h2 {
-            color: #2d3e50;
-            margin-bottom: 25px;
-            text-align: center;
-        }
-        
-        .teams-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-        }
-        
-        .team-card {
-            background-color: #f8faff;
-            border-radius: 10px;
-            padding: 20px;
-            transition: transform 0.3s ease;
-            border: 2px solid transparent;
-        }
-        
-        .team-card:hover {
-            transform: translateY(-5px);
-            border-color: #4a6fff;
-        }
-        
-        .team-name {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: #2d3e50;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .team-members {
-            color: #666;
-            margin-bottom: 10px;
-            font-size: 0.9rem;
-        }
-        
-        .team-captain {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #4a6fff;
-            font-weight: 500;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #eee;
-        }
-        
-        /* Contact Info */
-        .contact-info {
-            margin-bottom: 30px;
-        }
-        
-        .contact-item {
+        .contact-list li {
             display: flex;
             align-items: center;
             gap: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             padding: 15px;
-            background-color: #f8faff;
-            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
             transition: all 0.3s ease;
         }
         
-        .contact-item:hover {
-            background-color: #eef2ff;
-            transform: translateX(5px);
+        .contact-list li:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(10px);
         }
         
         .contact-icon {
             width: 50px;
             height: 50px;
-            background-color: #4a6fff;
-            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 20px;
             color: white;
-            font-size: 1.5rem;
         }
         
         .contact-text h4 {
+            font-size: 1.2rem;
             margin-bottom: 5px;
-            color: #2d3e50;
+            color: white;
         }
         
         .contact-text p {
-            color: #666;
+            color: rgba(255, 255, 255, 0.7);
             font-size: 0.9rem;
         }
         
-        .whatsapp-link {
-            display: block;
-            text-align: center;
-            background-color: #25D366;
+        .whatsapp-cta {
+            background: linear-gradient(45deg, #25D366, #128C7E);
             color: white;
-            padding: 15px;
-            border-radius: 10px;
+            padding: 20px 30px;
+            border-radius: 15px;
             text-decoration: none;
-            font-weight: 600;
-            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 30px;
             transition: all 0.3s ease;
+            font-weight: 600;
         }
         
-        .whatsapp-link:hover {
-            background-color: #1da851;
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
+        .whatsapp-cta:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3);
         }
         
-        /* Gelembung melayang */
-        .floating-bubble {
+        /* Floating Elements */
+        .floating-elements {
             position: fixed;
             bottom: 30px;
             right: 30px;
-            width: 70px;
-            height: 70px;
-            background-color: #25D366;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 100;
+        }
+        
+        .floating-btn {
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 2rem;
-            box-shadow: 0 5px 20px rgba(37, 211, 102, 0.5);
+            font-size: 24px;
             cursor: pointer;
-            z-index: 1000;
-            animation: float 3s ease-in-out infinite;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border: none;
+        }
+        
+        .floating-btn.whatsapp {
+            background: linear-gradient(45deg, #25D366, #128C7E);
+        }
+        
+        .floating-btn.group {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+        }
+        
+        .floating-btn:hover {
+            transform: scale(1.1) translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+        
+        /* Footer */
+        .main-footer {
+            background: rgba(12, 12, 29, 0.9);
+            padding: 60px 0 30px;
+            border-top: 2px solid rgba(67, 97, 238, 0.3);
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-logo h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .footer-links h4 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+        
+        .footer-links ul {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
             transition: all 0.3s ease;
         }
         
-        .floating-bubble:hover {
-            transform: scale(1.1);
-            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.7);
+        .footer-links a:hover {
+            color: var(--primary);
+            padding-left: 5px;
         }
         
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
-            100% { transform: translateY(0px); }
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-link {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .social-link:hover {
+            background: var(--primary);
+            transform: translateY(-5px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
         }
         
         /* Modal */
@@ -526,623 +588,633 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.8);
             z-index: 2000;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
         
         .modal-content {
-            background-color: white;
-            border-radius: 15px;
-            width: 90%;
+            background: rgba(26, 26, 46, 0.95);
+            border-radius: 20px;
             max-width: 500px;
-            padding: 30px;
+            width: 100%;
+            border: 1px solid rgba(67, 97, 238, 0.3);
+            backdrop-filter: blur(20px);
+            overflow: hidden;
             position: relative;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
         }
         
         .close-modal {
             position: absolute;
-            top: 15px;
+            top: 20px;
             right: 20px;
-            font-size: 1.8rem;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
             cursor: pointer;
-            color: #777;
+            z-index: 10;
         }
         
-        .modal h3 {
-            color: #2d3e50;
-            margin-bottom: 20px;
+        .modal-header {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            padding: 25px;
             text-align: center;
         }
         
-        .modal-links {
+        .modal-header h3 {
+            font-size: 1.8rem;
+            color: white;
+        }
+        
+        .modal-body {
+            padding: 30px;
+        }
+        
+        .modal-options {
             display: flex;
             flex-direction: column;
             gap: 15px;
         }
         
-        .modal-link {
+        .modal-option {
             display: flex;
             align-items: center;
             gap: 15px;
-            padding: 15px;
-            background-color: #f8faff;
-            border-radius: 10px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
             text-decoration: none;
-            color: #333;
+            color: white;
             transition: all 0.3s ease;
         }
         
-        .modal-link:hover {
-            background-color: #eef2ff;
-            transform: translateX(5px);
+        .modal-option:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(10px);
         }
         
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 30px 0;
-            color: #777;
-            border-top: 1px solid #ddd;
-            margin-top: 30px;
+        .option-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
         }
         
-        /* Responsif */
-        @media (max-width: 768px) {
-            header {
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .hero-title {
+                font-size: 2.8rem;
+            }
+            
+            .hero-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .main-nav {
+                display: none;
+                position: fixed;
+                top: 80px;
+                left: 0;
+                right: 0;
+                background: rgba(26, 26, 46, 0.98);
+                padding: 20px;
+                border-bottom: 2px solid rgba(67, 97, 238, 0.3);
+            }
+            
+            .main-nav.active {
+                display: block;
+            }
+            
+            .main-nav ul {
                 flex-direction: column;
-                gap: 20px;
+                gap: 10px;
             }
             
-            .action-buttons {
-                width: 100%;
-                justify-content: center;
+            .mobile-menu-btn {
+                display: block;
             }
             
-            .btn {
-                padding: 10px 20px;
+            .cta-buttons {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.2rem;
             }
             
-            .nav-tabs {
-                overflow-x: auto;
-                justify-content: flex-start;
+            .hero-subtitle {
+                font-size: 1.1rem;
             }
             
-            .hero h2 {
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .stat-number {
                 font-size: 2rem;
             }
             
             .form-frame {
                 height: 600px;
             }
+        }
+        
+        @media (max-width: 576px) {
+            .hero-stats {
+                grid-template-columns: 1fr;
+            }
             
-            .floating-bubble {
-                bottom: 20px;
-                right: 20px;
-                width: 60px;
-                height: 60px;
+            .hero-title {
                 font-size: 1.8rem;
             }
+            
+            .btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+            
+            .floating-elements {
+                bottom: 20px;
+                right: 20px;
+            }
+            
+            .floating-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
         }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+        
+        .delay-1 { animation-delay: 0.1s; opacity: 0; }
+        .delay-2 { animation-delay: 0.2s; opacity: 0; }
+        .delay-3 { animation-delay: 0.3s; opacity: 0; }
+        .delay-4 { animation-delay: 0.4s; opacity: 0; }
+        .delay-5 { animation-delay: 0.5s; opacity: 0; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <header>
-            <div class="logo">
-                <i class="fas fa-trophy"></i>
-                <h1>SCRIMBASE<span>ID</span></h1>
-            </div>
-            
-            <div class="action-buttons">
-                <a href="#form-section" class="btn btn-primary">
-                    <i class="fas fa-user-plus"></i> Daftar Sekarang
-                </a>
-                <button id="joinGroupBtn" class="btn btn-secondary">
-                    <i class="fab fa-whatsapp"></i> Masuk Grup
-                </button>
-            </div>
-        </header>
-        
-        <!-- Menu Navigasi -->
-        <div class="nav-tabs">
-            <button class="tab-btn active" data-tab="home">
-                <i class="fas fa-home"></i> Beranda
-            </button>
-            <button class="tab-btn" data-tab="form">
-                <i class="fas fa-file-alt"></i> Formulir
-            </button>
-            <button class="tab-btn" data-tab="rulebook">
-                <i class="fas fa-book"></i> Rulebook
-            </button>
-            <button class="tab-btn" data-tab="leaderboard">
-                <i class="fas fa-chart-bar"></i> Leaderboard
-            </button>
-            <button class="tab-btn" data-tab="teams">
-                <i class="fas fa-users"></i> Daftar Team
-            </button>
-        </div>
-        
-        <!-- Tab Beranda -->
-        <div id="home" class="tab-content active">
-            <!-- Hero Section -->
-            <section class="hero">
-                <h2>TURNAMEN SCRIMBASE ID 2025</h2>
-                <p>Kompetisi esports terbesar dengan total hadiah 9.500 Gold! Daftar gratis untuk kesempatan menang besar dan pengalaman kompetitif yang tak terlupakan.</p>
-                <a href="#form-section" class="btn btn-primary" style="font-size: 1.1rem; padding: 15px 30px;">
-                    <i class="fas fa-arrow-down"></i> Isi Formulir Pendaftaran
-                </a>
-            </section>
-            
-            <!-- Stats Cards -->
-            <div class="stats-cards">
-                <div class="stat-card">
-                    <div class="stat-icon">
+    <!-- Header -->
+    <header class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
                         <i class="fas fa-trophy"></i>
                     </div>
-                    <div class="stat-value">9.500</div>
-                    <div class="stat-label">Total Hadiah (Gold)</div>
+                    <div class="logo-text">
+                        <h1>SCRIMBASE ID</h1>
+                        <p>Esports Tournament Platform</p>
+                    </div>
                 </div>
                 
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div class="stat-value">75</div>
-                    <div class="stat-label">Slot Team Tersedia</div>
-                </div>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="#home" class="nav-link active">Beranda</a></li>
+                        <li><a href="#tournament" class="nav-link">Turnamen</a></li>
+                        <li><a href="#form" class="nav-link">Pendaftaran</a></li>
+                        <li><a href="#contact" class="nav-link">Kontak</a></li>
+                    </ul>
+                </nav>
                 
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-calendar-alt"></i>
-                    </div>
-                    <div class="stat-value">29 Jan - 1 Feb</div>
-                    <div class="stat-label">Tanggal Pelaksanaan</div>
-                </div>
-                
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-user-friends"></i>
-                    </div>
-                    <div class="stat-value">4+1</div>
-                    <div class="stat-label">Anggota per Team</div>
-                </div>
-            </div>
-            
-            <!-- Info Kontak -->
-            <div class="info-panel">
-                <h3>Informasi Kontak</h3>
-                
-                <div class="contact-info">
-                    <div class="contact-item">
-                        <div class="contact-icon">
-                            <i class="fas fa-user-headset"></i>
-                        </div>
-                        <div class="contact-text">
-                            <h4>Admin/PIC Turnamen</h4>
-                            <p>Hubungi admin untuk informasi lebih lanjut</p>
-                        </div>
-                    </div>
-                    
-                    <div class="contact-item">
-                        <div class="contact-icon">
-                            <i class="fab fa-whatsapp"></i>
-                        </div>
-                        <div class="contact-text">
-                            <h4>WhatsApp Admin</h4>
-                            <p>+62 889-9173-4780</p>
-                        </div>
-                    </div>
-                    
-                    <a href="https://wa.me/6288991734780" target="_blank" class="whatsapp-link">
-                        <i class="fab fa-whatsapp"></i> Hubungi via WhatsApp
+                <div class="cta-buttons">
+                    <a href="#form" class="btn btn-primary">
+                        <i class="fas fa-user-plus"></i> Daftar Sekarang
                     </a>
                 </div>
                 
-                <h3>Grup WhatsApp Turnamen</h3>
-                <p>Setelah mendaftar, bergabunglah dengan grup WhatsApp kami untuk mendapatkan informasi terbaru dan berinteraksi dengan peserta lain.</p>
-                <a href="https://chat.whatsapp.com/L83TmNagTRBJIvvVyiUGAl" target="_blank" class="whatsapp-link" style="margin-top: 15px;">
-                    <i class="fab fa-whatsapp"></i> Bergabung dengan Grup WhatsApp
-                </a>
+                <button class="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
         </div>
-        
-        <!-- Tab Formulir -->
-        <div id="form" class="tab-content">
-            <div class="form-container" id="form-section">
-                <div class="form-header">
-                    <h3>Formulir Pendaftaran Turnamen</h3>
-                </div>
-                <iframe class="form-frame" src="https://docs.google.com/forms/d/e/1FAIpQLScQ6esjfHt_rvoaaIdIwQlbwH7K3wQIenxJcbsAS_LqXlQA6g/viewform?embedded=true"></iframe>
-            </div>
-        </div>
-        
-        <!-- Tab Rulebook -->
-        <div id="rulebook" class="tab-content">
-            <div class="rulebook-container">
-                <h2><i class="fas fa-book"></i> RULEBOOK TURNAMEN SCRIMBASE ID</h2>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <div class="container">
+            <div class="hero-content animate-fade-in-up">
+                <h1 class="hero-title">
+                    Turnamen Esports Terbesar 2025
+                </h1>
+                <p class="hero-subtitle">
+                    Bergabunglah dengan kompetisi esports paling bergengsi dengan total hadiah 9.500 Gold. 
+                    Raih kemenangan dan buktikan kehebatan tim Anda di panggung nasional.
+                </p>
                 
-                <div class="rules-grid">
-                    <div class="rule-item">
-                        <h4><i class="fas fa-users"></i> Format Team</h4>
-                        <p>Setiap tim terdiri dari 4 pemain utama dan 1 cadangan. Total 5 anggota per tim.</p>
+                <div class="hero-stats">
+                    <div class="stat-item animate-fade-in-up delay-1">
+                        <span class="stat-number">9.500</span>
+                        <span class="stat-label">Total Hadiah (Gold)</span>
                     </div>
-                    
-                    <div class="rule-item">
-                        <h4><i class="fas fa-calendar"></i> Jadwal Turnamen</h4>
-                        <p>Turnamen berlangsung dari 29 Januari hingga 1 Februari 2025. Pastikan tim Anda siap pada tanggal tersebut.</p>
+                    <div class="stat-item animate-fade-in-up delay-2">
+                        <span class="stat-number">75</span>
+                        <span class="stat-label">Slot Team Tersedia</span>
                     </div>
-                    
-                    <div class="rule-item">
-                        <h4><i class="fas fa-money-bill-wave"></i> Biaya Pendaftaran</h4>
-                        <p>Pendaftaran GRATIS untuk semua peserta. Tidak ada biaya tersembunyi.</p>
+                    <div class="stat-item animate-fade-in-up delay-3">
+                        <span class="stat-number">4+1</span>
+                        <span class="stat-label">Anggota per Team</span>
                     </div>
-                    
-                    <div class="rule-item">
-                        <h4><i class="fas fa-trophy"></i> Hadiah</h4>
-                        <p>Total hadiah 9.500 Gold yang akan dibagikan kepada pemenang berdasarkan peringkat akhir.</p>
-                    </div>
-                    
-                    <div class="rule-item">
-                        <h4><i class="fas fa-gamepad"></i> Sistem Kompetisi</h4>
-                        <p>Sistem double elimination dengan best of three (BO3) pada awal turnamen dan best of five (BO5) pada final.</p>
-                    </div>
-                    
-                    <div class="rule-item">
-                        <h4><i class="fas fa-user-clock"></i> Kehadiran</h4>
-                        <p>Tim harus hadir 15 menit sebelum jadwal pertandingan. Keterlambatan lebih dari 10 menit akan mendapatkan penalty.</p>
-                    </div>
-                    
-                    <div class="rule-item">
-                        <h4><i class="fas fa-ban"></i> Larangan</h4>
-                        <p>Dilarang menggunakan cheat, exploit bug, atau tindakan tidak sportif lainnya. Pelanggaran akan dikenakan diskualifikasi.</p>
-                    </div>
-                    
-                    <div class="rule-item">
-                        <h4><i class="fas fa-headset"></i> Komunikasi</h4>
-                        <p>Komunikasi selama pertandingan harus dilakukan melalui channel yang telah disediakan panitia.</p>
+                    <div class="stat-item animate-fade-in-up delay-4">
+                        <span class="stat-number">FREE</span>
+                        <span class="stat-label">Pendaftaran Gratis</span>
                     </div>
                 </div>
             </div>
         </div>
-        
-        <!-- Tab Leaderboard -->
-        <div id="leaderboard" class="tab-content">
-            <div class="leaderboard-container">
-                <h2><i class="fas fa-chart-bar"></i> LEADERBOARD TURNAMEN</h2>
-                
-                <table class="leaderboard-table">
-                    <thead>
-                        <tr>
-                            <th>Peringkat</th>
-                            <th>Nama Team</th>
-                            <th>Kapten</th>
-                            <th>Menang</th>
-                            <th>Kalah</th>
-                            <th>Point</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><span class="rank rank-1">1</span></td>
-                            <td>Phoenix Rising</td>
-                            <td>Agus "Shadow" Wijaya</td>
-                            <td>8</td>
-                            <td>0</td>
-                            <td>24</td>
-                        </tr>
-                        <tr>
-                            <td><span class="rank rank-2">2</span></td>
-                            <td>Thunder Bolt</td>
-                            <td>Budi "Storm" Santoso</td>
-                            <td>7</td>
-                            <td>1</td>
-                            <td>21</td>
-                        </tr>
-                        <tr>
-                            <td><span class="rank rank-3">3</span></td>
-                            <td>Dark Wolves</td>
-                            <td>Rina "Nightshade" Putri</td>
-                            <td>6</td>
-                            <td>2</td>
-                            <td>18</td>
-                        </tr>
-                        <tr>
-                            <td><span class="rank">4</span></td>
-                            <td>Vortex Gaming</td>
-                            <td>Rudi "Vortex" Kurniawan</td>
-                            <td>5</td>
-                            <td>3</td>
-                            <td>15</td>
-                        </tr>
-                        <tr>
-                            <td><span class="rank">5</span></td>
-                            <td>Neon Blaze</td>
-                            <td>Dewi "Blaze" Sari</td>
-                            <td>5</td>
-                            <td>3</td>
-                            <td>15</td>
-                        </tr>
-                        <tr>
-                            <td><span class="rank">6</span></td>
-                            <td>Frost Giants</td>
-                            <td>Andi "Frosty" Pratama</td>
-                            <td>4</td>
-                            <td>4</td>
-                            <td>12</td>
-                        </tr>
-                        <tr>
-                            <td><span class="rank">7</span></td>
-                            <td>Solar Flare</td>
-                            <td>Eko "Solar" Wibowo</td>
-                            <td>3</td>
-                            <td>5</td>
-                            <td>9</td>
-                        </tr>
-                        <tr>
-                            <td><span class="rank">8</span></td>
-                            <td>Lunar Echo</td>
-                            <td>Maya "Luna" Indah</td>
-                            <td>2</td>
-                            <td>6</td>
-                            <td>6</td>
-                        </tr>
-                    </tbody>
-                </table>
-                
-                <div style="margin-top: 30px; padding: 20px; background-color: #f8faff; border-radius: 10px;">
-                    <h4><i class="fas fa-info-circle"></i> Sistem Point</h4>
-                    <p>Kemenangan: 3 point | Kekalahan: 0 point</p>
-                    <p>Leaderboard diperbarui setiap hari pukul 20:00 WIB</p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Tab Daftar Team -->
-        <div id="teams" class="tab-content">
-            <div class="teams-container">
-                <h2><i class="fas fa-users"></i> DAFTAR TEAM TERDAFTAR</h2>
-                <p style="text-align: center; margin-bottom: 25px; color: #666;">Total: 45/75 Team terdaftar</p>
-                
-                <div class="teams-grid">
-                    <div class="team-card">
-                        <div class="team-name">
-                            <i class="fas fa-crown" style="color: #ffd700;"></i> Phoenix Rising
-                        </div>
-                        <div class="team-members">4 pemain + 1 cadangan</div>
-                        <div class="team-captain">
-                            <i class="fas fa-user"></i> Kapten: Agus "Shadow" Wijaya
-                        </div>
-                    </div>
-                    
-                    <div class="team-card">
-                        <div class="team-name">
-                            <i class="fas fa-bolt" style="color: #ffcc00;"></i> Thunder Bolt
-                        </div>
-                        <div class="team-members">4 pemain + 1 cadangan</div>
-                        <div class="team-captain">
-                            <i class="fas fa-user"></i> Kapten: Budi "Storm" Santoso
-                        </div>
-                    </div>
-                    
-                    <div class="team-card">
-                        <div class="team-name">
-                            <i class="fas fa-paw" style="color: #333;"></i> Dark Wolves
-                        </div>
-                        <div class="team-members">4 pemain + 1 cadangan</div>
-                        <div class="team-captain">
-                            <i class="fas fa-user"></i> Kapten: Rina "Nightshade" Putri
-                        </div>
-                    </div>
-                    
-                    <div class="team-card">
-                        <div class="team-name">
-                            <i class="fas fa-wind" style="color: #00aaff;"></i> Vortex Gaming
-                        </div>
-                        <div class="team-members">4 pemain + 1 cadangan</div>
-                        <div class="team-captain">
-                            <i class="fas fa-user"></i> Kapten: Rudi "Vortex" Kurniawan
-                        </div>
-                    </div>
-                    
-                    <div class="team-card">
-                        <div class="team-name">
-                            <i class="fas fa-fire" style="color: #ff4400;"></i> Neon Blaze
-                        </div>
-                        <div class="team-members">4 pemain + 1 cadangan</div>
-                        <div class="team-captain">
-                            <i class="fas fa-user"></i> Kapten: Dewi "Blaze" Sari
-                        </div>
-                    </div>
-                    
-                    <div class="team-card">
-                        <div class="team-name">
-                            <i class="fas fa-snowflake" style="color: #00ccff;"></i> Frost Giants
-                        </div>
-                        <div class="team-members">4 pemain + 1 cadangan</div>
-                        <div class="team-captain">
-                            <i class="fas fa-user"></i> Kapten: Andi "Frosty" Pratama
-                        </div>
-                    </div>
-                    
-                    <div class="team-card">
-                        <div class="team-name">
-                            <i class="fas fa-sun" style="color: #ffaa00;"></i> Solar Flare
-                        </div>
-                        <div class="team-members">4 pemain + 1 cadangan</div>
-                        <div class="team-captain">
-                            <i class="fas fa-user"></i> Kapten: Eko "Solar" Wibowo
-                        </div>
-                    </div>
-                    
-                    <div class="team-card">
-                        <div class="team-name">
-                            <i class="fas fa-moon" style="color: #aa66ff;"></i> Lunar Echo
-                        </div>
-                        <div class="team-members">4 pemain + 1 cadangan</div>
-                        <div class="team-captain">
-                            <i class="fas fa-user"></i> Kapten: Maya "Luna" Indah
-                        </div>
-                    </div>
-                </div>
-                
-                <div style="text-align: center; margin-top: 30px;">
-                    <button class="btn btn-primary" onclick="loadMoreTeams()">
-                        <i class="fas fa-plus"></i> Tampilkan Lebih Banyak Team
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Floating Bubble -->
-    <div class="floating-bubble" id="waBubble">
-        <i class="fab fa-whatsapp"></i>
-    </div>
-    
-    <!-- Modal untuk Grup WhatsApp -->
-    <div class="modal" id="groupModal">
-        <div class="modal-content">
-            <span class="close-modal" id="closeModal">&times;</span>
-            <h3>Bergabung dengan Grup Turnamen</h3>
-            <p>Pilih opsi berikut untuk bergabung dengan komunitas turnamen kami:</p>
+    </section>
+
+    <!-- Tournament Info -->
+    <section id="tournament" class="tournament-info">
+        <div class="container">
+            <h2 class="section-title animate-fade-in-up">Informasi Turnamen</h2>
             
-            <div class="modal-links">
-                <a href="https://wa.me/6288991734780" target="_blank" class="modal-link">
-                    <div class="contact-icon" style="width: 40px; height: 40px; font-size: 1.2rem;">
-                        <i class="fas fa-user"></i>
+            <div class="info-grid">
+                <div class="info-card animate-fade-in-up delay-1">
+                    <div class="info-icon">
+                        <i class="fas fa-calendar-alt"></i>
                     </div>
-                    <div>
-                        <h4>Hubungi Admin</h4>
-                        <p>Konsultasi langsung dengan admin turnamen</p>
-                    </div>
-                </a>
+                    <h3>Tanggal Pelaksanaan</h3>
+                    <p>Turnamen akan berlangsung dari tanggal 29 Januari hingga 1 Februari 2025. Pastikan tim Anda siap pada tanggal tersebut.</p>
+                </div>
                 
-                <a href="https://chat.whatsapp.com/L83TmNagTRBJIvvVyiUGAl" target="_blank" class="modal-link">
-                    <div class="contact-icon" style="width: 40px; height: 40px; font-size: 1.2rem; background-color: #25D366;">
-                        <i class="fab fa-whatsapp"></i>
+                <div class="info-card animate-fade-in-up delay-2">
+                    <div class="info-icon">
+                        <i class="fas fa-users"></i>
                     </div>
-                    <div>
-                        <h4>Masuk Grup WhatsApp</h4>
-                        <p>Bergabung dengan grup utama turnamen</p>
+                    <h3>Format Tim</h3>
+                    <p>Setiap tim terdiri dari 4 pemain utama dan 1 pemain cadangan. Total 5 anggota untuk fleksibilitas strategi.</p>
+                </div>
+                
+                <div class="info-card animate-fade-in-up delay-3">
+                    <div class="info-icon">
+                        <i class="fas fa-gamepad"></i>
                     </div>
+                    <h3>Sistem Kompetisi</h3>
+                    <p>Double elimination bracket dengan best-of-three pada awal turnamen dan best-of-five pada babak final.</p>
+                </div>
+                
+                <div class="info-card animate-fade-in-up delay-4">
+                    <div class="info-icon">
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <h3>Hadiah Turnamen</h3>
+                    <p>Total hadiah 9.500 Gold akan dibagikan kepada pemenang dengan distribusi untuk juara 1, 2, dan 3.</p>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 50px;">
+                <a href="#form" class="btn btn-primary animate-fade-in-up delay-5" style="padding: 15px 40px; font-size: 1.1rem;">
+                    <i class="fas fa-file-alt"></i> Lihat Rulebook Lengkap
                 </a>
             </div>
         </div>
+    </section>
+
+    <!-- Form Section -->
+    <section id="form" class="form-section">
+        <div class="container">
+            <h2 class="section-title animate-fade-in-up">Formulir Pendaftaran</h2>
+            
+            <div class="form-container animate-fade-in-up delay-1">
+                <div class="form-header">
+                    <h2>Daftar Turnamen SCRIMBASE ID 2025</h2>
+                </div>
+                <div class="form-frame-container">
+                    <iframe class="form-frame" src="https://docs.google.com/forms/d/e/1FAIpQLScQ6esjfHt_rvoaaIdIwQlbwH7K3wQIenxJcbsAS_LqXlQA6g/viewform?embedded=true"></iframe>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 40px;">
+                <p style="color: rgba(255, 255, 255, 0.7); max-width: 600px; margin: 0 auto;">
+                    <i class="fas fa-info-circle"></i> Pastikan data yang diisi valid dan lengkap. Setelah mendaftar, 
+                    Anda akan dihubungi oleh panitia melalui WhatsApp untuk konfirmasi lebih lanjut.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <div class="contact-content">
+                <div class="contact-info animate-fade-in-up">
+                    <h2>Hubungi Kami</h2>
+                    <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 30px;">
+                        Untuk informasi lebih lanjut mengenai turnamen, sponsorship, atau kerjasama, 
+                        jangan ragu untuk menghubungi tim panitia kami.
+                    </p>
+                    
+                    <ul class="contact-list">
+                        <li>
+                            <div class="contact-icon">
+                                <i class="fas fa-user-headset"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h4>Admin Turnamen</h4>
+                                <p>Tim dukungan utama untuk peserta</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="contact-icon">
+                                <i class="fab fa-whatsapp"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h4>WhatsApp Admin</h4>
+                                <p>+62 889-9173-4780</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="contact-icon">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h4>Pendaftaran</h4>
+                                <p>Gratis - Sampai slot terpenuhi</p>
+                            </div>
+                        </li>
+                    </ul>
+                    
+                    <a href="https://wa.me/6288991734780" target="_blank" class="whatsapp-cta animate-fade-in-up delay-2">
+                        <i class="fab fa-whatsapp"></i>
+                        Hubungi via WhatsApp
+                    </a>
+                </div>
+                
+                <div class="contact-actions animate-fade-in-up delay-3">
+                    <div style="background: rgba(255, 255, 255, 0.05); border-radius: 20px; padding: 30px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                        <h3 style="font-size: 1.8rem; margin-bottom: 20px; color: white;">Bergabung dengan Komunitas</h3>
+                        <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 25px;">
+                            Setelah mendaftar, jangan lupa bergabung dengan grup WhatsApp kami untuk mendapatkan informasi terbaru, 
+                            pengumuman jadwal, dan berinteraksi dengan peserta lainnya.
+                        </p>
+                        <a href="https://chat.whatsapp.com/L83TmNagTRBJIvvVyiUGAl" target="_blank" class="btn btn-secondary" style="width: 100%; justify-content: center;">
+                            <i class="fab fa-whatsapp"></i> Masuk Grup WhatsApp
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Floating Elements -->
+    <div class="floating-elements">
+        <button class="floating-btn whatsapp" id="whatsappBtn">
+            <i class="fab fa-whatsapp"></i>
+        </button>
+        <button class="floating-btn group" id="groupBtn">
+            <i class="fas fa-users"></i>
+        </button>
     </div>
-    
+
     <!-- Footer -->
-    <footer>
-        <p>&copy; 2025 SCRIMBASE ID. Semua hak dilindungi.</p>
-        <p>Wrahtt55 | Turnamen Berlangsung: 29 Januari - 1 Februari 2025</p>
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h3>SCRIMBASE ID</h3>
+                    <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 20px;">
+                        Platform turnamen esports terpercaya di Indonesia, menghubungkan pemain dengan kompetisi berkualitas.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" class="social-link">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fab fa-discord"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Menu Utama</h4>
+                    <ul>
+                        <li><a href="#home">Beranda</a></li>
+                        <li><a href="#tournament">Turnamen</a></li>
+                        <li><a href="#form">Pendaftaran</a></li>
+                        <li><a href="#contact">Kontak</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Informasi</h4>
+                    <ul>
+                        <li><a href="#">Rulebook</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Sponsorship</a></li>
+                        <li><a href="#">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Kontak Panitia</h4>
+                    <ul>
+                        <li><i class="fas fa-phone" style="margin-right: 10px; color: var(--primary);"></i> +62 889-9173-4780</li>
+                        <li><i class="fas fa-envelope" style="margin-right: 10px; color: var(--primary);"></i> admin@scrimbase.id</li>
+                        <li><i class="fas fa-map-marker-alt" style="margin-right: 10px; color: var(--primary);"></i> Indonesia</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2025 SCRIMBASE ID. All rights reserved. | Designed with <i class="fas fa-heart" style="color: var(--accent);"></i> by Wrahtt55</p>
+            </div>
+        </div>
     </footer>
 
+    <!-- Modal -->
+    <div class="modal" id="contactModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeModal">&times;</button>
+            <div class="modal-header">
+                <h3>Hubungi Panitia</h3>
+            </div>
+            <div class="modal-body">
+                <div class="modal-options">
+                    <a href="https://wa.me/6288991734780" target="_blank" class="modal-option">
+                        <div class="option-icon">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                        <div>
+                            <h4>WhatsApp Admin</h4>
+                            <p>+62 889-9173-4780</p>
+                        </div>
+                    </a>
+                    
+                    <a href="https://chat.whatsapp.com/L83TmNagTRBJIvvVyiUGAl" target="_blank" class="modal-option">
+                        <div class="option-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div>
+                            <h4>Grup WhatsApp</h4>
+                            <p>Bergabung dengan komunitas</p>
+                        </div>
+                    </a>
+                    
+                    <a href="mailto:admin@scrimbase.id" class="modal-option">
+                        <div class="option-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div>
+                            <h4>Email Panitia</h4>
+                            <p>admin@scrimbase.id</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Sistem Tab Navigation
-        const tabBtns = document.querySelectorAll('.tab-btn');
-        const tabContents = document.querySelectorAll('.tab-content');
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const mainNav = document.querySelector('.main-nav');
         
-        tabBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const tabId = btn.getAttribute('data-tab');
-                
-                // Hapus class active dari semua tab
-                tabBtns.forEach(b => b.classList.remove('active'));
-                tabContents.forEach(c => c.classList.remove('active'));
-                
-                // Tambah class active ke tab yang diklik
-                btn.classList.add('active');
-                document.getElementById(tabId).classList.add('active');
-                
-                // Scroll ke atas jika tab form diklik
-                if (tabId === 'form') {
-                    setTimeout(() => {
-                        document.querySelector('#form-section').scrollIntoView({ behavior: 'smooth' });
-                    }, 100);
-                }
-            });
+        mobileMenuBtn.addEventListener('click', () => {
+            mainNav.classList.toggle('active');
+            mobileMenuBtn.innerHTML = mainNav.classList.contains('active') 
+                ? '<i class="fas fa-times"></i>' 
+                : '<i class="fas fa-bars"></i>';
         });
         
-        // Modal untuk WhatsApp
-        const joinGroupBtn = document.getElementById('joinGroupBtn');
-        const waBubble = document.getElementById('waBubble');
-        const groupModal = document.getElementById('groupModal');
-        const closeModal = document.getElementById('closeModal');
-        
-        joinGroupBtn.addEventListener('click', function() {
-            groupModal.style.display = 'flex';
-        });
-        
-        waBubble.addEventListener('click', function() {
-            groupModal.style.display = 'flex';
-        });
-        
-        closeModal.addEventListener('click', function() {
-            groupModal.style.display = 'none';
-        });
-        
-        window.addEventListener('click', function(event) {
-            if (event.target === groupModal) {
-                groupModal.style.display = 'none';
-            }
-        });
-        
-        // Smooth scroll ke formulir
-        document.querySelectorAll('a[href^="#form-section"]').forEach(anchor => {
+        // Smooth Scroll for Navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();
                 
-                // Aktifkan tab form terlebih dahulu
-                tabBtns.forEach(b => b.classList.remove('active'));
-                tabContents.forEach(c => c.classList.remove('active'));
+                const targetId = this.getAttribute('href');
+                if(targetId === '#') return;
                 
-                document.querySelector('[data-tab="form"]').classList.add('active');
-                document.getElementById('form').classList.add('active');
-                
-                setTimeout(() => {
-                    document.querySelector(this.getAttribute('href')).scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
+                const targetElement = document.querySelector(targetId);
+                if(targetElement) {
+                    // Update active nav link
+                    document.querySelectorAll('.nav-link').forEach(link => {
+                        link.classList.remove('active');
                     });
-                }, 100);
-            });
-        });
-        
-        // Animasi untuk elemen kontak
-        const contactItems = document.querySelectorAll('.contact-item');
-        contactItems.forEach((item, index) => {
-            item.style.opacity = '0';
-            item.style.transform = 'translateX(-20px)';
-            
-            setTimeout(() => {
-                item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                item.style.opacity = '1';
-                item.style.transform = 'translateX(0)';
-            }, 300 + (index * 100));
-        });
-        
-        // Fungsi untuk load more teams (simulasi)
-        function loadMoreTeams() {
-            alert('Fitur "Tampilkan Lebih Banyak Team" akan menampilkan daftar team lengkap. Ini adalah simulasi untuk demo.');
-        }
-        
-        // Auto-refresh leaderboard setiap 30 detik (simulasi)
-        setInterval(() => {
-            const points = document.querySelectorAll('.leaderboard-table td:nth-child(6)');
-            points.forEach(point => {
-                const currentPoint = parseInt(point.textContent);
-                // Simulasi perubahan point kecil secara acak
-                if (Math.random() > 0.7) {
-                    const change = Math.floor(Math.random() * 3) - 1; // -1, 0, atau 1
-                    if (currentPoint + change >= 0) {
-                        point.textContent = currentPoint + change;
+                    this.classList.add('active');
+                    
+                    // Close mobile menu if open
+                    if(mainNav.classList.contains('active')) {
+                        mainNav.classList.remove('active');
+                        mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
                     }
+                    
+                    // Smooth scroll to target
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
                 }
             });
-        }, 30000);
+        });
+        
+        // Modal Handling
+        const whatsappBtn = document.getElementById('whatsappBtn');
+        const groupBtn = document.getElementById('groupBtn');
+        const contactModal = document.getElementById('contactModal');
+        const closeModalBtn = document.getElementById('closeModal');
+        
+        whatsappBtn.addEventListener('click', () => {
+            contactModal.style.display = 'flex';
+        });
+        
+        groupBtn.addEventListener('click', () => {
+            contactModal.style.display = 'flex';
+        });
+        
+        closeModalBtn.addEventListener('click', () => {
+            contactModal.style.display = 'none';
+        });
+        
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            if(e.target === contactModal) {
+                contactModal.style.display = 'none';
+            }
+        });
+        
+        // Animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    entry.target.classList.add('animate-fade-in-up');
+                }
+            });
+        }, observerOptions);
+        
+        // Observe elements for animation
+        document.querySelectorAll('.info-card, .stat-item, .form-container, .contact-info, .contact-actions').forEach(el => {
+            observer.observe(el);
+        });
+        
+        // Update active nav link on scroll
+        window.addEventListener('scroll', () => {
+            let current = '';
+            const sections = document.querySelectorAll('section');
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if(pageYOffset >= sectionTop - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if(link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+        
+        // Form height adjustment for mobile
+        function adjustFormHeight() {
+            const formFrame = document.querySelector('.form-frame');
+            if(window.innerWidth < 768) {
+                formFrame.style.height = '500px';
+            } else {
+                formFrame.style.height = '700px';
+            }
+        }
+        
+        window.addEventListener('load', adjustFormHeight);
+        window.addEventListener('resize', adjustFormHeight);
     </script>
 </body>
 </html>
