@@ -1,52 +1,422 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-  <title>Admin Panel</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel · Members</title>
+  <!-- Font Inter (modern, clean) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet">
+  <!-- Font Awesome 6 (free icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: #f5f7fb;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+      color: #1e293b;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 28px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 4px 12px 0 rgba(0, 0, 0, 0.03);
+      width: 100%;
+      max-width: 1100px;
+      padding: 2rem 2rem 2.5rem 2rem;
+      transition: all 0.2s ease;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2.2rem;
+      border-bottom: 1.5px solid #eef2f6;
+      padding-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .header-icon {
+      background: #0a2c3d;
+      color: white;
+      width: 52px;
+      height: 52px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.7rem;
+      box-shadow: 0 12px 18px -8px rgba(10, 44, 61, 0.25);
+    }
+
+    .header-text h2 {
+      font-weight: 600;
+      font-size: 1.9rem;
+      letter-spacing: -0.02em;
+      color: #0b1e2b;
+      line-height: 1.2;
+    }
+
+    .header-text p {
+      font-size: 0.95rem;
+      color: #5e6f88;
+      margin-top: 4px;
+      font-weight: 400;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .header-text p i {
+      font-size: 0.8rem;
+      color: #3b82f6;
+    }
+
+    .stat-badge {
+      margin-left: auto;
+      background: #f0f4fe;
+      padding: 0.5rem 1.4rem;
+      border-radius: 60px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #1f4f8a;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: inset 0 0 0 1px rgba(59,130,246,0.15);
+    }
+
+    .stat-badge i {
+      font-size: 1rem;
+      color: #2563eb;
+    }
+
+    /* table container with soft scroll on mobile */
+    .table-wrapper {
+      border-radius: 20px;
+      background: #f9fbfd;
+      border: 1px solid #eaf0f5;
+      overflow-x: auto;
+      box-shadow: 0 4px 14px rgba(0, 20, 30, 0.02);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.98rem;
+      min-width: 560px;
+    }
+
+    th {
+      text-align: left;
+      padding: 1.2rem 1.5rem 0.9rem 1.8rem;
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #4a607a;
+      background: transparent;
+      border-bottom: 1.5px solid #dde5ed;
+    }
+
+    td {
+      padding: 1.1rem 1.5rem 1.1rem 1.8rem;
+      border-bottom: 1px solid #e8edf3;
+      color: #1f344b;
+      font-weight: 450;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr {
+      transition: background 0.15s ease;
+    }
+
+    tbody tr:hover {
+      background: #ffffff;
+      box-shadow: 0 2px 10px rgba(0,30,50,0.04);
+    }
+
+    /* subtle icon decoration per cell */
+    td:first-child {
+      font-weight: 500;
+      color: #0c2b3e;
+    }
+
+    td:nth-child(2) {
+      font-feature-settings: "tnum";
+    }
+
+    td:nth-child(3) {
+      color: #255f8c;
+    }
+
+    /* regional chip style */
+    .regional-chip {
+      background: #e6edf6;
+      padding: 0.3rem 1rem;
+      border-radius: 30px;
+      display: inline-block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #194a6a;
+      transition: all 0.1s;
+      border: 1px solid transparent;
+    }
+
+    .regional-chip:hover {
+      background: #d4e2f2;
+      border-color: #b6cee8;
+    }
+
+    /* empty & loading state */
+    .empty-row td {
+      padding: 3rem 1.5rem;
+      text-align: center;
+      color: #6e8aa8;
+      font-style: italic;
+      background: #f8fafd;
+    }
+
+    .loader {
+      display: flex;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .loader i {
+      font-size: 2rem;
+      color: #b6cfe5;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* subtle footer note */
+    .footer-note {
+      margin-top: 1.8rem;
+      text-align: right;
+      font-size: 0.8rem;
+      color: #8a9bb0;
+      border-top: 1px dashed #dce5ef;
+      padding-top: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-note span i {
+      color: #568fc2;
+      margin: 0 4px;
+    }
+
+    .refresh-btn {
+      background: none;
+      border: none;
+      color: #4570a2;
+      font-size: 0.9rem;
+      cursor: pointer;
+      padding: 0.4rem 1rem;
+      border-radius: 40px;
+      background: #edf3fa;
+      transition: 0.15s;
+      font-weight: 500;
+    }
+
+    .refresh-btn:hover {
+      background: #dde9f7;
+      color: #143650;
+    }
+
+    .refresh-btn i {
+      margin-right: 5px;
+    }
+
+    /* mobile fine-tune */
+    @media (max-width: 600px) {
+      body { padding: 1rem; }
+      .card { padding: 1.5rem 1rem; }
+      .header-text h2 { font-size: 1.6rem; }
+      .stat-badge { padding: 0.3rem 1rem; }
+    }
+
+    /* subtle skeleton / animation when data loads */
+    #dataBody {
+      transition: opacity 0.2s;
+    }
+  </style>
 </head>
 <body>
 
-<h2>Data Members</h2>
-<table border="1" cellpadding="8">
-  <thead>
-    <tr>
-      <th>Nama</th>
-      <th>WhatsApp</th>
-      <th>Regional</th>
-    </tr>
-  </thead>
-  <tbody id="dataBody"></tbody>
-</table>
+<div class="card">
+  <div class="header">
+    <div class="header-icon">
+      <i class="fas fa-users"></i>
+    </div>
+    <div class="header-text">
+      <h2>Data members</h2>
+      <p><i class="fas fa-circle" style="font-size: 0.45rem; vertical-align: middle;"></i> Daftar terintegrasi · Supabase</p>
+    </div>
+    <div class="stat-badge" id="countBadge">
+      <i class="fas fa-database"></i>
+      <span id="memberCount">0</span> anggota
+    </div>
+  </div>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th><i class="far fa-user" style="margin-right: 8px; opacity: 0.6;"></i>Nama</th>
+          <th><i class="fab fa-whatsapp" style="margin-right: 8px; color: #2b9c5c;"></i>WhatsApp</th>
+          <th><i class="far fa-map" style="margin-right: 8px; opacity: 0.6;"></i>Regional</th>
+        </tr>
+      </thead>
+      <tbody id="dataBody">
+        <!-- will be filled by js, show loading state -->
+        <tr class="empty-row loader-row">
+          <td colspan="3" style="text-align: center; padding: 2.8rem;">
+            <div class="loader">
+              <i class="fas fa-spinner"></i>
+            </div>
+            <span style="display: block; margin-top: 8px; color: #577a9e;">memuat data ...</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer-note">
+    <span>
+      <i class="far fa-clock"></i> realtime · <span id="timeStamp">just now</span>
+    </span>
+    <button class="refresh-btn" id="refreshBtn"><i class="fas fa-sync-alt"></i> refresh</button>
+  </div>
+</div>
 
 <script>
-const SUPABASE_URL = "https://qmztezephjegpbqxnoua.supabase.co";
-const SUPABASE_KEY = "sb_publishable_KKd9NpwbUguNPS7bcEsrBQ_ox_xEcof";
+  (function() {
+    // ------ konfigurasi (aman, menggunakan key publishable) -----
+    const SUPABASE_URL = "https://qmztezephjegpbqxnoua.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_KKd9NpwbUguNPS7bcEsrBQ_ox_xEcof";
 
-async function loadData() {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/members?select=*`, {
-    headers: {
-      'apikey': SUPABASE_KEY,
-      'Authorization': `Bearer ${SUPABASE_KEY}`
+    const tbody = document.getElementById("dataBody");
+    const memberCountSpan = document.getElementById("memberCount");
+    const refreshBtn = document.getElementById("refreshBtn");
+    const timeStampSpan = document.getElementById("timeStamp");
+
+    // helper: update timestamp
+    function updateTimestamp() {
+      const now = new Date();
+      const formatted = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second:'2-digit' });
+      timeStampSpan.textContent = formatted;
     }
-  });
 
-  const data = await res.json();
+    // fungsi load data (async)
+    async function loadData() {
+      // tampilkan skeleton / loading state
+      tbody.innerHTML = `
+        <tr class="empty-row loader-row">
+          <td colspan="3" style="text-align: center; padding: 2.8rem;">
+            <div class="loader">
+              <i class="fas fa-spinner"></i>
+            </div>
+            <span style="display: block; margin-top: 8px; color: #577a9e;">memperbarui data ...</span>
+          </td>
+        </tr>
+      `;
 
-  const tbody = document.getElementById("dataBody");
-  tbody.innerHTML = "";
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/members?select=*`, {
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`
+          }
+        });
 
-  data.forEach(item => {
-    tbody.innerHTML += `
-      <tr>
-        <td>${item.nama}</td>
-        <td>${item.whatsapp}</td>
-        <td>${item.regional}</td>
-      </tr>
-    `;
-  });
-}
+        if (!res.ok) {
+          throw new Error(`HTTP error ${res.status}`);
+        }
 
-loadData();
+        const data = await res.json();
+        console.log('data members:', data);
+
+        // bersihkan tbody
+        tbody.innerHTML = "";
+
+        if (!data || data.length === 0) {
+          // data kosong
+          tbody.innerHTML = `<tr class="empty-row"><td colspan="3" style="padding: 2.5rem;">📭 Belum ada data member.</td></tr>`;
+          memberCountSpan.innerText = '0';
+        } else {
+          // loop data dan gunakan innerHTML (lebih ringan, atau bisa pakai createElement)
+          data.forEach(item => {
+            // sanitasi sederhana untuk menghindari XSS — karena teks biasa, cukup safe, namun kita paksa string
+            const nama = item.nama ? String(item.nama) : '-';
+            const whatsapp = item.whatsapp ? String(item.whatsapp) : '-';
+            const regional = item.regional ? String(item.regional) : '-';
+
+            // Tambahkan baris
+            tbody.innerHTML += `
+              <tr>
+                <td><span style="display: flex; align-items: center; gap: 8px;"><i class="fas fa-user-circle" style="color: #3579a0; font-size: 1.1rem;"></i> ${nama}</span></td>
+                <td>
+                  <span style="display: flex; align-items: center; gap: 6px;">
+                    <i class="fab fa-whatsapp" style="color: #1ebea5; font-size: 1rem;"></i>
+                    ${whatsapp}
+                  </span>
+                </td>
+                <td><span class="regional-chip"><i class="far fa-compass" style="margin-right: 6px;"></i>${regional}</span></td>
+              </tr>
+            `;
+          });
+          memberCountSpan.innerText = data.length;
+        }
+
+        updateTimestamp();
+
+      } catch (error) {
+        console.warn('gagal fetch data', error);
+        tbody.innerHTML = `<tr class="empty-row"><td colspan="3" style="padding: 2.5rem; color:#b13e3e;">⚠️ Gagal memuat data. Periksa koneksi atau CORS.</td></tr>`;
+        memberCountSpan.innerText = '?';
+        updateTimestamp(); // tetap perbarui waktu percobaan
+      }
+    }
+
+    // Load awal
+    loadData();
+    updateTimestamp(); // inisial timestamp
+
+    // event refresh
+    refreshBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      loadData();
+    });
+
+    // optional: auto refresh every 30 detik? tidak, biar manual.
+    // tapi kita kasih opsi, kalau mau bisa uncomment
+    // setInterval(loadData, 30000);
+
+  })();
 </script>
 
+<!-- small extra untuk menampilkan regional chip interaktif, sudah di atas -->
 </body>
 </html>
