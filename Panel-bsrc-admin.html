@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Panel</title>
+</head>
+<body>
+
+<h2>Data Members</h2>
+<table border="1" cellpadding="8">
+  <thead>
+    <tr>
+      <th>Nama</th>
+      <th>WhatsApp</th>
+      <th>Regional</th>
+    </tr>
+  </thead>
+  <tbody id="dataBody"></tbody>
+</table>
+
+<script>
+const SUPABASE_URL = "https://qmztezephjegpbqxnoua.supabase.co";
+const SUPABASE_KEY = "sb_publishable_KKd9NpwbUguNPS7bcEsrBQ_ox_xEcof";
+
+async function loadData() {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/members?select=*`, {
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`
+    }
+  });
+
+  const data = await res.json();
+
+  const tbody = document.getElementById("dataBody");
+  tbody.innerHTML = "";
+
+  data.forEach(item => {
+    tbody.innerHTML += `
+      <tr>
+        <td>${item.nama}</td>
+        <td>${item.whatsapp}</td>
+        <td>${item.regional}</td>
+      </tr>
+    `;
+  });
+}
+
+loadData();
+</script>
+
+</body>
+</html>
