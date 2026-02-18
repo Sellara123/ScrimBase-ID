@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daftar Komunitas · GameVerse</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at 10% 20%, #1a1f2e, #0c0f17 90%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      position: relative;
+    }
+
+    /* gaming grid overlay */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(0, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .card {
+      background: rgba(18, 22, 36, 0.85);
+      backdrop-filter: blur(14px) saturate(180%);
+      -webkit-backdrop-filter: blur(14px) saturate(180%);
+      border: 1px solid rgba(0, 255, 255, 0.25);
+      border-radius: 2.5rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(0, 255, 255, 0.2) inset, 0 0 30px rgba(0, 180, 255, 0.3);
+      padding: 2.5rem 2.2rem;
+      width: 100%;
+      max-width: 500px;
+      z-index: 10;
+      transition: transform 0.25s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 25px 50px rgba(0, 200, 255, 0.3), 0 0 0 2px rgba(0, 255, 255, 0.4) inset;
+    }
+
+    h1 {
+      color: #a0f2ff;
+      font-weight: 600;
+      font-size: 2.2rem;
+      letter-spacing: 1px;
+      text-shadow: 0 0 10px #0ff, 0 0 25px #00ccff;
+      margin-bottom: 0.35rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    h1 span {
+      font-size: 2rem;
+      filter: drop-shadow(0 0 6px cyan);
+    }
+
+    .subhead {
+      color: #b0d4f0;
+      margin-bottom: 2rem;
+      font-size: 0.95rem;
+      border-left: 4px solid #0ff;
+      padding-left: 1rem;
+      background: linear-gradient(90deg, rgba(0,255,255,0.1), transparent);
+    }
+
+    .input-group {
+      margin-bottom: 1.8rem;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #b2f0ff;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      letter-spacing: 0.5px;
+    }
+
+    label i {
+      color: #0ff;
+      font-style: normal;
+      font-size: 1.2rem;
+    }
+
+    input, select {
+      width: 100%;
+      background: rgba(8, 12, 24, 0.7);
+      border: 1px solid #2c3b5a;
+      border-radius: 40px;
+      padding: 1rem 1.5rem;
+      font-size: 1rem;
+      color: #eaf4ff;
+      outline: none;
+      transition: all 0.25s;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
+
+    input:focus, select:focus {
+      border-color: #0ff;
+      box-shadow: 0 0 12px #0ff, 0 4px 12px rgba(0, 255, 255, 0.3);
+      background: rgba(8, 12, 24, 0.9);
+    }
+
+    input::placeholder {
+      color: #6b7f9f;
+      font-weight: 300;
+    }
+
+    /* validasi visual styling */
+    input.error, select.error {
+      border-color: #ff4d7d;
+      box-shadow: 0 0 8px #ff3b6f;
+    }
+
+    .btn {
+      width: 100%;
+      background: linear-gradient(145deg, #00d4ff, #0077ff);
+      border: none;
+      border-radius: 60px;
+      padding: 1rem 1.8rem;
+      font-size: 1.3rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #0c0f1a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      cursor: pointer;
+      box-shadow: 0 8px 0 #002a5c, 0 10px 20px rgba(0, 255, 255, 0.4);
+      transition: all 0.1s ease-out;
+      margin-top: 0.5rem;
+      border: 1px solid rgba(255,255,255,0.3);
+      position: relative;
+    }
+
+    .btn:active {
+      transform: translateY(6px);
+      box-shadow: 0 2px 0 #002a5c, 0 8px 20px cyan;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      filter: grayscale(60%);
+      transform: translateY(4px);
+      box-shadow: 0 4px 0 #002a5c;
+      pointer-events: none;
+    }
+
+    .spinner {
+      width: 22px;
+      height: 22px;
+      border: 3px solid rgba(0, 30, 60, 0.6);
+      border-top: 3px solid white;
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+      display: inline-block;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .footer-note {
+      text-align: center;
+      color: #5f7a9f;
+      font-size: 0.75rem;
+      margin-top: 1.8rem;
+      border-top: 1px dashed #2f4160;
+      padding-top: 1rem;
+    }
+
+    .footer-note strong {
+      color: #6cc5ff;
+    }
+
+    /* responsive */
+    @media (max-width: 480px) {
+      .card {
+        padding: 2rem 1.5rem;
+        border-radius: 2rem;
+      }
+      h1 {
+        font-size: 1.8rem;
+      }
+      .btn {
+        font-size: 1.1rem;
+      }
+    }
+
+    /* icon inline kecil */
+    .icon {
+      filter: drop-shadow(0 0 5px cyan);
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>
+      <span>⌨️</span> JOIN CLAN
+    </h1>
+    <div class="subhead">isi data — langsung terhubung ke regional</div>
+
+    <form id="registrationForm">
+      <div class="input-group">
+        <label><i>👤</i> NAMA LENGKAP</label>
+        <input type="text" id="nama" placeholder="e.g., Joko Susilo" autocomplete="off" />
+      </div>
+
+      <div class="input-group">
+        <label><i>📱</i> NOMOR WHATSAPP</label>
+        <input type="tel" id="whatsapp" placeholder="628123456789 (hanya angka)" inputmode="numeric" />
+      </div>
+
+      <div class="input-group">
+        <label><i>📍</i> REGIONAL</label>
+        <select id="regional">
+          <option value="" disabled selected>— pilih wilayah —</option>
+          <option value="Sidoarjo">Sidoarjo</option>
+          <option value="Tangerang">Tangerang</option>
+          <option value="Bandung">Bandung</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn" id="submitBtn">
+        <span>🚀</span> DAFTAR SEKARANG <span>⚡</span>
+      </button>
+      <div class="footer-note">
+        <strong>✦ gaming access ✦</strong> — akan redirect otomatis
+      </div>
+    </form>
+  </div>
+
+  <script>
+    (function() {
+      // ========== KONFIGURASI SUPABASE (GANTI DENGAN MILIK ANDA) ==========
+      const SUPABASE_URL = 'https://qmztezephjegpbqxnoua.supabase.co';      // ganti
+      const SUPABASE_KEY = 'sb_publishable_KKd9NpwbUguNPS7bcEsrBQ_ox_xEcof';              // ganti dengan anon key
+      const TABLE_NAME = 'members';
+
+      // Mapping redirect
+      const REGIONAL_LINKS = {
+        'Sidoarjo': 'https://chat.whatsapp.com/link_sidoarjo',
+        'Tangerang': 'https://chat.whatsapp.com/link_tangerang',
+        'Bandung': 'https://chat.whatsapp.com/link_bandung'
+      };
+
+      // Elemen DOM
+      const form = document.getElementById('registrationForm');
+      const namaInput = document.getElementById('nama');
+      const waInput = document.getElementById('whatsapp');
+      const regionalSelect = document.getElementById('regional');
+      const submitBtn = document.getElementById('submitBtn');
+
+      // Utility hapus class error
+      const removeErrorClass = (el) => el.classList.remove('error');
+
+      // Validasi nomor WA (hanya angka, minimal 8 digit)
+      function isValidWhatsApp(number) {
+        const numericRegex = /^\d+$/;            // hanya digit
+        return number.length >= 8 && numericRegex.test(number);
+      }
+
+      // Validasi form (return boolean)
+      function validateForm() {
+        let isValid = true;
+
+        // Reset error class
+        [namaInput, waInput, regionalSelect].forEach(el => el.classList.remove('error'));
+
+        // Nama
+        if (!namaInput.value.trim()) {
+          namaInput.classList.add('error');
+          isValid = false;
+        }
+
+        // WA
+        const waValue = waInput.value.trim();
+        if (!waValue || !isValidWhatsApp(waValue)) {
+          waInput.classList.add('error');
+          isValid = false;
+        }
+
+        // Regional
+        if (!regionalSelect.value) {
+          regionalSelect.classList.add('error');
+          isValid = false;
+        }
+
+        return isValid;
+      }
+
+      // Tampilkan loading state
+      function setLoading(isLoading) {
+        if (isLoading) {
+          submitBtn.disabled = true;
+          // simpan konten asli, ganti dengan spinner
+          submitBtn.dataset.defaultHtml = submitBtn.innerHTML;
+          submitBtn.innerHTML = `<span class="spinner"></span>  MENGIRIM  <span class="spinner"></span>`;
+        } else {
+          submitBtn.disabled = false;
+          if (submitBtn.dataset.defaultHtml) {
+            submitBtn.innerHTML = submitBtn.dataset.defaultHtml;
+          } else {
+            // fallback
+            submitBtn.innerHTML = `<span>🚀</span> DAFTAR SEKARANG <span>⚡</span>`;
+          }
+        }
+      }
+
+      // Handler submit
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // validasi klien
+        if (!validateForm()) {
+          alert('❌ Isi semua field dengan benar.\n• Nama harus diisi\n• Nomor WA minimal 8 digit angka\n• Pilih regional');
+          return;
+        }
+
+        // Ambil value
+        const nama = namaInput.value.trim();
+        const whatsapp = waInput.value.trim();  // sudah dipastikan angka
+        const regional = regionalSelect.value;
+
+        // Siapkan payload
+        const payload = {
+          nama: nama,
+          whatsapp: whatsapp,
+          regional: regional
+          // created_at dikelola default di supabase
+        };
+
+        // Disable tombol + spinner
+        setLoading(true);
+
+        try {
+          // ========== KIRIM KE SUPABASE ==========
+          const response = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE_NAME}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'apikey': SUPABASE_KEY,
+              'Authorization': `Bearer ${SUPABASE_KEY}`  // untuk RLS policy (public) tetap diperlukan header ini
+            },
+            body: JSON.stringify(payload)
+          });
+
+          if (!response.ok) {
+            // coba baca error detail
+            let errorMsg = `Gagal menyimpan (HTTP ${response.status})`;
+            try {
+              const errData = await response.json();
+              errorMsg += `: ${errData.message || JSON.stringify(errData)}`;
+            } catch (parseErr) {}
+            throw new Error(errorMsg);
+          }
+
+          // SUKSES → redirect sesuai regional
+          const targetUrl = REGIONAL_LINKS[regional];
+          if (targetUrl) {
+            window.location.href = targetUrl;   // pindah langsung
+          } else {
+            // fallback (seharusnya tidak terjadi)
+            alert(`Regional tidak dikenali, tapi data tersimpan.`);
+          }
+        } catch (error) {
+          console.error('Supabase error:', error);
+          alert(`❌ Gagal mengirim data:\n${error.message || 'unknown error'}`);
+          setLoading(false);   // hanya aktifkan ulang jika gagal
+        }
+        // kalau sukses redirect, eksekusi berhenti. tak perlu setLoading(false)
+      });
+
+      // Hapus error class saat user mengetik / ganti opsi (UX tambahan)
+      namaInput.addEventListener('input', () => removeErrorClass(namaInput));
+      waInput.addEventListener('input', () => removeErrorClass(waInput));
+      regionalSelect.addEventListener('change', () => removeErrorClass(regionalSelect));
+
+      // validasi WA saat input: hanya angka yang diperbolehkan
+      waInput.addEventListener('input', (e) => {
+        let val = e.target.value;
+        // buang semua non-digit
+        val = val.replace(/\D/g, '');
+        e.target.value = val;
+      });
+
+      // Bonus: hilangkan error jika awalnya error lalu diperbaiki oleh validasi di atas
+    })();
+  </script>
+</body>
+</html>
