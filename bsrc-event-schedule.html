@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BSRC - Bloodstrike Regional Community</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --deep-purple: #1a0b2e;
+            --dark-purple: #2d1b4a;
+            --medium-purple: #6b3fa0;
+            --light-purple: #9f7aea;
+            --accent-purple: #b794f4;
+            --glow-purple: rgba(155, 93, 229, 0.5);
+            --text-light: #ffffff;
+            --text-gray: #cbd5e0;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--deep-purple) 0%, var(--dark-purple) 100%);
+            color: var(--text-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(26, 11, 46, 0.8);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            border-bottom: 1px solid var(--light-purple);
+        }
+
+        .navbar.scrolled {
+            background: rgba(26, 11, 46, 0.95);
+            box-shadow: 0 2px 20px var(--glow-purple);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--light-purple), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px var(--glow-purple);
+            cursor: pointer;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: var(--light-purple);
+            margin: 3px 0;
+            transition: 0.3s;
+            border-radius: 5px;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-menu li a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-menu li a:hover {
+            color: var(--light-purple);
+            text-shadow: 0 0 10px var(--glow-purple);
+        }
+
+        .nav-menu li a.active {
+            color: var(--light-purple);
+            border-bottom: 2px solid var(--light-purple);
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: 2px solid var(--light-purple);
+            color: var(--light-purple);
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--light-purple);
+            color: var(--deep-purple);
+            box-shadow: 0 0 20px var(--glow-purple);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            background: radial-gradient(circle, var(--glow-purple) 0%, transparent 50%);
+            animation: rotate 30s linear infinite;
+            opacity: 0.3;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--light-purple), #d6bcfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px var(--glow-purple);
+        }
+
+        .hero-buttons {
+            margin-top: 2rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: inline-block;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn.primary {
+            background: var(--medium-purple);
+            color: white;
+            box-shadow: 0 0 20px var(--glow-purple);
+        }
+
+        .btn.primary:hover {
+            transform: translateY(-3px);
+            background: var(--light-purple);
+            box-shadow: 0 10px 30px var(--glow-purple);
+        }
+
+        .btn.secondary {
+            background: transparent;
+            border: 2px solid var(--light-purple);
+            color: var(--light-purple);
+        }
+
+        .btn.secondary:hover {
+            background: var(--light-purple);
+            color: var(--deep-purple);
+            transform: translateY(-3px);
+        }
+
+        /* Sections */
+        .section {
+            padding: 4rem 0;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, var(--light-purple), #d6bcfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: var(--light-purple);
+            box-shadow: 0 0 10px var(--glow-purple);
+        }
+
+        /* Cards */
+        .event-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .event-card {
+            background: rgba(45, 27, 74, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid var(--light-purple);
+            position: relative;
+        }
+
+        .event-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px var(--glow-purple);
+            border-color: var(--accent-purple);
+        }
+
+        .event-poster {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 2px solid var(--light-purple);
+        }
+
+        .event-info {
+            padding: 1.5rem;
+        }
+
+        .event-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 0.8rem;
+            color: var(--light-purple);
+        }
+
+        .event-badges {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge.online { 
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white; 
+        }
+        .badge.offline { 
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white; 
+        }
+        .badge.upcoming { 
+            background: linear-gradient(135deg, #f6d365, #fda085);
+            color: #2d3748; 
+        }
+        .badge.ongoing { 
+            background: linear-gradient(135deg, #84fab0, #8fd3f4);
+            color: #2d3748; 
+        }
+        .badge.completed { 
+            background: linear-gradient(135deg, #a8c0ff, #3f2b96);
+            color: white; 
+        }
+        .badge.registration { 
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            color: #2d3748;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .event-meta {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .event-meta p {
+            margin: 0.3rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .event-schedule {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 0.8rem;
+            margin: 1rem 0;
+            border: 1px solid var(--light-purple);
+        }
+
+        .schedule-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.3rem 0;
+            border-bottom: 1px dashed var(--light-purple);
+        }
+
+        .schedule-item:last-child {
+            border-bottom: none;
+        }
+
+        .schedule-time {
+            color: var(--light-purple);
+            font-weight: bold;
+        }
+
+        .schedule-activity {
+            color: var(--text-gray);
+        }
+
+        .event-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn-card {
+            flex: 1;
+            padding: 0.6rem;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--medium-purple), var(--light-purple));
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border: 1px solid var(--light-purple);
+        }
+
+        .btn-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px var(--glow-purple);
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            background: rgba(45, 27, 74, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+            border: 1px solid var(--light-purple);
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 250px;
+            padding: 0.8rem 1rem;
+            border: 2px solid var(--light-purple);
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 0 20px var(--glow-purple);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-gray);
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--light-purple);
+            background: transparent;
+            color: var(--text-light);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--light-purple);
+            color: var(--deep-purple);
+            box-shadow: 0 0 15px var(--glow-purple);
+        }
+
+        /* Detail Page */
+        .detail-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            background: rgba(45, 27, 74, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 3rem;
+            border: 2px solid var(--light-purple);
+            box-shadow: 0 0 50px var(--glow-purple);
+        }
+
+        .detail-poster {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            border-radius: 20px;
+            border: 2px solid var(--light-purple);
+            box-shadow: 0 0 30px var(--glow-purple);
+        }
+
+        .detail-info h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--light-purple), #d6bcfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .detail-description {
+            margin: 2rem 0;
+            line-height: 1.8;
+            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            border-left: 4px solid var(--light-purple);
+        }
+
+        .schedule-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border: 1px solid var(--light-purple);
+        }
+
+        .schedule-card h3 {
+            color: var(--light-purple);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .schedule-grid {
+            display: grid;
+            gap: 0.8rem;
+        }
+
+        .schedule-row {
+            display: grid;
+            grid-template-columns: 100px 1fr;
+            gap: 1rem;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            align-items: center;
+        }
+
+        .schedule-time {
+            color: var(--light-purple);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .schedule-desc {
+            color: var(--text-gray);
+        }
+
+        .countdown {
+            display: flex;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .countdown-item {
+            background: rgba(155, 93, 229, 0.2);
+            border-radius: 15px;
+            padding: 1.2rem;
+            text-align: center;
+            min-width: 90px;
+            border: 2px solid var(--light-purple);
+            backdrop-filter: blur(5px);
+        }
+
+        .countdown-number {
+            font-size: 2.2rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--light-purple), #d6bcfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+        }
+
+        .countdown-label {
+            font-size: 0.8rem;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-large {
+            width: 100%;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--medium-purple), var(--light-purple));
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: 1px solid var(--light-purple);
+        }
+
+        .btn-large:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px var(--glow-purple);
+        }
+
+        /* Stats Section */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .stat-card {
+            background: rgba(45, 27, 74, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid var(--light-purple);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px var(--glow-purple);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--light-purple), #d6bcfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(26, 11, 46, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 4rem 0 1rem;
+            margin-top: 4rem;
+            border-top: 2px solid var(--light-purple);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-section h3,
+        .footer-section h4 {
+            background: linear-gradient(135deg, var(--light-purple), #d6bcfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .footer-section a {
+            color: var(--text-gray);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .footer-section a:hover {
+            color: var(--light-purple);
+            text-shadow: 0 0 10px var(--glow-purple);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid var(--light-purple);
+            color: var(--text-gray);
+        }
+
+        /* Loading Animation */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--light-purple);
+            font-size: 1.2rem;
+            animation: pulse 1.5s ease infinite;
+        }
+
+        /* Scroll Reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, var(--dark-purple), var(--deep-purple));
+            padding: 2.5rem;
+            border-radius: 30px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            border: 2px solid var(--light-purple);
+            box-shadow: 0 0 50px var(--glow-purple);
+            animation: modalPop 0.3s ease;
+        }
+
+        @keyframes modalPop {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-content h2 {
+            background: linear-gradient(135deg, var(--light-purple), #d6bcfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .modal-close {
+            background: transparent;
+            border: 1px solid var(--light-purple);
+            color: var(--light-purple);
+            padding: 0.5rem 2rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--light-purple);
+            color: var(--deep-purple);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-menu {
+                position: fixed;
+                left: -100%;
+                top: 0;
+                flex-direction: column;
+                background: var(--deep-purple);
+                width: 100%;
+                height: 100vh;
+                justify-content: center;
+                transition: 0.3s;
+                border-right: 2px solid var(--light-purple);
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .hero-content h1 {
+                font-size: 2.2rem;
+            }
+
+            .detail-container {
+                grid-template-columns: 1fr;
+                padding: 1.5rem;
+            }
+
+            .detail-poster {
+                height: 300px;
+            }
+
+            .countdown {
+                justify-content: center;
+            }
+
+            .filter-bar {
+                flex-direction: column;
+            }
+
+            .search-input {
+                width: 100%;
+            }
+
+            .filter-buttons {
+                justify-content: center;
+            }
+
+            .schedule-row {
+                grid-template-columns: 1fr;
+                gap: 0.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="logo" onclick="window.location='#'">⚡ BSRC</div>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#" class="nav-link active" data-page="home">Home</a></li>
+                <li><a href="#" class="nav-link" data-page="events">Events</a></li>
+                <li><a href="#" class="nav-link" data-page="upcoming">Upcoming</a></li>
+                <li><a href="#" class="nav-link" data-page="online">Online</a></li>
+                <li><a href="#" class="nav-link" data-page="offline">Offline</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+                <li><button class="nav-btn" onclick="showJoinModal()">Join Community</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="mainContent"></main>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>⚡ BSRC</h3>
+                    <p>Bloodstrike Regional Community</p>
+                    <p>Komunitas terbesar player Blood Strike se-Indonesia</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p>Discord: .gg/bsrc</p>
+                    <p>Instagram: @bsrc.official</p>
+                    <p>Email: info@bsrc.com</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <p><a href="#" onclick="changePage('home')">Home</a></p>
+                    <p><a href="#" onclick="changePage('events')">Events</a></p>
+                    <p><a href="#" onclick="changePage('upcoming')">Upcoming</a></p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 BSRC. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal Join -->
+    <div class="modal" id="joinModal" onclick="if(event.target===this) closeJoinModal()">
+        <div class="modal-content">
+            <h2>Join BSRC Community</h2>
+            <p style="margin-bottom: 2rem;">Gabung dan dapatkan informasi event terbaru!</p>
+            <div class="modal-buttons">
+                <button class="btn primary" onclick="window.open('https://discord.gg/bsrc', '_blank')">Discord</button>
+                <button class="btn secondary" onclick="window.open('https://instagram.com/bsrc.official', '_blank')">Instagram</button>
+            </div>
+            <button class="modal-close" onclick="closeJoinModal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // Data Events Lengkap dengan Jadwal
+        const events = [
+    {
+        id: "bloodstrike-tangerang-ramadan",
+        title: "Blood Strike Tangerang - Championship Season 2",
+        type: "Offline",
+        status: "registration",
+        date: "21 February 2026",
+        location: "Angkringan Tower Cipondoh, Tangerang",
+        poster: "https://via.placeholder.com/300x200/ff0000/ffffff?text=Blood+Strike+Tangerang",
+        description: "Tournament Offline + Berbagi Takjil Special Ramadan. Prizepool Rp 800.000 + E-Certificate + Merchandise.",
+        formLink: "https://bit.ly/DaftarBloodStrikeChampions",
+        schedule: [
+            { time: "17:00 WIB", activity: "Bagi-Bagi Takjil" },
+            { time: "18:30 WIB", activity: "Technical Meeting" },
+            { time: "19:00 WIB", activity: "Tournament Start" }
+        ]
+    },
+    {
+        id: "bloodstrike-surabaya-ramadan",
+        title: "Blood Strike Surabaya - Ngabuburit & Bagi Takjil",
+        type: "Offline",
+        status: "registration",
+        date: "28 February 2026",
+        location: "Pena Coffee & Roastery, Surabaya",
+        poster: "https://via.placeholder.com/300x200/14532d/ffffff?text=Blood+Strike+Surabaya",
+        description: "Event Ngabuburit, Bagi Takjil & Bukber bersama komunitas Blood Strike Surabaya.",
+        formLink: "https://kspro.my.id/BSC.SBY",
+        schedule: [
+            { time: "12:30 WIB", activity: "Open Gate & Registrasi" },
+            { time: "16:30 WIB", activity: "Bagi Takjil" },
+            { time: "18:00 WIB", activity: "Bukber & Community Gathering" }
+        ]
+    },
+    {
+        id: "bloodstrike-sidoarjo-gathering",
+        title: "Blood Strike Sidoarjo - Gathering Bukber & Tournament",
+        type: "Offline",
+        status: "registration",
+        date: "7 March 2026",
+        location: "House of Pinisi, Sukodono, Sidoarjo",
+        poster: "https://via.placeholder.com/300x200/6b21a8/ffffff?text=Blood+Strike+Sidoarjo",
+        description: "Gathering komunitas + Bukber & Bagi Takjil. Mix Platform - Battle Royal - Squad Player. Prizepool Rp 900.000.",
+        formLink: "https://bit.ly/GBBTCS",
+        schedule: [
+            { time: "14:00 WIB", activity: "Registrasi & Check-in" },
+            { time: "15:00 WIB", activity: "Match 1 - 3" },
+            { time: "17:30 WIB", activity: "Bagi Takjil" },
+            { time: "18:00 WIB", activity: "Bukber Bersama" },
+            { time: "19:00 WIB", activity: "Match Final & Pengumuman Pemenang" }
+        ]
+    },
+    {
+        id: "bloodstrike-semarang-upcoming",
+        title: "Blood Strike Semarang",
+        type: "Offline",
+        status: "upcoming",
+        date: "TBA",
+        location: "Semarang (Venue Soon)",
+        poster: "https://via.placeholder.com/300x200/1e3a8a/ffffff?text=Blood+Strike+Semarang",
+        description: "Upcoming Event Ramadan 2026 Blood Strike Semarang. Detail venue dan jadwal akan segera diumumkan.",
+        formLink: "#",
+        schedule: []
+    },
+    {
+        id: "bloodstrike-jakarta-upcoming",
+        title: "Blood Strike Jakarta",
+        type: "Offline",
+        status: "upcoming",
+        date: "TBA",
+        location: "Jakarta (Venue Soon)",
+        poster: "https://via.placeholder.com/300x200/0f172a/ffffff?text=Blood+Strike+Jakarta",
+        description: "Upcoming Event Ramadan 2026 Blood Strike Jakarta. Pantau terus info resmi untuk registrasi.",
+        formLink: "#",
+        schedule: []
+    }
+];
+
+        // State management
+        let currentPage = 'home';
+        let currentFilter = 'all';
+        let searchQuery = '';
+
+        // DOM Elements
+        const navbar = document.getElementById('navbar');
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.getElementById('navMenu');
+        const mainContent = document.getElementById('mainContent');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Hamburger menu
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+
+        // Close menu when clicking a link
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const page = link.dataset.page;
+                if (page) {
+                    changePage(page);
+                }
+                navMenu.classList.remove('active');
+                hamburger.classList.remove('active');
+            });
+        });
+
+        // Page changer
+        function changePage(page) {
+            currentPage = page;
+            
+            // Update active link
+            navLinks.forEach(link => {
+                if (link.dataset.page === page) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+
+            // Render page
+            if (page === 'home' || page === '#') {
+                renderHome();
+            } else if (page === 'events') {
+                currentFilter = 'all';
+                renderEvents();
+            } else if (page === 'upcoming') {
+                currentFilter = 'upcoming';
+                renderEvents();
+            } else if (page === 'online') {
+                currentFilter = 'online';
+                renderEvents();
+            } else if (page === 'offline') {
+                currentFilter = 'offline';
+                renderEvents();
+            }
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Render Home Page
+        function renderHome() {
+            // Statistik
+            const totalEvents = events.length;
+            const upcomingEvents = events.filter(e => e.status === 'upcoming' || e.status === 'registration').length;
+            const onlineEvents = events.filter(e => e.type === 'Online').length;
+            const offlineEvents = events.filter(e => e.type === 'Offline').length;
+
+            // Event untuk ditampilkan (ambil 4 event terbaru)
+            const latestEvents = events.slice(0, 4);
+
+            let html = `
+                <!-- Hero Section -->
+                <section class="hero">
+                    <div class="hero-content">
+                        <h1>BSRC 2026</h1>
+                        <p style="font-size: 1.2rem; margin-bottom: 1rem;">Bloodstrike Regional Community</p>
+                        <p style="max-width: 600px; margin: 0 auto;">Komunitas terbesar player Blood Strike se-Indonesia dengan berbagai event menarik setiap bulannya</p>
+                        <div class="hero-buttons">
+                            <button class="btn primary" onclick="changePage('events')">Lihat Events</button>
+                            <button class="btn secondary" onclick="changePage('upcoming')">Upcoming Event</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Stats Section -->
+                <section class="section">
+                    <div class="container">
+                        <div class="stats-grid">
+                            <div class="stat-card reveal">
+                                <div class="stat-number">${totalEvents}+</div>
+                                <div class="stat-label">Total Event</div>
+                            </div>
+                            <div class="stat-card reveal">
+                                <div class="stat-number">${upcomingEvents}</div>
+                                <div class="stat-label">Akan Datang</div>
+                            </div>
+                            <div class="stat-card reveal">
+                                <div class="stat-number">${onlineEvents}</div>
+                                <div class="stat-label">Event Online</div>
+                            </div>
+                            <div class="stat-card reveal">
+                                <div class="stat-number">${offlineEvents}</div>
+                                <div class="stat-label">Event Offline</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Event Terbaru -->
+                <section class="section">
+                    <div class="container">
+                        <h2 class="section-title">📅 Event Terbaru</h2>
+                        <div class="event-grid">
+            `;
+
+            latestEvents.forEach(event => {
+                html += createEventCard(event);
+            });
+
+            html += `
+                        </div>
+                        <div class="center-btn" style="text-align: center; margin-top: 3rem;">
+                            <button class="btn primary" onclick="changePage('events')">Lihat Semua Event</button>
+                        </div>
+                    </div>
+                </section>
+            `;
+
+            mainContent.innerHTML = html;
+            observeReveal();
+        }
+
+        // Render Events Page
+        function renderEvents() {
+            let filteredEvents = events;
+
+            // Apply filter
+            if (currentFilter === 'upcoming') {
+                filteredEvents = events.filter(e => e.status === 'upcoming' || e.status === 'registration');
+            } else if (currentFilter === 'online') {
+                filteredEvents = events.filter(e => e.type === 'Online');
+            } else if (currentFilter === 'offline') {
+                filteredEvents = events.filter(e => e.type === 'Offline');
+            } else if (currentFilter === 'ongoing') {
+                filteredEvents = events.filter(e => e.status === 'ongoing');
+            } else if (currentFilter === 'completed') {
+                filteredEvents = events.filter(e => e.status === 'completed');
+            }
+
+            // Apply search
+            if (searchQuery) {
+                filteredEvents = filteredEvents.filter(e => 
+                    e.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    e.location.toLowerCase().includes(searchQuery.toLowerCase())
+                );
+            }
+
+            let html = `
+                <section class="section">
+                    <div class="container">
+                        <h1 style="font-size: 3rem; text-align: center; margin: 2rem 0; background: linear-gradient(135deg, var(--light-purple), #d6bcfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Semua Event</h1>
+                        
+                        <div class="filter-bar">
+                            <input type="text" id="searchInput" placeholder="Cari event..." class="search-input" value="${searchQuery}">
+                            <div class="filter-buttons">
+                                <button class="filter-btn ${currentFilter === 'all' ? 'active' : ''}" data-filter="all">All</button>
+                                <button class="filter-btn ${currentFilter === 'upcoming' ? 'active' : ''}" data-filter="upcoming">Akan Datang</button>
+                                <button class="filter-btn ${currentFilter === 'ongoing' ? 'active' : ''}" data-filter="ongoing">Berlangsung</button>
+                                <button class="filter-btn ${currentFilter === 'completed' ? 'active' : ''}" data-filter="completed">Selesai</button>
+                                <button class="filter-btn ${currentFilter === 'online' ? 'active' : ''}" data-filter="online">Online</button>
+                                <button class="filter-btn ${currentFilter === 'offline' ? 'active' : ''}" data-filter="offline">Offline</button>
+                            </div>
+                        </div>
+
+                        <div class="event-grid">
+            `;
+
+            if (filteredEvents.length > 0) {
+                filteredEvents.forEach(event => {
+                    html += createEventCard(event);
+                });
+            } else {
+                html += '<p class="loading" style="grid-column: 1/-1;">Tidak ada event ditemukan</p>';
+            }
+
+            html += `
+                        </div>
+                    </div>
+                </section>
+            `;
+
+            mainContent.innerHTML = html;
+
+            // Add event listeners for filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    currentFilter = e.target.dataset.filter;
+                    renderEvents();
+                });
+            });
+
+            // Add search input listener
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    searchQuery = e.target.value;
+                    renderEvents();
+                });
+            }
+
+            observeReveal();
+        }
+
+        // Helper function to create event card
+        function createEventCard(event) {
+            const statusText = {
+                'upcoming': 'Akan Datang',
+                'ongoing': 'Sedang Berlangsung',
+                'completed': 'Selesai',
+                'registration': 'Pembukaan Pendaftaran'
+            };
+
+            return `
+                <div class="event-card reveal">
+                    <img src="${event.poster}" alt="${event.title}" class="event-poster">
+                    <div class="event-info">
+                        <h3 class="event-title">${event.title}</h3>
+                        <div class="event-badges">
+                            <span class="badge ${event.type.toLowerCase()}">${event.type}</span>
+                            <span class="badge ${event.status}">${statusText[event.status] || event.status}</span>
+                        </div>
+                        <div class="event-meta">
+                            <p>📅 ${event.date}</p>
+                            <p>📍 ${event.location}</p>
+                        </div>
+                        
+                        <!-- Schedule / Jadwal -->
+                        <div class="event-schedule">
+                            ${event.schedule.slice(0, 2).map(s => `
+                                <div class="schedule-item">
+                                    <span class="schedule-time">${s.time}</span>
+                                    <span class="schedule-activity">${s.activity}</span>
+                                </div>
+                            `).join('')}
+                            ${event.schedule.length > 2 ? '<small style="color: var(--light-purple);">+' + (event.schedule.length - 2) + ' jadwal lainnya</small>' : ''}
+                        </div>
+
+                        <div class="event-actions">
+                            <button class="btn-card" onclick="goToDetail('${event.id}')">Lihat Detail</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render Detail Page
+        function renderDetail(eventId) {
+            const event = events.find(e => e.id === eventId);
+            
+            if (!event) {
+                mainContent.innerHTML = '<div class="container"><p class="loading">Event tidak ditemukan</p></div>';
+                return;
+            }
+
+            const statusText = {
+                'upcoming': 'Akan Datang',
+                'ongoing': 'Sedang Berlangsung',
+                'completed': 'Selesai',
+                'registration': 'Pembukaan Pendaftaran'
+            };
+
+            let html = `
+                <section class="section">
+                    <div class="container">
+                        <div class="detail-container reveal">
+                            <img src="${event.poster}" alt="${event.title}" class="detail-poster">
+                            <div class="detail-info">
+                                <h1>${event.title}</h1>
+                                <div class="event-badges">
+                                    <span class="badge ${event.type.toLowerCase()}">${event.type}</span>
+                                    <span class="badge ${event.status}">${statusText[event.status]}</span>
+                                </div>
+                                <p style="margin: 1rem 0;"><strong>📅 Tanggal:</strong> ${event.date}</p>
+                                <p style="margin: 1rem 0;"><strong>📍 Lokasi:</strong> ${event.location}</p>
+                                
+                                <div class="detail-description">
+                                    <h3 style="color: var(--light-purple); margin-bottom: 0.5rem;">📝 Deskripsi</h3>
+                                    <p>${event.description}</p>
+                                </div>
+
+                                <div class="schedule-card">
+                                    <h3>⏰ Jadwal Acara</h3>
+                                    <div class="schedule-grid">
+            `;
+
+            event.schedule.forEach(item => {
+                html += `
+                    <div class="schedule-row">
+                        <span class="schedule-time">${item.time}</span>
+                        <span class="schedule-desc">${item.activity}</span>
+                    </div>
+                `;
+            });
+
+            if (event.status === 'upcoming' || event.status === 'registration') {
+                html += `
+                    </div>
+                </div>
+                
+                <div class="countdown" id="countdown-${event.id}">
+                    <div class="countdown-item">
+                        <div class="countdown-number" id="days">0</div>
+                        <div class="countdown-label">Hari</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-number" id="hours">0</div>
+                        <div class="countdown-label">Jam</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-number" id="minutes">0</div>
+                        <div class="countdown-label">Menit</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-number" id="seconds">0</div>
+                        <div class="countdown-label">Detik</div>
+                    </div>
+                </div>
+                `;
+            } else {
+                html += `
+                    </div>
+                </div>
+                `;
+            }
+
+            html += `
+                <button class="btn-large" onclick="window.open('${event.formLink}', '_blank')">
+                    🔥 Daftar Sekarang
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+            `;
+
+            mainContent.innerHTML = html;
+
+            if (event.status === 'upcoming' || event.status === 'registration') {
+                startCountdown(event.id, event.date);
+            }
+
+            observeReveal();
+        }
+
+        // Countdown timer
+        function startCountdown(eventId, eventDate) {
+            const targetDate = new Date(eventDate).getTime();
+            
+            const interval = setInterval(() => {
+                const now = new Date().getTime();
+                const distance = targetDate - now;
+
+                if (distance < 0) {
+                    clearInterval(interval);
+                    return;
+                }
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                const countdownEl = document.getElementById(`countdown-${eventId}`);
+                if (countdownEl) {
+                    const daysEl = countdownEl.querySelector('#days');
+                    const hoursEl = countdownEl.querySelector('#hours');
+                    const minutesEl = countdownEl.querySelector('#minutes');
+                    const secondsEl = countdownEl.querySelector('#seconds');
+
+                    if (daysEl) daysEl.textContent = days;
+                    if (hoursEl) hoursEl.textContent = hours;
+                    if (minutesEl) minutesEl.textContent = minutes;
+                    if (secondsEl) secondsEl.textContent = seconds;
+                }
+            }, 1000);
+        }
+
+        // Navigation to detail
+        function goToDetail(eventId) {
+            currentPage = 'detail';
+            renderDetail(eventId);
+            
+            // Update active link
+            navLinks.forEach(link => link.classList.remove('active'));
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Reveal animation observer
+        function observeReveal() {
+            const reveals = document.querySelectorAll('.reveal');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            reveals.forEach(reveal => observer.observe(reveal));
+        }
+
+        // Modal functions
+        function showJoinModal() {
+            document.getElementById('joinModal').style.display = 'flex';
+        }
+
+        function closeJoinModal() {
+            document.getElementById('joinModal').style.display = 'none';
+        }
+
+        // Initialize
+        changePage('home');
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('joinModal');
+            if (event.target === modal) {
+                closeJoinModal();
+            }
+        }
+    </script>
+</body>
+</html>
