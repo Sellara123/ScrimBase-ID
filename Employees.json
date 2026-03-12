@@ -1,0 +1,100 @@
+{
+    "users": {
+        "Al": {
+            "password": "greenfr0g",
+            "name": "Alleluia Lefran Wayne",
+            "position": "Editor/Media Sosial",
+            "id": "SBID001",
+            "salary": 10000,
+            "commission": 1000,
+            "whatsapp": "6288991734780",
+            "joinDate": "2026-01-20",
+            "phone": "+6287805991764",
+            "email": "alleluialw@gmail.com",
+            "totalWithdrawals": 0
+        },
+        "Momon": {
+            "password": "Lupa",
+            "name": "Mhd Azwar Fadhillah",
+            "position": "Editor",
+            "id": "SBID002",
+            "salary": 10000,
+            "commission": 1000,
+            "whatsapp": "6288991734780",
+            "joinDate": "2026-01-20",
+            "phone": "+6283895513613",
+            "email": "adhil13062008@gmail.com",
+            "totalWithdrawals": 0
+        },
+        "Ghisella": {
+            "password": "!@#$Ghisella$#@!",
+            "name": "Ghisella Aurora Asella",
+            "position": "Editor/Event",
+            "id": "SBID003",
+            "salary": 10000,
+            "commission": 1000,
+            "whatsapp": "6288991734780",
+            "joinDate": "2025-04-25",
+            "phone": "+6288976942009",
+            "email": "ghisellachananie@gmail.com",
+            "totalWithdrawals": 0
+        },
+        "Didi": {
+            "password": "Key_Jeck.",
+            "name": "Didi Maulana",
+            "position": "Public Information",
+            "id": "SBID004",
+            "salary": 10000,
+            "commission": 1000,
+            "whatsapp": "6288991734780",
+            "joinDate": "2025-04-25",
+            "phone": "+6283150123603",
+            "email": "didimaulana2636@gmail.com",
+            "totalWithdrawals": 0
+        }
+    },
+    "userData": {
+        "SBID001": {
+            "notifications": [
+                {"type": "salary", "message": "Salary updated: Rp 10000", "date": "2026-03-12"},
+                {"type": "commission", "message": "Commission: Rp 1000", "date": "2025-03-12"}
+            ],
+            "info": [
+                {"title": "Informasi", "content": "Harus konsisten", "date": "2026-03-12"}
+            ]
+        },
+        "SBID002": {
+            "notifications": [
+                {"type": "salary", "message": "Salary updated: Rp 10000", "date": "2026-03-12"},
+                {"type": "commission", "message": "Commission: Rp 1000", "date": "2025-03-12"}
+            ],
+            "info": [
+                {"title": "Informasi", "content": "Harus konsisten", "date": "2026-03-12"}
+            ]
+        },
+        "SBID003": {
+            "notifications": [
+                {"type": "salary", "message": "Salary updated: Rp 10000", "date": "2026-03-12"},
+                {"type": "commission", "message": "Commission: Rp 1000", "date": "2025-03-12"}
+            ],
+            "info": [
+                {"title": "Informasi", "content": "Harus konsisten", "date": "2026-03-12"}
+            ]
+        },
+        "SBID004": {
+            "notifications": [
+                {"type": "salary", "message": "Salary updated: Rp 10000", "date": "2026-03-12"},
+                {"type": "commission", "message": "Commission: Rp 1000", "date": "2025-03-12"}
+            ],
+            "info": [
+                {"title": "Informasi", "content": "Harus konsisten", "date": "2026-03-12"}
+            ]
+        }
+    },
+    "leaderboard": [
+        {"id": "SBID001", "name": "Alleluia Lefran Wayne", "position": "Editor/Media Sosial", "salary": 10000, "commission": 1000},
+        {"id": "SBID002", "name": "Mhd Azwar Fadhillah", "position": "Editor", "salary": 10000, "commission": 1000},
+        {"id": "SBID003", "name": "Ghisella Aurora Asella", "position": "Editor/Event", "salary": 10000, "commission": 1000},
+        {"id": "SBID004", "name": "Didi Maulana", "position": "Public Information", "salary": 10000, "commission": 1000}
+    ]
+}
