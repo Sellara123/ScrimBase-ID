@@ -5,7 +5,7 @@
             "name": "Alleluia Lefran Wayne",
             "position": "Editor/Media Sosial",
             "id": "SBID001",
-            "salary": 10000,
+            "salary": 20000,
             "commission": 1000,
             "whatsapp": "6288991734780",
             "joinDate": "2026-01-20",
@@ -56,7 +56,7 @@
     "userData": {
         "SBID001": {
             "notifications": [
-                {"type": "salary", "message": "Salary updated: Rp 10000", "date": "2026-03-12"},
+                {"type": "salary", "message": "Salary updated: Rp 20000", "date": "2026-03-12"},
                 {"type": "commission", "message": "Commission: Rp 1000", "date": "2025-03-12"}
             ],
             "info": [
@@ -92,7 +92,7 @@
         }
     },
     "leaderboard": [
-        {"id": "SBID001", "name": "Alleluia Lefran Wayne", "position": "Editor/Media Sosial", "salary": 10000, "commission": 1000},
+        {"id": "SBID001", "name": "Alleluia Lefran Wayne", "position": "Editor/Media Sosial", "salary": 20000, "commission": 1000},
         {"id": "SBID002", "name": "Mhd Azwar Fadhillah", "position": "Editor", "salary": 10000, "commission": 1000},
         {"id": "SBID003", "name": "Ghisella Aurora Asella", "position": "Editor/Event", "salary": 10000, "commission": 1000},
         {"id": "SBID004", "name": "Didi Maulana", "position": "Public Information", "salary": 10000, "commission": 1000}
