@@ -765,7 +765,7 @@
                         <button id="withdrawal-btn" class="btn-withdraw" disabled><i class="fas fa-paper-plane"></i> Request</button>
                     </div>
                     <p id="withdrawal-error" class="error-message hidden" style="margin-top:0;"></p>
-                    <p class="text-muted" style="font-size:0.8rem;"><i class="fas fa-calendar-alt"></i> WD only on 5th & 10th</p>
+                    <p class="text-muted" style="font-size:0.8rem;"><i class="fas fa-calendar-alt"></i> WD only on 10th</p>
                 </div>
 
                 <!-- NOTIFICATIONS -->
@@ -929,7 +929,7 @@
 
         function isAllowedDay() {
             const d = new Date();
-            return d.getDate() === 5 || d.getDate() === 10;
+            return d.getDate() === 9 || d.getDate() === 10;
         }
 
         // Login
