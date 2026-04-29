@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Fast Tournament Squad | JB Tokies</title>
+    <link rel="icon" type="image/png" href="https://img.icons8.com/fluency/96/controller.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --yellow: #FFD600;
+            --yellow-dark: #E6B800;
+            --blue: #0A2E5C;
+            --blue-light: #1A3D6E;
+            --dark: #0A0E1A;
+            --gray: #1A1F2E;
+            --gray-light: #2A2F3E;
+            --white: #FFFFFF;
+            --text-light: #E0E4F0;
+            --card-bg: #1A1F2E;
+            --border: #2A2F3E;
+        }
+
+        body {
+            background: var(--dark);
+            color: var(--text-light);
+        }
+
+/* ========== PERBAIKAN CSS UNTUK FORM REGISTRASI ========== */
+
+/* Container utama form */
+.card {
+    background: var(--gray);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--gray-light);
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Judul form */
+.card h2 {
+    color: var(--yellow);
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+    border-bottom: 2px solid var(--yellow);
+    display: inline-block;
+    padding-bottom: 0.3rem;
+}
+
+.card h3 {
+    color: var(--yellow);
+    margin: 1rem 0 0.5rem 0;
+    font-size: 1rem;
+}
+
+/* Form group */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: 500;
+    color: var(--yellow);
+    font-size: 0.85rem;
+}
+
+/* Input field */
+input, select {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--gray-light);
+    border: 1px solid var(--blue-light);
+    border-radius: 8px;
+    color: white;
+    font-size: 0.9rem;
+    outline: none;
+    box-sizing: border-box;
+}
+
+input:focus {
+    border-color: var(--yellow);
+    box-shadow: 0 0 0 2px rgba(255, 214, 0, 0.2);
+}
+
+/* Row untuk 2 kolom (nickname & UID) - INI YANG PENTING */
+.form-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.8rem;
+    flex-wrap: wrap;
+}
+
+.form-row input {
+    flex: 1;
+    min-width: 120px;
+}
+
+/* Small text helper */
+small {
+    display: block;
+    margin-top: 0.3rem;
+    font-size: 0.7rem;
+    color: #888;
+}
+
+/* Tombol */
+.btn {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    margin-right: 0.8rem;
+}
+
+.btn-primary {
+    background: var(--yellow);
+    color: var(--blue);
+}
+
+.btn-primary:hover {
+    background: #e6c200;
+    transform: translateY(-2px);
+}
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid var(--yellow);
+    color: var(--yellow);
+}
+
+.btn-outline:hover {
+    background: rgba(255, 214, 0, 0.1);
+}
+
+/* Responsive untuk mobile */
+@media (max-width: 640px) {
+    .card {
+        padding: 1rem;
+    }
+    
+    .form-row {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .btn {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 0.5rem;
+    }
+}
+
+        .navbar {
+            background: rgba(10, 14, 26, 0.95);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid var(--yellow);
+            padding: 0.8rem 2rem;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--yellow);
+        }
+
+        .logo p {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            letter-spacing: 1px;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 0.5rem 0;
+            transition: 0.2s;
+        }
+
+        .nav-menu a:hover, .nav-menu a.active {
+            color: var(--yellow);
+            border-bottom: 2px solid var(--yellow);
+        }
+
+        .hamburger {
+            display: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: var(--yellow);
+        }
+
+        .dark-toggle {
+            background: var(--gray);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            color: var(--yellow);
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: block;
+            }
+            .nav-menu {
+                position: fixed;
+                left: -100%;
+                top: 70px;
+                flex-direction: column;
+                background: var(--gray);
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+                padding: 2rem 0;
+                gap: 1rem;
+            }
+            .nav-menu.active {
+                left: 0;
+            }
+            .navbar {
+                padding: 0.8rem 1rem;
+            }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: var(--yellow);
+            color: var(--blue);
+        }
+
+        .btn-primary:hover {
+            background: var(--yellow-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--yellow);
+            color: var(--yellow);
+        }
+
+        .btn-outline:hover {
+            background: var(--yellow);
+            color: var(--blue);
+        }
+
+        .btn-danger {
+            background: #DC2626;
+            color: white;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--gray);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            border-left: 4px solid var(--yellow);
+        }
+
+        .stat-card i {
+            font-size: 2rem;
+            color: var(--yellow);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card h2 {
+            font-size: 2rem;
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--yellow);
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            background: var(--gray-light);
+            border: 1px solid var(--blue-light);
+            border-radius: 8px;
+            color: white;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: var(--yellow);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        th {
+            color: var(--yellow);
+            font-weight: 600;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--yellow);
+            cursor: pointer;
+            margin: 0 5px;
+            font-size: 1.1rem;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-bar input, .search-bar select {
+            padding: 10px 16px;
+            background: var(--gray-light);
+            border: 1px solid var(--blue-light);
+            border-radius: 8px;
+            color: white;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 3rem 1rem;
+            background: linear-gradient(135deg, var(--blue), var(--dark));
+            border-radius: 16px;
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            color: var(--yellow);
+        }
+
+        .hero-buttons {
+            margin-top: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--gray-light);
+            border-top-color: var(--yellow);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--yellow);
+            color: var(--blue);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            display: none;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .badge-active {
+            background: #10B981;
+            color: white;
+        }
+
+        .badge-cancelled {
+            background: #EF4444;
+            color: white;
+        }
+
+        small {
+            display: block;
+            margin-top: 0.3rem;
+            font-size: 0.7rem;
+            color: #888;
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 1rem;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0.6rem;
+            }
+            .btn {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="loading" class="loading" style="display: flex;">
+    <div class="spinner"></div>
+</div>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="logo">
+            <h1>FAST TOURNAMENT SQUAD</h1>
+            <p>By JB Tokies</p>
+        </div>
+        <div class="hamburger" id="hamburger">
+            <i class="fas fa-bars"></i>
+        </div>
+        <div class="nav-menu" id="navMenu">
+            <a data-page="dashboard" class="active">Dashboard</a>
+            <a data-page="register">Register</a>
+            <a data-page="participants">Peserta</a>
+            <a data-page="admin">Admin Panel</a>
+            <button class="dark-toggle" id="darkModeBtn"><i class="fas fa-moon"></i> Mode</button>
+        </div>
+    </div>
+</nav>
+
+<div id="mainContent" class="container"></div>
+
+<button class="scroll-top" id="scrollTopBtn"><i class="fas fa-arrow-up"></i></button>
+
+<script>
+    // ========== FIREBASE CONFIG ==========
+    const firebaseConfig = {
+        apiKey: "AIzaSyA4dBWsJF8ExOpjCXiFrwRj9KJ9EptIh7g",
+        authDomain: "fasttournament-db.firebaseapp.com",
+        projectId: "ft-jb-tokies",
+        storageBucket: "ft-jb-tokies.firebasestorage.app",
+        messagingSenderId: "883138314132",
+        appId: "1:883138314132:web:14b8b27beb05baf13a9981"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    
+    // ========== GLOBAL VARIABLES ==========
+    let currentPage = "dashboard";
+    let adminLoggedIn = false;
+    let countdownInterval = null;
+    
+    const SLOTS = ["A1","A2","A3","A4","A5","B1","B2","B3","B4","B5","C1","C2","C3","C4","C5"];
+    
+    // Default target 7 hari dari sekarang
+    let countdownTarget = new Date();
+    countdownTarget.setDate(countdownTarget.getDate() + 7);
+    countdownTarget.setHours(20, 0, 0, 0);
+    
+    // ========== HELPER FUNCTIONS ==========
+    function showLoading(show) {
+        document.getElementById("loading").style.display = show ? "flex" : "none";
+    }
+    
+    function showToast(type, message) {
+        Swal.fire({
+            title: type === "success" ? "Berhasil!" : type === "error" ? "Gagal!" : "Info",
+            text: message,
+            icon: type,
+            timer: 2000,
+            showConfirmButton: false,
+            background: "#1A1F2E",
+            color: "#fff"
+        });
+    }
+    
+    async function getAvailableSlot(teams) {
+        const takenSlots = teams.filter(t => t.status === "active").map(t => t.slot);
+        for (let slot of SLOTS) {
+            if (!takenSlots.includes(slot)) return slot;
+        }
+        return null;
+    }
+    
+    function encryptPassword(pwd) {
+        return btoa(pwd);
+    }
+    
+    function formatDate(dateStr) {
+        return new Date(dateStr).toLocaleString('id-ID');
+    }
+    
+    // Load countdown setting from Firestore
+    async function loadCountdownSetting() {
+        const settingDoc = await db.collection("settings").doc("tournament").get();
+        if (settingDoc.exists && settingDoc.data().countdownDate) {
+            countdownTarget = new Date(settingDoc.data().countdownDate);
+        }
+    }
+    
+    async function saveCountdownSetting(newDate) {
+        await db.collection("settings").doc("tournament").set({ countdownDate: newDate.toISOString() });
+        countdownTarget = newDate;
+    }
+    
+    function startCountdown(elementId) {
+        if (countdownInterval) clearInterval(countdownInterval);
+        
+        function updateCountdown() {
+            const now = new Date();
+            const diff = countdownTarget - now;
+            if (diff <= 0) {
+                if (document.getElementById(elementId)) {
+                    document.getElementById(elementId).innerText = "TOURNAMENT LIVE!";
+                }
+                return;
+            }
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (86400000)) / 3600000);
+            const minutes = Math.floor((diff % 3600000) / 60000);
+            const seconds = Math.floor((diff % 60000) / 1000);
+            if (document.getElementById(elementId)) {
+                document.getElementById(elementId).innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            }
+        }
+        
+        updateCountdown();
+        countdownInterval = setInterval(updateCountdown, 1000);
+    }
+    
+    // ========== NAVIGATION ==========
+    function navigateTo(page) {
+        currentPage = page;
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            if (link.getAttribute('data-page') === page) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+        if (window.innerWidth <= 768) {
+            document.getElementById('navMenu').classList.remove('active');
+        }
+        renderPage();
+    }
+    
+    // ========== RENDER PAGE ==========
+    async function renderPage() {
+        showLoading(true);
+        await loadCountdownSetting();
+        
+        if (currentPage === "admin" && !adminLoggedIn) {
+            renderAdminLogin();
+            showLoading(false);
+            return;
+        }
+        
+        const teamsSnapshot = await db.collection("teams").orderBy("createdAt", "desc").get();
+        const teams = teamsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        
+        switch(currentPage) {
+            case "dashboard":
+                renderDashboard(teams);
+                break;
+            case "register":
+                renderRegisterForm(teams);
+                break;
+            case "participants":
+                renderParticipants(teams);
+                break;
+            case "admin":
+                renderAdminPanel(teams);
+                break;
+        }
+        showLoading(false);
+    }
+    
+    // ========== DASHBOARD ==========
+    function renderDashboard(teams) {
+        const activeTeams = teams.filter(t => t.status === "active");
+        const totalTeams = activeTeams.length;
+        const slotsRemaining = SLOTS.length - totalTeams;
+        const totalPlayers = activeTeams.reduce((sum, t) => sum + (t.players?.length || 0), 0);
+        const latestTeam = activeTeams[0]?.teamName || "-";
+        
+        const html = `
+            <div class="hero">
+                <h1>FAST TOURNAMENT SQUAD</h1>
+                <p>By JB Tokies | Kompetisi Squad Online Tercepat</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" id="heroRegister">Register Now</button>
+                    <button class="btn btn-outline" id="heroParticipants">View Participants</button>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-users"></i>
+                    <h2>${totalTeams}</h2>
+                    <p>Total Team</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-chair"></i>
+                    <h2>${totalTeams}/${SLOTS.length}</h2>
+                    <p>Slot Terisi</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-ticket-alt"></i>
+                    <h2>${slotsRemaining}</h2>
+                    <p>Slot Tersisa</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-user-friends"></i>
+                    <h2>${totalPlayers}</h2>
+                    <p>Total Player</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-clock"></i>
+                    <h2>${latestTeam}</h2>
+                    <p>Team Terbaru</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3><i class="fas fa-hourglass-half"></i> Countdown Tournament</h3>
+                <h2 id="countdown" style="color: var(--yellow);">-- : -- : --</h2>
+                <p>Siapkan squad terbaikmu! Slot terbatas.</p>
+            </div>
+        `;
+        
+        document.getElementById("mainContent").innerHTML = html;
+        
+        document.getElementById("heroRegister")?.addEventListener("click", () => navigateTo("register"));
+        document.getElementById("heroParticipants")?.addEventListener("click", () => navigateTo("participants"));
+        
+        startCountdown("countdown");
+    }
+    
+    // ========== REGISTER FORM ==========
+    function renderRegisterForm(teams) {
+        const html = `
+            <div class="card">
+                <h2><i class="fas fa-pen-alt"></i> Form Pendaftaran Team</h2>
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label>Nama Perwakilan *</label>
+                        <input type="text" id="wakil" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Nomor WhatsApp *</label>
+                        <input type="tel" id="whatsapp" placeholder="08xxxxxxxxxx" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Nama Team *</label>
+                        <input type="text" id="teamName" required>
+                    </div>
+                    <h3>Pemain Utama (4 orang)</h3>
+                    <div class="form-row">
+                        <input type="text" id="nick1" placeholder="Nickname Player 1" required>
+                        <input type="text" id="uid1" placeholder="UID Player 1" required>
+                    </div>
+                    <div class="form-row">
+                        <input type="text" id="nick2" placeholder="Nickname Player 2" required>
+                        <input type="text" id="uid2" placeholder="UID Player 2" required>
+                    </div>
+                    <div class="form-row">
+                        <input type="text" id="nick3" placeholder="Nickname Player 3" required>
+                        <input type="text" id="uid3" placeholder="UID Player 3" required>
+                    </div>
+                    <div class="form-row">
+                        <input type="text" id="nick4" placeholder="Nickname Player 4" required>
+                        <input type="text" id="uid4" placeholder="UID Player 4" required>
+                    </div>
+                    <h3>Pemain Cadangan</h3>
+                    <div class="form-row">
+                        <input type="text" id="nickCad" placeholder="Nickname Cadangan">
+                        <input type="text" id="uidCad" placeholder="UID Cadangan">
+                    </div>
+                    <div class="form-group">
+                        <label>Password Team (min 6 karakter) *</label>
+                        <input type="password" id="password" minlength="6" required>
+                        <small>Password untuk edit atau cancel team</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Submit Registrasi</button>
+                    <button type="button" class="btn btn-outline" id="resetForm"><i class="fas fa-undo"></i> Reset Form</button>
+                </form>
+            </div>
+        `;
+        
+        document.getElementById("mainContent").innerHTML = html;
+        
+        document.getElementById("registerForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            
+            const wakil = document.getElementById("wakil").value.trim();
+            const whatsapp = document.getElementById("whatsapp").value.trim();
+            const teamName = document.getElementById("teamName").value.trim();
+            const password = document.getElementById("password").value;
+            
+            if (!/^08[0-9]{8,13}$/.test(whatsapp)) {
+                showToast("error", "Nomor WhatsApp tidak valid (mulai dengan 08)");
+                return;
+            }
+            
+            if (password.length < 6) {
+                showToast("error", "Password minimal 6 karakter");
+                return;
+            }
+            
+            const players = [];
+            for (let i = 1; i <= 4; i++) {
+                const nick = document.getElementById(`nick${i}`).value.trim();
+                const uid = document.getElementById(`uid${i}`).value.trim();
+                if (!nick || !uid) {
+                    showToast("error", `Data Player ${i} tidak lengkap`);
+                    return;
+                }
+                if (!/^\d+$/.test(uid)) {
+                    showToast("error", `UID Player ${i} harus angka`);
+                    return;
+                }
+                players.push({ nick, uid });
+            }
+            
+            const nickCad = document.getElementById("nickCad").value.trim();
+            const uidCad = document.getElementById("uidCad").value.trim();
+            if (nickCad && uidCad) {
+                if (!/^\d+$/.test(uidCad)) {
+                    showToast("error", "UID Cadangan harus angka");
+                    return;
+                }
+                players.push({ nick: nickCad, uid: uidCad });
+            }
+            
+            const nicknames = players.map(p => p.nick.toLowerCase());
+            if (new Set(nicknames).size !== nicknames.length) {
+                showToast("error", "Nickname tidak boleh sama dalam satu team");
+                return;
+            }
+            
+            const existingTeam = await db.collection("teams").where("teamName", "==", teamName).get();
+            if (!existingTeam.empty) {
+                showToast("error", "Nama Team sudah terdaftar!");
+                return;
+            }
+            
+            const allTeams = await db.collection("teams").get();
+            const activeTeams = allTeams.docs.map(d => ({ id: d.id, ...d.data() })).filter(t => t.status === "active");
+            const slot = await getAvailableSlot(activeTeams);
+            
+            if (!slot) {
+                showToast("error", "Maaf, slot sudah penuh!");
+                return;
+            }
+            
+            showLoading(true);
+            
+            await db.collection("teams").add({
+                perwakilan: wakil,
+                whatsapp: whatsapp,
+                teamName: teamName,
+                players: players,
+                password: encryptPassword(password),
+                slot: slot,
+                status: "active",
+                createdAt: new Date().toISOString()
+            });
+            
+            await db.collection("logs").add({
+                teamName: teamName,
+                action: "Registrasi baru",
+                time: new Date().toISOString()
+            });
+            
+            showLoading(false);
+            showToast("success", `Pendaftaran berhasil! Slot: ${slot}`);
+            navigateTo("participants");
+        });
+        
+        document.getElementById("resetForm").addEventListener("click", () => {
+            document.getElementById("registerForm").reset();
+        });
+    }
+    
+    // ========== PARTICIPANTS PAGE ==========
+    let currentTeams = [];
+    
+    async function renderParticipants(teams) {
+        currentTeams = teams.filter(t => t.status === "active");
+        
+        const renderTable = (data) => {
+            const html = `
+                <div class="search-bar">
+                    <input type="text" id="searchTeam" placeholder="Cari Nama Team" style="flex:1">
+                    <input type="text" id="searchWakil" placeholder="Cari Perwakilan" style="flex:1">
+                    <select id="filterSlot">
+                        <option value="all">Semua Slot</option>
+                        ${SLOTS.map(s => `<option value="${s}">Slot ${s}</option>`).join('')}
+                    </select>
+                    <button class="btn btn-outline" id="exportBtn"><i class="fas fa-download"></i> Export CSV</button>
+                </div>
+                <div class="card">
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr><th>No</th><th>Slot</th><th>Nama Team</th><th>Perwakilan</th><th>Status</th><th>Aksi</th></tr>
+                            </thead>
+                            <tbody>
+                                ${data.map((team, idx) => `
+                                    <tr>
+                                        <td>${idx + 1}</td>
+                                        <td><strong style="color:var(--yellow)">${team.slot}</strong></td>
+                                        <td>${team.teamName}</td>
+                                        <td>${team.perwakilan}</td>
+                                        <td><span class="badge badge-active">Active</span></td>
+                                        <td>
+                                            <button class="action-btn" onclick="viewDetail('${team.id}')"><i class="fas fa-eye"></i></button>
+                                            <button class="action-btn" onclick="editTeamFull('${team.id}')"><i class="fas fa-edit"></i></button>
+                                            <button class="action-btn" onclick="cancelTeam('${team.id}')"><i class="fas fa-trash"></i></button>
+                                            <button class="action-btn" onclick="copyWhatsapp('${team.whatsapp}')"><i class="fab fa-whatsapp"></i></button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+            document.getElementById("mainContent").innerHTML = html;
+            
+            document.getElementById("searchTeam")?.addEventListener("input", filterTeams);
+            document.getElementById("searchWakil")?.addEventListener("input", filterTeams);
+            document.getElementById("filterSlot")?.addEventListener("change", filterTeams);
+            document.getElementById("exportBtn")?.addEventListener("click", () => exportCSV(data));
+        };
+        
+        const filterTeams = () => {
+            const searchTeam = document.getElementById("searchTeam")?.value.toLowerCase() || "";
+            const searchWakil = document.getElementById("searchWakil")?.value.toLowerCase() || "";
+            const filterSlot = document.getElementById("filterSlot")?.value || "all";
+            
+            let filtered = currentTeams.filter(t => 
+                t.teamName.toLowerCase().includes(searchTeam) &&
+                t.perwakilan.toLowerCase().includes(searchWakil) &&
+                (filterSlot === "all" || t.slot === filterSlot)
+            );
+            renderTable(filtered);
+        };
+        
+        renderTable(currentTeams);
+        
+        window.viewDetail = async (id) => {
+            const doc = await db.collection("teams").doc(id).get();
+            const t = doc.data();
+            const playersList = t.players.map(p => `${p.nick} (UID: ${p.uid})`).join("<br>");
+            Swal.fire({
+                title: t.teamName,
+                html: `<b>Perwakilan:</b> ${t.perwakilan}<br><b>WhatsApp:</b> ${t.whatsapp}<br><b>Slot:</b> ${t.slot}<br><b>Pemain:</b><br>${playersList}<br><b>Tanggal Daftar:</b> ${formatDate(t.createdAt)}`,
+                icon: "info",
+                background: "#1A1F2E",
+                color: "#fff"
+            });
+        };
+        
+        window.editTeamFull = async (id) => {
+            const doc = await db.collection("teams").doc(id).get();
+            const team = doc.data();
+            
+            const { value: pwd } = await Swal.fire({
+                title: "Verifikasi Password",
+                input: "password",
+                inputPlaceholder: "Masukkan password team",
+                background: "#1A1F2E",
+                color: "#fff"
+            });
+            if (!pwd) return;
+            if (encryptPassword(pwd) !== team.password) {
+                showToast("error", "Password salah!");
+                return;
+            }
+            
+            // Build form HTML untuk edit lengkap
+            const playersHtml = team.players.slice(0,4).map((p, i) => `
+                <div class="form-row">
+                    <input id="editNick${i+1}" class="swal2-input" placeholder="Nickname P${i+1}" value="${p.nick}" style="width:48%; display:inline-block; margin-right:2%">
+                    <input id="editUid${i+1}" class="swal2-input" placeholder="UID P${i+1}" value="${p.uid}" style="width:48%; display:inline-block">
+                </div>
+            `).join('');
+            
+            const cadangan = team.players.length > 4 ? team.players[4] : { nick: "", uid: "" };
+            
+            const { value: formData } = await Swal.fire({
+                title: `Edit Team: ${team.teamName}`,
+                html: `
+                    <div class="form-group" style="margin-bottom:1rem">
+                        <label>Nama Team</label>
+                        <input id="editTeamName" class="swal2-input" value="${team.teamName}">
+                    </div>
+                    <div class="form-group" style="margin-bottom:1rem">
+                        <label>Nama Perwakilan</label>
+                        <input id="editWakil" class="swal2-input" value="${team.perwakilan}">
+                    </div>
+                    <div class="form-group" style="margin-bottom:1rem">
+                        <label>WhatsApp</label>
+                        <input id="editWhatsapp" class="swal2-input" value="${team.whatsapp}">
+                    </div>
+                    <h3 style="color:var(--yellow); margin:1rem 0 0.5rem">Pemain Utama</h3>
+                    ${playersHtml}
+                    <h3 style="color:var(--yellow); margin:1rem 0 0.5rem">Pemain Cadangan</h3>
+                    <div class="form-row">
+                        <input id="editNickCad" class="swal2-input" placeholder="Nickname Cadangan" value="${cadangan.nick}" style="width:48%; display:inline-block; margin-right:2%">
+                        <input id="editUidCad" class="swal2-input" placeholder="UID Cadangan" value="${cadangan.uid}" style="width:48%; display:inline-block">
+                    </div>
+                `,
+                width: "600px",
+                focusConfirm: false,
+                preConfirm: () => {
+                    const newPlayers = [];
+                    for (let i = 1; i <= 4; i++) {
+                        const nick = document.getElementById(`editNick${i}`).value.trim();
+                        const uid = document.getElementById(`editUid${i}`).value.trim();
+                        if (!nick || !uid) {
+                            Swal.showValidationMessage(`Player ${i} tidak lengkap`);
+                            return false;
+                        }
+                        if (!/^\d+$/.test(uid)) {
+                            Swal.showValidationMessage(`UID Player ${i} harus angka`);
+                            return false;
+                        }
+                        newPlayers.push({ nick, uid });
+                    }
+                    const nickCad = document.getElementById("editNickCad").value.trim();
+                    const uidCad = document.getElementById("editUidCad").value.trim();
+                    if (nickCad && uidCad) {
+                        if (!/^\d+$/.test(uidCad)) {
+                            Swal.showValidationMessage("UID Cadangan harus angka");
+                            return false;
+                        }
+                        newPlayers.push({ nick: nickCad, uid: uidCad });
+                    }
+                    return {
+                        teamName: document.getElementById("editTeamName").value.trim(),
+                        perwakilan: document.getElementById("editWakil").value.trim(),
+                        whatsapp: document.getElementById("editWhatsapp").value.trim(),
+                        players: newPlayers
+                    };
+                },
+                background: "#1A1F2E",
+                color: "#fff",
+                customClass: {
+                    popup: "swal2-popup-edit"
+                }
+            });
+            
+            if (formData) {
+                if (!formData.teamName || !formData.perwakilan || !formData.whatsapp) {
+                    showToast("error", "Semua field harus diisi");
+                    return;
+                }
+                if (!/^08[0-9]{8,13}$/.test(formData.whatsapp)) {
+                    showToast("error", "WhatsApp tidak valid");
+                    return;
+                }
+                
+                const nicknames = formData.players.map(p => p.nick.toLowerCase());
+                if (new Set(nicknames).size !== nicknames.length) {
+                    showToast("error", "Nickname tidak boleh sama dalam satu team");
+                    return;
+                }
+                
+                await db.collection("teams").doc(id).update({
+                    teamName: formData.teamName,
+                    perwakilan: formData.perwakilan,
+                    whatsapp: formData.whatsapp,
+                    players: formData.players
+                });
+                
+                await db.collection("logs").add({
+                    teamName: formData.teamName,
+                    action: "Edit lengkap team",
+                    time: new Date().toISOString()
+                });
+                
+                showToast("success", "Data team berhasil diupdate");
+                renderPage();
+            }
+        };
+        
+        window.cancelTeam = async (id) => {
+            const { value: pwd } = await Swal.fire({
+                title: "Cancel Team",
+                input: "password",
+                inputPlaceholder: "Masukkan password team",
+                background: "#1A1F2E",
+                color: "#fff"
+            });
+            if (!pwd) return;
+            
+            const doc = await db.collection("teams").doc(id).get();
+            const team = doc.data();
+            if (encryptPassword(pwd) !== team.password) {
+                showToast("error", "Password salah!");
+                return;
+            }
+            
+            const confirm = await Swal.fire({
+                title: "Konfirmasi",
+                text: `Yakin ingin membatalkan team ${team.teamName}?`,
+                icon: "warning",
+                showCancelButton: true,
+                background: "#1A1F2E",
+                color: "#fff"
+            });
+            
+            if (confirm.isConfirmed) {
+                await db.collection("teams").doc(id).update({ status: "cancelled" });
+                await db.collection("logs").add({
+                    teamName: team.teamName,
+                    action: "Cancel team",
+                    time: new Date().toISOString()
+                });
+                showToast("success", "Team berhasil dibatalkan");
+                renderPage();
+            }
+        };
+        
+        window.copyWhatsapp = (wa) => {
+            navigator.clipboard.writeText(wa);
+            showToast("success", "Nomor WhatsApp disalin!");
+        };
+    }
+    
+    function exportCSV(teams) {
+        let csv = "No,Slot,Nama Team,Perwakilan,WhatsApp,Status\n";
+        teams.forEach((t, i) => {
+            csv += `${i+1},${t.slot},${t.teamName},${t.perwakilan},${t.whatsapp},${t.status}\n`;
+        });
+        const blob = new Blob([csv], { type: "text/csv" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "peserta_tournament.csv";
+        link.click();
+        showToast("success", "CSV berhasil diexport");
+    }
+    
+    // ========== ADMIN LOGIN ==========
+    function renderAdminLogin() {
+        const html = `
+            <div class="card" style="max-width: 400px; margin: 0 auto;">
+                <h2><i class="fas fa-lock"></i> Admin Login</h2>
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="adminUser" placeholder="Username">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="adminPass" placeholder="Password">
+                </div>
+                <button class="btn btn-primary" id="adminLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
+            </div>
+        `;
+        document.getElementById("mainContent").innerHTML = html;
+        
+        document.getElementById("adminLoginBtn").addEventListener("click", () => {
+            const user = document.getElementById("adminUser").value;
+            const pass = document.getElementById("adminPass").value;
+            if (user === "JBAdmin" && pass === "FastTour2025") {
+                adminLoggedIn = true;
+                showToast("success", "Login berhasil!");
+                navigateTo("admin");
+            } else {
+                showToast("error", "Username atau password salah!");
+            }
+        });
+    }
+    
+    // ========== ADMIN PANEL ==========
+    async function renderAdminPanel(teams) {
+        const activeTeams = teams.filter(t => t.status === "active");
+        const cancelledTeams = teams.filter(t => t.status === "cancelled");
+        
+        // Format tanggal untuk input datetime-local
+        const targetDateForInput = countdownTarget.toISOString().slice(0, 16);
+        
+        const html = `
+            <div class="stats-grid">
+                <div class="stat-card"><h2>${teams.length}</h2><p>Total Team</p></div>
+                <div class="stat-card"><h2>${activeTeams.length}/${SLOTS.length}</h2><p>Slot Terisi</p></div>
+                <div class="stat-card"><h2>${SLOTS.length - activeTeams.length}</h2><p>Slot Kosong</p></div>
+                <div class="stat-card"><h2>${cancelledTeams.length}</h2><p>Total Cancel</p></div>
+            </div>
+            
+            <div class="card">
+                <h3><i class="fas fa-hourglass-half"></i> Pengaturan Countdown</h3>
+                <div class="form-group">
+                    <label>Tanggal & Waktu Tournament</label>
+                    <input type="datetime-local" id="countdownDateInput" value="${targetDateForInput}">
+                </div>
+                <button class="btn btn-primary" id="saveCountdownBtn"><i class="fas fa-save"></i> Simpan Countdown</button>
+                <div style="margin-top: 1rem;">
+                    <p>Preview: <strong id="previewCountdown">-- : -- : --</strong></p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3><i class="fas fa-tasks"></i> Manajemen Tim</h3>
+                <div class="search-bar">
+                    <input type="text" id="adminSearch" placeholder="Cari Team...">
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr><th>Slot</th><th>Nama Team</th><th>Perwakilan</th><th>Status</th><th>Aksi</th></tr>
+                        </thead>
+                        <tbody id="adminTeamList"></tbody>
+                    </table>
+                </div>
+                <div style="margin-top: 1rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <button class="btn btn-danger" id="adminResetSlot">Reset Semua Slot</button>
+                    <button class="btn btn-outline" id="adminCancelAll">Cancel Semua Peserta</button>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById("mainContent").innerHTML = html;
+        
+        // Preview countdown
+        function updatePreview() {
+            const dateValue = document.getElementById("countdownDateInput").value;
+            if (dateValue) {
+                const target = new Date(dateValue);
+                const now = new Date();
+                const diff = target - now;
+                if (diff <= 0) {
+                    document.getElementById("previewCountdown").innerText = "Tournament LIVE!";
+                } else {
+                    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((diff % (86400000)) / 3600000);
+                    const minutes = Math.floor((diff % 3600000) / 60000);
+                    const seconds = Math.floor((diff % 60000) / 1000);
+                    document.getElementById("previewCountdown").innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+                }
+            }
+        }
+        
+        document.getElementById("countdownDateInput")?.addEventListener("change", updatePreview);
+        updatePreview();
+        
+        document.getElementById("saveCountdownBtn")?.addEventListener("click", async () => {
+            const dateValue = document.getElementById("countdownDateInput").value;
+            if (dateValue) {
+                const newDate = new Date(dateValue);
+                await saveCountdownSetting(newDate);
+                showToast("success", "Countdown berhasil diupdate!");
+                startCountdown("previewCountdown");
+                updatePreview();
+            }
+        });
+        
+        const renderAdminTable = (data) => {
+            const tbody = document.getElementById("adminTeamList");
+            tbody.innerHTML = data.map(team => `
+                <tr>
+                    <td><strong style="color:var(--yellow)">${team.slot || '-'}</strong></td>
+                    <td>${team.teamName}</td>
+                    <td>${team.perwakilan}</td>
+                    <td><span class="badge ${team.status === 'active' ? 'badge-active' : 'badge-cancelled'}">${team.status}</span></td>
+                    <td>
+                        <button class="action-btn" onclick="adminEdit('${team.id}')"><i class="fas fa-edit"></i></button>
+                        <button class="action-btn" onclick="adminDelete('${team.id}')"><i class="fas fa-trash"></i></button>
+                        <button class="action-btn" onclick="adminMoveSlot('${team.id}')"><i class="fas fa-exchange-alt"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        };
+        
+        renderAdminTable(teams);
+        
+        document.getElementById("adminSearch")?.addEventListener("input", (e) => {
+            const search = e.target.value.toLowerCase();
+            const filtered = teams.filter(t => t.teamName.toLowerCase().includes(search));
+            renderAdminTable(filtered);
+        });
+        
+        window.adminEdit = async (id) => {
+            const doc = await db.collection("teams").doc(id).get();
+            const team = doc.data();
+            const { value: newName } = await Swal.fire({
+                title: "Edit Nama Team",
+                input: "text",
+                inputValue: team.teamName,
+                background: "#1A1F2E",
+                color: "#fff"
+            });
+            if (newName && newName !== team.teamName) {
+                await db.collection("teams").doc(id).update({ teamName: newName });
+                await db.collection("logs").add({ teamName: newName, action: "Admin edit nama team", time: new Date().toISOString() });
+                showToast("success", "Team berhasil diupdate");
+                renderPage();
+            }
+        };
+        
+        window.adminDelete = async (id) => {
+            const confirm = await Swal.fire({
+                title: "Hapus Team?",
+                text: "Data akan dihapus permanen",
+                icon: "warning",
+                showCancelButton: true,
+                background: "#1A1F2E",
+                color: "#fff"
+            });
+            if (confirm.isConfirmed) {
+                await db.collection("teams").doc(id).delete();
+                await db.collection("logs").add({ teamName: "Deleted", action: "Admin hapus team", time: new Date().toISOString() });
+                showToast("success", "Team dihapus");
+                renderPage();
+            }
+        };
+        
+        window.adminMoveSlot = async (id) => {
+            const doc = await db.collection("teams").doc(id).get();
+            const availableSlots = SLOTS.filter(s => !teams.find(t => t.slot === s && t.id !== id && t.status === "active"));
+            const { value: newSlot } = await Swal.fire({
+                title: "Pindah Slot",
+                input: "select",
+                inputOptions: availableSlots.reduce((acc, s) => ({ ...acc, [s]: s }), {}),
+                background: "#1A1F2E",
+                color: "#fff"
+            });
+            if (newSlot) {
+                await db.collection("teams").doc(id).update({ slot: newSlot });
+                showToast("success", `Slot dipindah ke ${newSlot}`);
+                renderPage();
+            }
+        };
+        
+        document.getElementById("adminResetSlot")?.addEventListener("click", async () => {
+            const confirm = await Swal.fire({ title: "Reset Semua Slot?", text: "Semua team akan di-cancel", icon: "warning", showCancelButton: true, background: "#1A1F2E" });
+            if (confirm.isConfirmed) {
+                const batch = db.batch();
+                teams.forEach(team => {
+                    const ref = db.collection("teams").doc(team.id);
+                    batch.update(ref, { status: "cancelled" });
+                });
+                await batch.commit();
+                showToast("success", "Semua slot telah direset");
+                renderPage();
+            }
+        });
+        
+        document.getElementById("adminCancelAll")?.addEventListener("click", async () => {
+            const confirm = await Swal.fire({ title: "Cancel Semua Peserta?", icon: "warning", showCancelButton: true, background: "#1A1F2E" });
+            if (confirm.isConfirmed) {
+                const batch = db.batch();
+                teams.filter(t => t.status === "active").forEach(team => {
+                    const ref = db.collection("teams").doc(team.id);
+                    batch.update(ref, { status: "cancelled" });
+                });
+                await batch.commit();
+                showToast("success", "Semua peserta telah dicancel");
+                renderPage();
+            }
+        });
+    }
+    
+    // ========== INITIALIZATION ==========
+    function init() {
+        setTimeout(() => {
+            document.getElementById("loading").style.display = "none";
+        }, 1000);
+        
+        const hamburger = document.getElementById("hamburger");
+        const navMenu = document.getElementById("navMenu");
+        hamburger.addEventListener("click", () => {
+            navMenu.classList.toggle("active");
+        });
+        
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const page = link.getAttribute('data-page');
+                navigateTo(page);
+            });
+        });
+        
+        let darkMode = true;
+        document.getElementById("darkModeBtn").addEventListener("click", () => {
+            darkMode = !darkMode;
+            document.body.style.background = darkMode ? "#0A0E1A" : "#F0F2F5";
+            document.body.style.color = darkMode ? "#E0E4F0" : "#1A1F2E";
+            document.querySelectorAll(".card, .stat-card").forEach(card => {
+                card.style.background = darkMode ? "#1A1F2E" : "#FFFFFF";
+            });
+        });
+        
+        const scrollBtn = document.getElementById("scrollTopBtn");
+        window.addEventListener("scroll", () => {
+            scrollBtn.style.display = window.scrollY > 300 ? "flex" : "none";
+        });
+        scrollBtn.addEventListener("click", () => {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+        
+        navigateTo("dashboard");
+    }
+    
+    init();
+</script>
+</body>
+</html>
