@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Fast Tournament Squad | JB Tokies</title>
+    <title>FT JB Tokies | Tournament Squad</title>
     <link rel="icon" type="image/png" href="https://imageshack.com/i/po0tg7N3p">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -11,520 +11,125 @@
     <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         :root {
-            --yellow: #FFD600;
-            --yellow-dark: #E6B800;
-            --blue: #0A2E5C;
-            --blue-light: #1A3D6E;
-            --dark: #0A0E1A;
-            --gray: #1A1F2E;
-            --gray-light: #2A2F3E;
-            --white: #FFFFFF;
-            --text-light: #E0E4F0;
-            --card-bg: #1A1F2E;
-            --border: #2A2F3E;
+            --yellow: #FFD600; --yellow-dark: #E6B800; --blue: #0A2E5C;
+            --blue-light: #1A3D6E; --dark: #0A0E1A; --gray: #1A1F2E;
+            --gray-light: #2A2F3E; --white: #FFFFFF; --text-light: #E0E4F0;
+            --card-bg: #1A1F2E; --border: #2A2F3E;
         }
-
-        body {
-            background: var(--dark);
-            color: var(--text-light);
-        }
-
-        /* Container utama form */
-        .card {
-            background: var(--gray);
-            border-radius: 16px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            border: 1px solid var(--gray-light);
-            max-width: 1000px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .card h2 {
-            color: var(--yellow);
-            margin-bottom: 1rem;
-            font-size: 1.3rem;
-            border-bottom: 2px solid var(--yellow);
-            display: inline-block;
-            padding-bottom: 0.3rem;
-        }
-
-        .card h3 {
-            color: var(--yellow);
-            margin: 1rem 0 0.5rem 0;
-            font-size: 1rem;
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.3rem;
-            font-weight: 500;
-            color: var(--yellow);
-            font-size: 0.85rem;
-        }
-
-        input, select, textarea {
-            width: 100%;
-            padding: 12px 14px;
-            background: var(--gray-light);
-            border: 1px solid var(--blue-light);
-            border-radius: 10px;
-            color: white;
-            font-size: 0.9rem;
-            outline: none;
-            box-sizing: border-box;
-            transition: all 0.2s ease;
-        }
-
-        input:focus, select:focus {
-            border-color: var(--yellow);
-            box-shadow: 0 0 0 3px rgba(255, 214, 0, 0.2);
-        }
-
-        .form-row {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 0.8rem;
-            flex-wrap: wrap;
-        }
-
-        .form-row input {
-            flex: 1;
-            min-width: 120px;
-        }
-
-        small {
-            display: block;
-            margin-top: 0.3rem;
-            font-size: 0.7rem;
-            color: #888;
-        }
-
-        .btn {
-            padding: 12px 28px;
-            border: none;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
-            margin-right: 0.8rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-primary {
-            background: var(--yellow);
-            color: var(--blue);
-        }
-
-        .btn-primary:hover {
-            background: var(--yellow-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 214, 0, 0.3);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 2px solid var(--yellow);
-            color: var(--yellow);
-        }
-
-        .btn-outline:hover {
-            background: var(--yellow);
-            color: var(--blue);
-            transform: translateY(-2px);
-        }
-
-        .btn-danger {
-            background: #DC2626;
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #B91C1C;
-            transform: translateY(-2px);
-        }
-
-        .btn-success {
-            background: #10B981;
-            color: white;
-        }
-
-        .btn-success:hover {
-            background: #059669;
-            transform: translateY(-2px);
-        }
-
+        body { background: var(--dark); color: var(--text-light); }
+        .card { background: var(--gray); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid var(--gray-light); max-width: 1400px; margin-left: auto; margin-right: auto; }
+        .card h2 { color: var(--yellow); margin-bottom: 1rem; font-size: 1.3rem; border-bottom: 2px solid var(--yellow); display: inline-block; padding-bottom: 0.3rem; }
+        .card h3 { color: var(--yellow); margin: 1rem 0 0.5rem 0; font-size: 1rem; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.3rem; font-weight: 500; color: var(--yellow); font-size: 0.85rem; }
+        input, select, textarea { width: 100%; padding: 12px 14px; background: var(--gray-light); border: 1px solid var(--blue-light); border-radius: 10px; color: white; font-size: 0.9rem; outline: none; transition: all 0.2s ease; }
+        input:focus, select:focus { border-color: var(--yellow); box-shadow: 0 0 0 3px rgba(255, 214, 0, 0.2); }
+        .form-row { display: flex; gap: 1rem; margin-bottom: 0.8rem; flex-wrap: wrap; }
+        .form-row input { flex: 1; min-width: 120px; }
+        small { display: block; margin-top: 0.3rem; font-size: 0.7rem; color: #888; }
+        .btn { padding: 12px 28px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; font-size: 0.9rem; margin-top: 0.5rem; margin-right: 0.8rem; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-primary { background: var(--yellow); color: var(--blue); }
+        .btn-primary:hover { background: var(--yellow-dark); transform: translateY(-2px); }
+        .btn-outline { background: transparent; border: 2px solid var(--yellow); color: var(--yellow); }
+        .btn-outline:hover { background: var(--yellow); color: var(--blue); transform: translateY(-2px); }
+        .btn-danger { background: #DC2626; color: white; }
+        .btn-danger:hover { background: #B91C1C; transform: translateY(-2px); }
+        .btn-success { background: #10B981; color: white; }
+        .btn-success:hover { background: #059669; transform: translateY(-2px); }
         @media (max-width: 640px) {
             .card { padding: 1rem; }
             .form-row { flex-direction: column; gap: 0.5rem; }
             .btn { width: 100%; margin-right: 0; margin-bottom: 0.5rem; justify-content: center; }
         }
-
-        .navbar {
-            background: rgba(10, 14, 26, 0.95);
-            backdrop-filter: blur(10px);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 2px solid var(--yellow);
-            padding: 0.8rem 2rem;
-        }
-
-        .nav-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo h1 {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--yellow);
-        }
-
-        .logo p {
-            font-size: 0.7rem;
-            color: var(--text-light);
-            letter-spacing: 1px;
-        }
-
-        .nav-menu {
-            display: flex;
-            gap: 1.5rem;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .nav-menu a {
-            color: var(--text-light);
-            text-decoration: none;
-            font-weight: 500;
-            cursor: pointer;
-            padding: 0.5rem 0;
-            transition: 0.2s;
-        }
-
-        .nav-menu a:hover, .nav-menu a.active {
-            color: var(--yellow);
-            border-bottom: 2px solid var(--yellow);
-        }
-
-        .hamburger {
-            display: none;
-            font-size: 1.8rem;
-            cursor: pointer;
-            color: var(--yellow);
-        }
-
-        .dark-toggle {
-            background: var(--gray);
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 30px;
-            color: var(--yellow);
-            cursor: pointer;
-            font-weight: 500;
-            transition: 0.2s;
-        }
-
-        .dark-toggle:hover {
-            background: var(--gray-light);
-        }
-
+        .navbar { background: rgba(10, 14, 26, 0.95); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid var(--yellow); padding: 0.8rem 2rem; }
+        .nav-container { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo h1 { font-size: 1.5rem; font-weight: 800; color: var(--yellow); }
+        .logo p { font-size: 0.7rem; color: var(--text-light); letter-spacing: 1px; }
+        .nav-menu { display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; }
+        .nav-menu a { color: var(--text-light); text-decoration: none; font-weight: 500; cursor: pointer; padding: 0.5rem 0; transition: 0.2s; }
+        .nav-menu a:hover, .nav-menu a.active { color: var(--yellow); border-bottom: 2px solid var(--yellow); }
+        .hamburger { display: none; font-size: 1.8rem; cursor: pointer; color: var(--yellow); }
+        .dark-toggle { background: var(--gray); border: none; padding: 0.5rem 1rem; border-radius: 30px; color: var(--yellow); cursor: pointer; font-weight: 500; }
+        .dark-toggle:hover { background: var(--gray-light); }
         @media (max-width: 768px) {
             .hamburger { display: block; }
-            .nav-menu {
-                position: fixed;
-                left: -100%;
-                top: 70px;
-                flex-direction: column;
-                background: var(--gray);
-                width: 100%;
-                text-align: center;
-                transition: 0.3s;
-                padding: 2rem 0;
-                gap: 1rem;
-                z-index: 999;
-            }
+            .nav-menu { position: fixed; left: -100%; top: 70px; flex-direction: column; background: var(--gray); width: 100%; text-align: center; transition: 0.3s; padding: 2rem 0; gap: 1rem; z-index: 999; }
             .nav-menu.active { left: 0; }
             .navbar { padding: 0.8rem 1rem; }
         }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: var(--gray);
-            border-radius: 16px;
-            padding: 1.5rem;
-            text-align: center;
-            border-left: 4px solid var(--yellow);
-            transition: transform 0.2s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .stat-card i {
-            font-size: 2rem;
-            color: var(--yellow);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-card h2 {
-            font-size: 2rem;
-            color: white;
-        }
-
-        .table-wrapper {
-            overflow-x: auto;
-            border-radius: 12px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.85rem;
-        }
-
-        th, td {
-            padding: 14px 12px;
-            text-align: left;
-            border-bottom: 1px solid var(--gray-light);
-            vertical-align: middle;
-        }
-
-        th {
-            color: var(--yellow);
-            font-weight: 600;
-            background: var(--gray-light);
-            white-space: nowrap;
-        }
-
-        td {
-            word-break: break-word;
-        }
-
-        .slot-badge {
-            display: inline-block;
-            background: linear-gradient(135deg, var(--yellow), #FFB800);
-            color: var(--blue);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-weight: 800;
-            font-size: 0.75rem;
-            min-width: 55px;
-            text-align: center;
-            letter-spacing: 0.5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            white-space: nowrap;
-        }
-
+        .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .stat-card { background: var(--gray); border-radius: 16px; padding: 1.5rem; text-align: center; border-left: 4px solid var(--yellow); transition: transform 0.2s; }
+        .stat-card:hover { transform: translateY(-5px); }
+        .stat-card i { font-size: 2rem; color: var(--yellow); margin-bottom: 0.5rem; }
+        .stat-card h2 { font-size: 2rem; color: white; }
+        .table-wrapper { overflow-x: auto; border-radius: 12px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th, td { padding: 14px 12px; text-align: left; border-bottom: 1px solid var(--gray-light); vertical-align: middle; }
+        th { color: var(--yellow); font-weight: 600; background: var(--gray-light); white-space: nowrap; }
+        .slot-badge { display: inline-block; background: linear-gradient(135deg, var(--yellow), #FFB800); color: var(--blue); padding: 5px 12px; border-radius: 20px; font-weight: 800; font-size: 0.75rem; min-width: 55px; text-align: center; }
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; white-space: nowrap; }
         .badge-active { background: #10B981; color: white; }
         .badge-cancelled { background: #EF4444; color: white; }
         .badge-banned { background: #F59E0B; color: white; }
         .badge-winner1 { background: #FFD600; color: #1A1F2E; }
         .badge-winner2 { background: #C0C0C0; color: #1A1F2E; }
-
-        .action-btn {
-            background: var(--gray-light);
-            border: none;
-            color: var(--yellow);
-            cursor: pointer;
-            margin: 0 3px;
-            font-size: 0.85rem;
-            padding: 8px 12px;
-            border-radius: 8px;
-            transition: all 0.2s;
-        }
-
-        .action-btn:hover {
-            background: var(--yellow);
-            color: var(--blue);
-            transform: scale(1.05);
-        }
-
-        .search-bar {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            margin-bottom: 1.5rem;
-            align-items: center;
-        }
-
-        .search-bar input, .search-bar select {
-            padding: 12px 16px;
-            background: var(--gray-light);
-            border: 1px solid var(--blue-light);
-            border-radius: 10px;
-            color: white;
-            font-size: 0.85rem;
-            flex: 1;
-            min-width: 150px;
-        }
-
-        .search-bar button {
-            margin-top: 0;
-            white-space: nowrap;
-        }
-
-        .hero {
-            text-align: center;
-            padding: 3rem 1rem;
-            background: linear-gradient(135deg, var(--blue), var(--dark));
-            border-radius: 20px;
-            margin-bottom: 2rem;
-        }
-
-        .hero h1 {
-            font-size: 2.5rem;
-            color: var(--yellow);
-        }
-
-        .hero-buttons {
-            margin-top: 1.5rem;
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .loading {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-        }
-
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid var(--gray-light);
-            border-top-color: var(--yellow);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .scroll-top {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: var(--yellow);
-            color: var(--blue);
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            border: none;
-            display: none;
-            transition: 0.2s;
-        }
-
-        .scroll-top:hover {
-            transform: scale(1.1);
-        }
-
-        .prize-card {
-            background: var(--gray-light);
-            border-radius: 16px;
-            padding: 1.5rem;
-            text-align: center;
-            margin-bottom: 1rem;
-        }
-
-        .prize-card img {
-            max-width: 100%;
-            border-radius: 12px;
-            margin-top: 1rem;
-        }
-
-        .winner-card {
-            text-align: center;
-            padding: 2rem;
-            background: linear-gradient(135deg, #FFD60020, #0A2E5C20);
-            border-radius: 20px;
-        }
-
+        .action-btn { background: var(--gray-light); border: none; color: var(--yellow); cursor: pointer; margin: 0 3px; font-size: 0.85rem; padding: 8px 12px; border-radius: 8px; transition: all 0.2s; }
+        .action-btn:hover { background: var(--yellow); color: var(--blue); transform: scale(1.05); }
+        .search-bar { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; align-items: center; }
+        .search-bar input, .search-bar select { padding: 12px 16px; background: var(--gray-light); border: 1px solid var(--blue-light); border-radius: 10px; color: white; font-size: 0.85rem; flex: 1; min-width: 150px; }
+        .hero { text-align: center; padding: 3rem 1rem; background: linear-gradient(135deg, var(--blue), var(--dark)); border-radius: 20px; margin-bottom: 2rem; }
+        .hero h1 { font-size: 2.5rem; color: var(--yellow); }
+        .hero-buttons { margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+        .loading { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+        .spinner { width: 50px; height: 50px; border: 4px solid var(--gray-light); border-top-color: var(--yellow); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .scroll-top { position: fixed; bottom: 30px; right: 30px; background: var(--yellow); color: var(--blue); width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; display: none; transition: 0.2s; }
+        .scroll-top:hover { transform: scale(1.1); }
+        .prize-card { background: var(--gray-light); border-radius: 16px; padding: 1.5rem; text-align: center; margin-bottom: 1rem; }
+        .winner-card { text-align: center; padding: 2rem; background: linear-gradient(135deg, #FFD60020, #0A2E5C20); border-radius: 20px; }
+        .points-container { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+        .point-chip { background: var(--gray-light); border-radius: 30px; padding: 6px 12px; display: flex; align-items: center; gap: 8px; }
+        .point-chip span { color: #8ba0c0; font-size: 0.75rem; }
+        .point-chip input { width: 55px; background: var(--dark); border: 1px solid var(--gray-light); border-radius: 8px; padding: 4px 6px; color: var(--yellow); text-align: center; }
+        .match-card { background: var(--gray-light); border-radius: 16px; padding: 16px; margin-bottom: 20px; border: 1px solid var(--border); }
+        .match-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+        .match-title { font-size: 1rem; font-weight: 600; color: var(--yellow); }
+        .total-cell { color: var(--yellow); font-weight: 700; }
+        .rank-list { display: flex; flex-direction: column; gap: 8px; }
+        .rank-item { background: var(--gray-light); border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+        .rank-item.top1 { background: #2a1f0a; border-left: 4px solid #fbbf24; }
+        .rank-item.top2 { background: #1a1f2a; border-left: 4px solid #94a3b8; }
+        .rank-item.top3 { background: #2a1a1a; border-left: 4px solid #cd7f32; }
+        .rank-number { font-weight: 800; font-size: 1.1rem; min-width: 50px; }
+        .top1 .rank-number { color: #fbbf24; }
+        .top2 .rank-number { color: #94a3b8; }
+        .top3 .rank-number { color: #b87333; }
+        .rank-team { flex: 2; font-weight: 600; }
+        .rank-score { font-weight: 800; color: #fbbf24; }
+        .empty-state { text-align: center; padding: 40px; color: #888; }
         @media (max-width: 768px) {
             .container { padding: 1rem; }
             .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
             .stat-card { padding: 1rem; }
             .stat-card h2 { font-size: 1.5rem; }
             .hero h1 { font-size: 1.8rem; }
-            .table-wrapper { overflow-x: auto; }
             table { min-width: 650px; }
             th, td { padding: 10px 8px; font-size: 0.75rem; }
-            .action-btn { padding: 5px 8px; font-size: 0.7rem; }
-            .slot-badge { font-size: 0.7rem; padding: 3px 8px; min-width: 45px; }
+            .rank-item { flex-direction: column; align-items: flex-start; gap: 6px; }
         }
     </style>
 </head>
 <body>
 
-<div id="loading" class="loading" style="display: flex;">
-    <div class="spinner"></div>
-</div>
+<div id="loading" class="loading" style="display: flex;"><div class="spinner"></div></div>
 
 <nav class="navbar">
     <div class="nav-container">
-        <div class="logo">
-            <h1>FAST TOURNAMENT SQUAD</h1>
-            <p>By JB Tokies</p>
-        </div>
-        <div class="hamburger" id="hamburger">
-            <i class="fas fa-bars"></i>
-        </div>
+        <div class="logo"><h1>FAST TOURNAMENT SQUAD</h1><p>By JB Tokies</p></div>
+        <div class="hamburger" id="hamburger"><i class="fas fa-bars"></i></div>
         <div class="nav-menu" id="navMenu">
             <a data-page="dashboard" class="active">Dashboard</a>
             <a data-page="register">Register</a>
@@ -532,14 +137,13 @@
             <a data-page="banned">Banned Team</a>
             <a data-page="winners">Winner</a>
             <a data-page="prize">Hadiah</a>
-            <a data-page="admin">Admin Panel</a>
+            <a data-page="score">Score</a>
             <button class="dark-toggle" id="darkModeBtn"><i class="fas fa-moon"></i> Mode</button>
         </div>
     </div>
 </nav>
 
 <div id="mainContent" class="container"></div>
-
 <button class="scroll-top" id="scrollTopBtn"><i class="fas fa-arrow-up"></i></button>
 
 <script>
@@ -552,153 +156,130 @@
         messagingSenderId: "883138314132",
         appId: "1:883138314132:web:14b8b27beb05baf13a9981"
     };
-    
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     
     // ========== GLOBAL VARIABLES ==========
     let currentPage = "dashboard";
-    let adminLoggedIn = false;
     let countdownInterval = null;
     
-    const SLOTS = ["A1","B2","C3","D4","E5","F6","G7","H8","I9","J10","K11","L12","M13","N14","O15","P16","Q17","R18","S19","T20","U21","V22","W23","X24","Y25"];
+    // Score Manager Variables (Read Only)
+    let scoreTeams = [];
+    let scoreMatches = [];
+    let scoreRankPoints = { 1: 30, 2: 20, 3: 15, 4: 12, 5: 10, 6: 8, 7: 6, 8: 4, 9: 2, 10: 1 };
+    let scoreKillPoint = 1;
     
+    const SLOTS = ["A1","B2","C3","D4","E5","F6","G7","H8","I9","J10","K11","L12","M13","N14","O15","P16","Q17","R18","S19","T20","U21","V22","W23","X24","Y25"];
     let countdownTarget = new Date();
     countdownTarget.setDate(countdownTarget.getDate() + 7);
     countdownTarget.setHours(20, 0, 0, 0);
     
     // ========== HELPER FUNCTIONS ==========
-    function showLoading(show) {
-        document.getElementById("loading").style.display = show ? "flex" : "none";
-    }
-    
+    function showLoading(show) { document.getElementById("loading").style.display = show ? "flex" : "none"; }
     function showToast(type, message) {
-        Swal.fire({
-            title: type === "success" ? "Berhasil!" : type === "error" ? "Gagal!" : "Info",
-            text: message,
-            icon: type,
-            timer: 2000,
-            showConfirmButton: false,
-            background: "#1A1F2E",
-            color: "#fff"
-        });
+        Swal.fire({ title: type === "success" ? "Berhasil!" : "Error", text: message, icon: type, timer: 2000, showConfirmButton: false, background: "#1A1F2E", color: "#fff" });
     }
+    function escapeHtml(text) { if (!text) return ''; return text.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'); }
+    function encryptPassword(pwd) { return btoa(pwd); }
+    function formatDate(dateStr) { return dateStr ? new Date(dateStr).toLocaleString('id-ID') : "-"; }
     
     async function getAvailableSlot(teams) {
         const takenSlots = teams.filter(t => t.status === "active").map(t => t.slot);
-        for (let slot of SLOTS) {
-            if (!takenSlots.includes(slot)) return slot;
-        }
+        for (let slot of SLOTS) if (!takenSlots.includes(slot)) return slot;
         return null;
-    }
-    
-    function encryptPassword(pwd) {
-        return btoa(pwd);
-    }
-    
-    function formatDate(dateStr) {
-        if (!dateStr) return "-";
-        return new Date(dateStr).toLocaleString('id-ID');
-    }
-    
-    function escapeHtml(text) {
-        if (!text) return '';
-        return text.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
     }
     
     async function loadCountdownSetting() {
         const settingDoc = await db.collection("settings").doc("tournament").get();
-        if (settingDoc.exists && settingDoc.data().countdownDate) {
-            countdownTarget = new Date(settingDoc.data().countdownDate);
-        }
-    }
-    
-    async function saveCountdownSetting(newDate) {
-        await db.collection("settings").doc("tournament").set({ countdownDate: newDate.toISOString() });
-        countdownTarget = newDate;
+        if (settingDoc.exists && settingDoc.data().countdownDate) countdownTarget = new Date(settingDoc.data().countdownDate);
     }
     
     function startCountdown(elementId) {
         if (countdownInterval) clearInterval(countdownInterval);
-        
         function updateCountdown() {
-            const now = new Date();
-            const diff = countdownTarget - now;
-            if (diff <= 0) {
-                if (document.getElementById(elementId)) {
-                    document.getElementById(elementId).innerText = "TOURNAMENT LIVE!";
-                }
-                return;
-            }
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff % (86400000)) / 3600000);
-            const minutes = Math.floor((diff % 3600000) / 60000);
-            const seconds = Math.floor((diff % 60000) / 1000);
-            if (document.getElementById(elementId)) {
-                document.getElementById(elementId).innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-            }
+            const diff = countdownTarget - new Date();
+            if (diff <= 0) { if (document.getElementById(elementId)) document.getElementById(elementId).innerText = "TOURNAMENT LIVE!"; return; }
+            const days = Math.floor(diff / 86400000), hours = Math.floor((diff % 86400000) / 3600000), minutes = Math.floor((diff % 3600000) / 60000), seconds = Math.floor((diff % 60000) / 1000);
+            if (document.getElementById(elementId)) document.getElementById(elementId).innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
         }
-        
         updateCountdown();
         countdownInterval = setInterval(updateCountdown, 1000);
     }
     
+    // ========== SCORE MANAGER FUNCTIONS ==========
+    async function loadScoreData() {
+        const teamsSnapshot = await db.collection("teams").where("status", "==", "active").get();
+        scoreTeams = teamsSnapshot.docs.map(doc => ({ id: doc.id, name: doc.data().teamName, slot: doc.data().slot || '-', perwakilan: doc.data().perwakilan || '-' }));
+        const savedMatches = localStorage.getItem('jb_score_matches');
+        if (savedMatches) scoreMatches = JSON.parse(savedMatches);
+        const savedRankPoints = localStorage.getItem('jb_score_rankPoints');
+        if (savedRankPoints) scoreRankPoints = JSON.parse(savedRankPoints);
+        const savedKillPoint = localStorage.getItem('jb_score_killPoint');
+        if (savedKillPoint) scoreKillPoint = parseFloat(savedKillPoint);
+    }
+    
+    function calcScore(rank, kills) { return (scoreRankPoints[rank] || 0) + (kills * scoreKillPoint); }
+    function getTeamScore(teamId) {
+        let total = 0;
+        scoreMatches.forEach(match => { const result = match.results.find(r => r.teamId === teamId); if (result) total += calcScore(result.rank, result.kills); });
+        return total;
+    }
+    
+    function renderScoreViewer() {
+        const html = `
+            <div class="card"><h2>Sistem Penilaian Turnamen</h2>
+                <div class="stats-grid" style="grid-template-columns: repeat(2,1fr); margin-bottom:0;">
+                    <div class="stat-card"><i class="fas fa-trophy"></i><h2>${Object.keys(scoreRankPoints).length}</h2><p>Level Peringkat</p></div>
+                    <div class="stat-card"><i class="fas fa-skull-crossbones"></i><h2>${scoreKillPoint}</h2><p>Poin per Kill</p></div>
+                </div>
+                <div style="margin-top:16px;"><h3 style="color:var(--yellow); margin-bottom:8px;">Poin per Peringkat</h3>
+                    <div style="display:flex; flex-wrap:wrap; gap:8px;">${Object.entries(scoreRankPoints).sort((a,b)=>a[0]-b[0]).map(([rank, points]) => `<span class="slot-badge" style="background:var(--gray-light); color:var(--yellow);">P${rank}: ${points} pts</span>`).join('')}</div>
+                </div>
+            </div>
+            <div class="card"><h2>🏆 Daftar Tim & Skor Sementara</h2>
+                <div class="table-wrapper"><table><thead><tr><th>No</th><th>Slot</th><th>Nama Tim</th><th>Perwakilan</th><th>Total Skor</th></tr></thead>
+                <tbody>${scoreTeams.length === 0 ? '<tr><td colspan="5" class="empty-state">Belum ada tim aktif</td></tr>' : scoreTeams.map((team, idx) => `<tr><td>${idx+1}</td><td><span class="slot-badge">${escapeHtml(team.slot)}</span></td><td><strong>${escapeHtml(team.name)}</strong></td><td>${escapeHtml(team.perwakilan)}</td><td class="total-cell">${getTeamScore(team.id)} pts</td></tr>`).join('')}</tbody>
+                </table>
+            </div>
+            <div class="card"><h2>Hasil Pertandingan</h2>
+                ${scoreMatches.length === 0 ? '<div class="empty-state">Belum ada match</div>' : `<div class="match-list">${scoreMatches.map((match, mIdx) => `<div class="match-item"><div class="match-title-bar"><span class="match-name">🏆 ${escapeHtml(match.matchName)}</span><span class="points-badge">${match.results.length} Tim</span></div>
+                <div class="table-wrapper"><table><thead><tr><th>Peringkat</th><th>Tim</th><th>Slot</th><th>Kill</th><th>Skor Match</th></tr></thead>
+                <tbody>${match.results.length === 0 ? '<tr><td colspan="5" class="empty-state">Belum ada hasil</td></tr>' : [...match.results].sort((a,b)=>a.rank-b.rank).map(result => { const team = scoreTeams.find(t => t.id === result.teamId); return `<tr><td><span class="slot-badge" style="background:var(--yellow); color:var(--blue);">#${result.rank}</span></td><td><strong>${team ? escapeHtml(team.name) : 'Unknown'}</strong></td><td>${team ? escapeHtml(team.slot) : '-'}</td><td>${result.kills} kill</td><td class="total-cell">${calcScore(result.rank, result.kills)} pts</td></tr>`; }).join('')}</tbody>
+                </table></div></div>`).join('')}</div>`}
+            </div>
+            <div class="card"><h2>🏅 Klasemen Akhir</h2>
+                <div class="rank-list">${scoreTeams.length === 0 ? '<div class="empty-state">Belum ada tim</div>' : [...scoreTeams].sort((a,b)=>getTeamScore(b.id)-getTeamScore(a.id)).map((team,pos) => `<div class="rank-item ${pos===0?'top1':pos===1?'top2':pos===2?'top3':''}"><div class="rank-number">${pos===0?'1st':pos===1?'2nd':pos===2?'3rd':`${pos+1}.`}</div><div class="rank-team"><span class="slot-badge" style="background:var(--gray-light); margin-right:10px;">${escapeHtml(team.slot)}</span> ${escapeHtml(team.name)}</div><div class="rank-score">${getTeamScore(team.id)} pts</div></div>`).join('')}</div>
+            </div>
+        `;
+        document.getElementById("mainContent").innerHTML = html;
+    }
+    
     // ========== NAVIGATION ==========
-    function navigateTo(page) {
-        currentPage = page;
-        document.querySelectorAll('.nav-menu a').forEach(link => {
-            if (link.getAttribute('data-page') === page) {
-                link.classList.add('active');
-            } else {
-                link.classList.remove('active');
-            }
-        });
-        if (window.innerWidth <= 768) {
-            document.getElementById('navMenu').classList.remove('active');
-        }
-        renderPage();
+    function navigateTo(page) { 
+        currentPage = page; 
+        document.querySelectorAll('.nav-menu a').forEach(link => { 
+            if (link.getAttribute('data-page') === page) link.classList.add('active'); 
+            else link.classList.remove('active'); 
+        }); 
+        if (window.innerWidth <= 768) document.getElementById('navMenu').classList.remove('active'); 
+        renderPage(); 
     }
     
     // ========== RENDER PAGE ==========
     async function renderPage() {
-        showLoading(true);
+        showLoading(true); 
         await loadCountdownSetting();
-        
-        if (currentPage === "admin" && !adminLoggedIn) {
-            renderAdminLogin();
-            showLoading(false);
-            return;
-        }
+        await loadScoreData();
         
         const teamsSnapshot = await db.collection("teams").orderBy("createdAt", "desc").get();
         const teams = teamsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        
         const bannedSnapshot = await db.collection("bannedTeams").get();
         const bannedTeams = bannedSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        
         const winnerDoc = await db.collection("settings").doc("winner").get();
         let winner = winnerDoc.exists ? winnerDoc.data() : null;
-        
         if (winner) {
-            if (winner.winner1Id) {
-                const w1Doc = await db.collection("teams").doc(winner.winner1Id).get();
-                if (w1Doc.exists) {
-                    winner.winner1Name = w1Doc.data().teamName;
-                    winner.winner1Wakil = w1Doc.data().perwakilan;
-                }
-            }
-            if (winner.winner2Id) {
-                const w2Doc = await db.collection("teams").doc(winner.winner2Id).get();
-                if (w2Doc.exists) {
-                    winner.winner2Name = w2Doc.data().teamName;
-                    winner.winner2Wakil = w2Doc.data().perwakilan;
-                }
-            }
+            if (winner.winner1Id) { const w1 = await db.collection("teams").doc(winner.winner1Id).get(); if (w1.exists) { winner.winner1Name = w1.data().teamName; winner.winner1Wakil = w1.data().perwakilan; } }
+            if (winner.winner2Id) { const w2 = await db.collection("teams").doc(winner.winner2Id).get(); if (w2.exists) { winner.winner2Name = w2.data().teamName; winner.winner2Wakil = w2.data().perwakilan; } }
         }
         
         switch(currentPage) {
@@ -708,7 +289,7 @@
             case "banned": renderBannedTeams(bannedTeams); break;
             case "winners": renderWinnerPage(winner); break;
             case "prize": renderPrizePage(); break;
-            case "admin": renderAdminPanel(teams, bannedTeams, winner); break;
+            case "score": renderScoreViewer(); break;
         }
         showLoading(false);
     }
@@ -716,447 +297,139 @@
     // ========== DASHBOARD ==========
     function renderDashboard(teams) {
         const activeTeams = teams.filter(t => t.status === "active");
-        const totalTeams = activeTeams.length;
-        const slotsRemaining = SLOTS.length - totalTeams;
-        const totalPlayers = activeTeams.reduce((sum, t) => sum + (t.players?.length || 0), 0);
-        const latestTeam = activeTeams[0]?.teamName || "-";
-        
-        const html = `
-            <div class="hero">
-                <h1>FAST TOURNAMENT SQUAD</h1>
-                <p>By JB Tokies | Kompetisi Squad Online Tercepat</p>
-                <div class="hero-buttons">
-                    <button class="btn btn-primary" id="heroRegister"><i class="fas fa-pen-alt"></i> Register Now</button>
-                    <button class="btn btn-outline" id="heroParticipants"><i class="fas fa-users"></i> View Participants</button>
-                </div>
-            </div>
-            <div class="stats-grid">
-                <div class="stat-card"><i class="fas fa-users"></i><h2>${totalTeams}</h2><p>Total Team</p></div>
-                <div class="stat-card"><i class="fas fa-chair"></i><h2>${totalTeams}/${SLOTS.length}</h2><p>Slot Terisi</p></div>
-                <div class="stat-card"><i class="fas fa-ticket-alt"></i><h2>${slotsRemaining}</h2><p>Slot Tersisa</p></div>
-                <div class="stat-card"><i class="fas fa-user-friends"></i><h2>${totalPlayers}</h2><p>Total Player</p></div>
-                <div class="stat-card"><i class="fas fa-clock"></i><h2>${escapeHtml(latestTeam)}</h2><p>Team Terbaru</p></div>
-            </div>
-            <div class="card">
-                <h3><i class="fas fa-hourglass-half"></i> Countdown Tournament</h3>
-                <h2 id="countdown" style="color: var(--yellow); font-size: 2rem;">-- : -- : --</h2>
-                <p>Siapkan squad terbaikmu! Slot terbatas.</p>
-            </div>
-        `;
-        
+        const html = `<div class="hero"><h1>FAST TOURNAMENT SQUAD</h1><p>By JB Tokies | Kompetisi Squad Online Tercepat</p><div class="hero-buttons"><button class="btn btn-primary" id="heroRegister"><i class="fas fa-pen-alt"></i> Register Now</button><button class="btn btn-outline" id="heroParticipants"><i class="fas fa-users"></i> View Participants</button><button class="btn btn-outline" id="heroScore"><i class="fas fa-chart-line"></i> Score</button></div></div>
+        <div class="stats-grid"><div class="stat-card"><i class="fas fa-users"></i><h2>${activeTeams.length}</h2><p>Total Team</p></div><div class="stat-card"><i class="fas fa-chair"></i><h2>${activeTeams.length}/${SLOTS.length}</h2><p>Slot Terisi</p></div><div class="stat-card"><i class="fas fa-ticket-alt"></i><h2>${SLOTS.length - activeTeams.length}</h2><p>Slot Tersisa</p></div><div class="stat-card"><i class="fas fa-user-friends"></i><h2>${activeTeams.reduce((s,t)=>s+(t.players?.length||0),0)}</h2><p>Total Player</p></div></div>
+        <div class="card"><h3><i class="fas fa-hourglass-half"></i> Countdown Tournament</h3><h2 id="countdown" style="color:var(--yellow);font-size:2rem;">--:--:--</h2><p>Siapkan squad terbaikmu! Slot terbatas.</p></div>`;
         document.getElementById("mainContent").innerHTML = html;
         document.getElementById("heroRegister")?.addEventListener("click", () => navigateTo("register"));
         document.getElementById("heroParticipants")?.addEventListener("click", () => navigateTo("participants"));
+        document.getElementById("heroScore")?.addEventListener("click", () => navigateTo("score"));
         startCountdown("countdown");
     }
     
     // ========== REGISTER FORM ==========
     function renderRegisterForm(teams) {
-        const html = `
-            <div class="card">
-                <h2><i class="fas fa-pen-alt"></i> Form Pendaftaran Team</h2>
-                <form id="registerForm">
-                    <div class="form-group"><label>Nama Perwakilan *</label><input type="text" id="wakil" required></div>
-                    <div class="form-group"><label>Nomor WhatsApp *</label><input type="tel" id="whatsapp" placeholder="08xxxxxxxxxx" required></div>
-                    <div class="form-group"><label>Nama Team *</label><input type="text" id="teamName" required></div>
-                    <h3>Pemain Utama (4 orang)</h3>
-                    ${[1,2,3,4].map(i => `<div class="form-row"><input type="text" id="nick${i}" placeholder="Nickname Player ${i}" required><input type="text" id="uid${i}" placeholder="UID Player ${i}" required></div>`).join('')}
-                    <h3>Pemain Cadangan</h3>
-                    <div class="form-row"><input type="text" id="nickCad" placeholder="Nickname Cadangan"><input type="text" id="uidCad" placeholder="UID Cadangan"></div>
-                    <div class="form-group"><label>Password Team (min 6 karakter) *</label><input type="password" id="password" minlength="6" required><small>Password untuk edit atau cancel team</small></div>
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Submit Registrasi</button>
-                    <button type="button" class="btn btn-outline" id="resetForm"><i class="fas fa-undo"></i> Reset Form</button>
-                </form>
-            </div>
-        `;
-        
+        const html = `<div class="card"><h2><i class="fas fa-pen-alt"></i> Form Pendaftaran Team</h2><form id="registerForm"><div class="form-group"><label>Nama Perwakilan *</label><input type="text" id="wakil" required></div><div class="form-group"><label>Nomor WhatsApp *</label><input type="tel" id="whatsapp" placeholder="08xxxxxxxxxx" required></div><div class="form-group"><label>Nama Team *</label><input type="text" id="teamName" required></div><h3>Pemain Utama (4 orang)</h3>${[1,2,3,4].map(i => `<div class="form-row"><input type="text" id="nick${i}" placeholder="Nickname Player ${i}" required><input type="text" id="uid${i}" placeholder="UID Player ${i}" required></div>`).join('')}<h3>Pemain Cadangan</h3><div class="form-row"><input type="text" id="nickCad" placeholder="Nickname Cadangan"><input type="text" id="uidCad" placeholder="UID Cadangan"></div><div class="form-group"><label>Password Team (min 6 karakter) *</label><input type="password" id="password" minlength="6" required><small>Password untuk edit atau cancel team</small></div><button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Submit Registrasi</button><button type="button" class="btn btn-outline" id="resetForm"><i class="fas fa-undo"></i> Reset Form</button></form></div>`;
         document.getElementById("mainContent").innerHTML = html;
-        
         document.getElementById("registerForm").addEventListener("submit", async (e) => {
             e.preventDefault();
-            
-            const wakil = document.getElementById("wakil").value.trim();
-            const whatsapp = document.getElementById("whatsapp").value.trim();
-            const teamName = document.getElementById("teamName").value.trim();
-            const password = document.getElementById("password").value;
-            
-            if (!/^08[0-9]{8,13}$/.test(whatsapp)) {
-                showToast("error", "Nomor WhatsApp tidak valid (mulai dengan 08)");
-                return;
-            }
-            if (password.length < 6) {
-                showToast("error", "Password minimal 6 karakter");
-                return;
-            }
-            
+            const wakil = document.getElementById("wakil").value.trim(), whatsapp = document.getElementById("whatsapp").value.trim(), teamName = document.getElementById("teamName").value.trim(), password = document.getElementById("password").value;
+            if (!/^08[0-9]{8,13}$/.test(whatsapp)) { showToast("error", "Nomor WhatsApp tidak valid"); return; }
+            if (password.length < 6) { showToast("error", "Password minimal 6 karakter"); return; }
             const bannedCheck = await db.collection("bannedTeams").where("teamName", "==", teamName).get();
-            if (!bannedCheck.empty) {
-                showToast("error", "Team ini telah di-BAN dan tidak bisa mendaftar di event ini!");
-                return;
-            }
-            
+            if (!bannedCheck.empty) { showToast("error", "Team ini telah di-BAN!"); return; }
             const players = [];
-            for (let i = 1; i <= 4; i++) {
-                const nick = document.getElementById(`nick${i}`).value.trim();
-                const uid = document.getElementById(`uid${i}`).value.trim();
-                if (!nick || !uid) {
-                    showToast("error", `Data Player ${i} tidak lengkap`);
-                    return;
-                }
-                if (!/^\d+$/.test(uid)) {
-                    showToast("error", `UID Player ${i} harus angka`);
-                    return;
-                }
-                players.push({ nick, uid });
-            }
-            
-            const nickCad = document.getElementById("nickCad").value.trim();
-            const uidCad = document.getElementById("uidCad").value.trim();
-            if (nickCad && uidCad) {
-                if (!/^\d+$/.test(uidCad)) {
-                    showToast("error", "UID Cadangan harus angka");
-                    return;
-                }
-                players.push({ nick: nickCad, uid: uidCad });
-            }
-            
-            const nicknames = players.map(p => p.nick.toLowerCase());
-            if (new Set(nicknames).size !== nicknames.length) {
-                showToast("error", "Nickname tidak boleh sama dalam satu team");
-                return;
-            }
-            
-            const existingTeam = await db.collection("teams").where("teamName", "==", teamName).get();
-            if (!existingTeam.empty) {
-                showToast("error", "Nama Team sudah terdaftar!");
-                return;
-            }
-            
-            const allTeams = await db.collection("teams").get();
-            const activeTeams = allTeams.docs.map(d => ({ id: d.id, ...d.data() })).filter(t => t.status === "active");
-            const slot = await getAvailableSlot(activeTeams);
-            
-            if (!slot) {
-                showToast("error", "Maaf, slot sudah penuh!");
-                return;
-            }
-            
+            for (let i = 1; i <= 4; i++) { const nick = document.getElementById(`nick${i}`).value.trim(), uid = document.getElementById(`uid${i}`).value.trim(); if (!nick || !uid) { showToast("error", `Data Player ${i} tidak lengkap`); return; } if (!/^\d+$/.test(uid)) { showToast("error", `UID Player ${i} harus angka`); return; } players.push({ nick, uid }); }
+            const nickCad = document.getElementById("nickCad").value.trim(), uidCad = document.getElementById("uidCad").value.trim();
+            if (nickCad && uidCad) { if (!/^\d+$/.test(uidCad)) { showToast("error", "UID Cadangan harus angka"); return; } players.push({ nick: nickCad, uid: uidCad }); }
+            if (new Set(players.map(p=>p.nick.toLowerCase())).size !== players.length) { showToast("error", "Nickname tidak boleh sama"); return; }
+            const existing = await db.collection("teams").where("teamName", "==", teamName).get();
+            if (!existing.empty) { showToast("error", "Nama Team sudah terdaftar!"); return; }
+            const allTeams = (await db.collection("teams").get()).docs.map(d=>({id:d.id,...d.data()})).filter(t=>t.status==="active");
+            const slot = await getAvailableSlot(allTeams);
+            if (!slot) { showToast("error", "Slot sudah penuh!"); return; }
             showLoading(true);
-            await db.collection("teams").add({
-                perwakilan: wakil, whatsapp: whatsapp, teamName: teamName,
-                players: players, password: encryptPassword(password),
-                slot: slot, status: "active", createdAt: new Date().toISOString()
-            });
-            await db.collection("logs").add({ teamName: teamName, action: "Registrasi baru", time: new Date().toISOString() });
+            await db.collection("teams").add({ perwakilan: wakil, whatsapp, teamName, players, password: encryptPassword(password), slot, status: "active", createdAt: new Date().toISOString() });
+            await db.collection("logs").add({ teamName, action: "Registrasi baru", time: new Date().toISOString() });
             showLoading(false);
             showToast("success", `Pendaftaran berhasil! Slot: ${slot}`);
             navigateTo("participants");
         });
-        
-        document.getElementById("resetForm").addEventListener("click", () => {
-            document.getElementById("registerForm").reset();
-        });
+        document.getElementById("resetForm").addEventListener("click", () => document.getElementById("registerForm").reset());
     }
     
     // ========== PARTICIPANTS PAGE ==========
     async function renderParticipants(teams, winner) {
-        let currentTeams = teams.filter(t => t.status === "active").sort((a, b) => {
-            return SLOTS.indexOf(a.slot) - SLOTS.indexOf(b.slot);
-        });
-        
+        let currentTeams = teams.filter(t => t.status === "active").sort((a,b)=>SLOTS.indexOf(a.slot)-SLOTS.indexOf(b.slot));
         const renderTable = (data) => {
-            const html = `
-                <div class="search-bar">
-                    <input type="text" id="searchTeam" placeholder=Cari Nama Team...">
-                    <input type="text" id="searchWakil" placeholder=Cari Perwakilan...">
-                    <select id="filterSlot"><option value="all">Semua Slot</option>${SLOTS.map(s => `<option value="${s}">Slot ${s}</option>`).join('')}</select>
-                    <button class="btn btn-outline" id="exportBtn"><i class="fas fa-download"></i> Export CSV</button>
-                </div>
-                <div class="card">
-                    <div class="table-wrapper">
-                        <table>
-                            <thead><tr><th>No</th><th>Slot</th><th>Nama Team</th><th>Perwakilan</th><th>Status</th><th>Aksi</th></tr></thead>
-                            <tbody>
-                                ${data.map((team, idx) => {
-                                    const isWinner1 = winner?.winner1Name === team.teamName;
-                                    const isWinner2 = winner?.winner2Name === team.teamName;
-                                    let winnerBadge = '';
-                                    if (isWinner1) winnerBadge = ' <span class="badge badge-winner1">🏆 JUARA 1</span>';
-                                    else if (isWinner2) winnerBadge = ' <span class="badge badge-winner2">🥈 JUARA 2</span>';
-                                    return `<tr><td style="text-align:center">${idx+1}</td><td><span class="slot-badge">${team.slot}</span></td><td><strong>${escapeHtml(team.teamName)}</strong></td><td>${escapeHtml(team.perwakilan)}</td><td><span class="badge badge-active">Active</span>${winnerBadge}</td><td><button class="action-btn" onclick="viewDetail('${team.id}')" title="Detail"><i class="fas fa-eye"></i></button><button class="action-btn" onclick="editTeamFull('${team.id}')" title="Edit"><i class="fas fa-edit"></i></button><button class="action-btn" onclick="cancelTeam('${team.id}')" title="Cancel"><i class="fas fa-trash"></i></button><button class="action-btn" onclick="copyWhatsapp('${team.whatsapp}')" title="WhatsApp"><i class="fab fa-whatsapp"></i></button></td></tr>`;
-                                }).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            `;
+            const html = `<div class="search-bar"><input type="text" id="searchTeam" placeholder="🔍 Cari Nama Team..."><input type="text" id="searchWakil" placeholder=" Cari Perwakilan..."><select id="filterSlot"><option value="all"> Semua Slot</option>${SLOTS.map(s=>`<option value="${s}">Slot ${s}</option>`).join('')}</select><button class="btn btn-outline" id="exportBtn"><i class="fas fa-download"></i> Export CSV</button></div>
+            <div class="card"><div class="table-wrapper"><table><thead><tr><th>No</th><th>Slot</th><th>Nama Team</th><th>Perwakilan</th><th>Status</th><th>Aksi</th></tr></thead><tbody>${data.map((team, idx) => `<tr><td>${idx+1}</td><td><span class="slot-badge">${team.slot}</span></td><td><strong>${escapeHtml(team.teamName)}</strong>${winner?.winner1Name===team.teamName?' <span class="badge badge-winner1">🏆 JUARA 1</span>':winner?.winner2Name===team.teamName?' <span class="badge badge-winner2">🥈 JUARA 2</span>':''}</td><td>${escapeHtml(team.perwakilan)}</td><td><span class="badge badge-active">Active</span></td><td><button class="action-btn" onclick="viewDetail('${team.id}')"><i class="fas fa-eye"></i></button><button class="action-btn" onclick="editTeam('${team.id}')"><i class="fas fa-edit"></i></button><button class="action-btn" onclick="cancelTeam('${team.id}')"><i class="fas fa-trash"></i></button><button class="action-btn" onclick="copyWhatsapp('${team.whatsapp}')"><i class="fab fa-whatsapp"></i></button></td></tr>`).join('')}</tbody>
+            </table></div></div>`;
             document.getElementById("mainContent").innerHTML = html;
-            
             document.getElementById("searchTeam")?.addEventListener("input", filterTeams);
             document.getElementById("searchWakil")?.addEventListener("input", filterTeams);
             document.getElementById("filterSlot")?.addEventListener("change", filterTeams);
             document.getElementById("exportBtn")?.addEventListener("click", () => exportCSV(data));
         };
-        
-        const filterTeams = () => {
-            const searchTeam = document.getElementById("searchTeam")?.value.toLowerCase() || "";
-            const searchWakil = document.getElementById("searchWakil")?.value.toLowerCase() || "";
-            const filterSlot = document.getElementById("filterSlot")?.value || "all";
-            let filtered = currentTeams.filter(t => t.teamName.toLowerCase().includes(searchTeam) && t.perwakilan.toLowerCase().includes(searchWakil) && (filterSlot === "all" || t.slot === filterSlot));
-            renderTable(filtered);
-        };
-        
+        const filterTeams = () => { const searchTeam = document.getElementById("searchTeam")?.value.toLowerCase()||"", searchWakil = document.getElementById("searchWakil")?.value.toLowerCase()||"", filterSlot = document.getElementById("filterSlot")?.value||"all"; renderTable(currentTeams.filter(t=>t.teamName.toLowerCase().includes(searchTeam)&&t.perwakilan.toLowerCase().includes(searchWakil)&&(filterSlot==="all"||t.slot===filterSlot))); };
         renderTable(currentTeams);
         
-        window.viewDetail = async (id) => {
-            const doc = await db.collection("teams").doc(id).get();
-            const t = doc.data();
-            Swal.fire({ title: t.teamName, html: `<b>Perwakilan:</b> ${escapeHtml(t.perwakilan)}<br><b>WhatsApp:</b> ${t.whatsapp}<br><b>Slot:</b> ${t.slot}<br><b>Pemain:</b><br>${t.players.map(p => `${escapeHtml(p.nick)} (UID: ${p.uid})`).join("<br>")}<br><b>Tanggal Daftar:</b> ${formatDate(t.createdAt)}`, icon: "info", background: "#1A1F2E", color: "#fff" });
+        window.viewDetail = async (id) => { const t = (await db.collection("teams").doc(id).get()).data(); Swal.fire({ title: t.teamName, html: `<b>Perwakilan:</b> ${escapeHtml(t.perwakilan)}<br><b>WhatsApp:</b> ${t.whatsapp}<br><b>Slot:</b> ${t.slot}<br><b>Pemain:</b><br>${t.players.map(p=>`${escapeHtml(p.nick)} (UID: ${p.uid})`).join("<br>")}<br><b>Tanggal Daftar:</b> ${formatDate(t.createdAt)}`, icon: "info", background: "#1A1F2E", color: "#fff" }); };
+        
+        window.editTeam = async (id) => { 
+            const doc = await db.collection("teams").doc(id).get(); 
+            const team = doc.data(); 
+            const { value: pwd } = await Swal.fire({ title: "Verifikasi Password", input: "password", background: "#1A1F2E", color: "#fff" }); 
+            if (!pwd || encryptPassword(pwd) !== team.password) { showToast("error", "Password salah!"); return; } 
+            const playersHtml = team.players.slice(0,4).map((p,i)=>`<div class="form-row"><input id="editNick${i+1}" value="${p.nick}"><input id="editUid${i+1}" value="${p.uid}"></div>`).join(''); 
+            const cadangan = team.players[4] || { nick: "", uid: "" }; 
+            const { value: formData } = await Swal.fire({ title: `Edit Team: ${team.teamName}`, html: `<div class="form-group"><label>Nama Team</label><input id="editTeamName" value="${team.teamName}"></div><div class="form-group"><label>Perwakilan</label><input id="editWakil" value="${team.perwakilan}"></div><div class="form-group"><label>WhatsApp</label><input id="editWhatsapp" value="${team.whatsapp}"></div><h3>Pemain Utama</h3>${playersHtml}<h3>Cadangan</h3><div class="form-row"><input id="editNickCad" value="${cadangan.nick}"><input id="editUidCad" value="${cadangan.uid}"></div>`, width: "600px", preConfirm: () => { const newPlayers = []; for (let i=1;i<=4;i++) { const nick = document.getElementById(`editNick${i}`).value.trim(), uid = document.getElementById(`editUid${i}`).value.trim(); if (!nick || !uid) { Swal.showValidationMessage(`Player ${i} tidak lengkap`); return false; } if (!/^\d+$/.test(uid)) { Swal.showValidationMessage(`UID harus angka`); return false; } newPlayers.push({ nick, uid }); } const nickCad = document.getElementById("editNickCad").value.trim(), uidCad = document.getElementById("editUidCad").value.trim(); if (nickCad && uidCad) { if (!/^\d+$/.test(uidCad)) { Swal.showValidationMessage("UID Cadangan harus angka"); return false; } newPlayers.push({ nick: nickCad, uid: uidCad }); } return { teamName: document.getElementById("editTeamName").value.trim(), perwakilan: document.getElementById("editWakil").value.trim(), whatsapp: document.getElementById("editWhatsapp").value.trim(), players: newPlayers }; }, background: "#1A1F2E", color: "#fff" }); 
+            if (formData && formData.teamName && formData.perwakilan && /^08[0-9]{8,13}$/.test(formData.whatsapp)) { await db.collection("teams").doc(id).update(formData); showToast("success", "Data team berhasil diupdate"); renderPage(); } else if (formData) showToast("error", "WhatsApp tidak valid"); 
         };
         
-        window.editTeamFull = async (id) => {
-            const doc = await db.collection("teams").doc(id).get();
-            const team = doc.data();
-            const { value: pwd } = await Swal.fire({ title: "Verifikasi Password", input: "password", inputPlaceholder: "Masukkan password team", background: "#1A1F2E", color: "#fff" });
-            if (!pwd) return;
-            if (encryptPassword(pwd) !== team.password) { showToast("error", "Password salah!"); return; }
-            
-            const playersHtml = team.players.slice(0,4).map((p, i) => `<div class="form-row"><input id="editNick${i+1}" placeholder="Nickname P${i+1}" value="${p.nick}"><input id="editUid${i+1}" placeholder="UID P${i+1}" value="${p.uid}"></div>`).join('');
-            const cadangan = team.players.length > 4 ? team.players[4] : { nick: "", uid: "" };
-            
-            const { value: formData } = await Swal.fire({
-                title: `Edit Team: ${team.teamName}`, html: `<div class="form-group"><label>Nama Team</label><input id="editTeamName" value="${team.teamName}"></div><div class="form-group"><label>Perwakilan</label><input id="editWakil" value="${team.perwakilan}"></div><div class="form-group"><label>WhatsApp</label><input id="editWhatsapp" value="${team.whatsapp}"></div><h3>Pemain Utama</h3>${playersHtml}<h3>Cadangan</h3><div class="form-row"><input id="editNickCad" placeholder="Nickname Cadangan" value="${cadangan.nick}"><input id="editUidCad" placeholder="UID Cadangan" value="${cadangan.uid}"></div>`,
-                width: "600px", focusConfirm: false, preConfirm: () => {
-                    const newPlayers = [];
-                    for (let i = 1; i <= 4; i++) {
-                        const nick = document.getElementById(`editNick${i}`).value.trim();
-                        const uid = document.getElementById(`editUid${i}`).value.trim();
-                        if (!nick || !uid) { Swal.showValidationMessage(`Player ${i} tidak lengkap`); return false; }
-                        if (!/^\d+$/.test(uid)) { Swal.showValidationMessage(`UID Player ${i} harus angka`); return false; }
-                        newPlayers.push({ nick, uid });
-                    }
-                    const nickCad = document.getElementById("editNickCad").value.trim();
-                    const uidCad = document.getElementById("editUidCad").value.trim();
-                    if (nickCad && uidCad) { if (!/^\d+$/.test(uidCad)) { Swal.showValidationMessage("UID Cadangan harus angka"); return false; } newPlayers.push({ nick: nickCad, uid: uidCad }); }
-                    return { teamName: document.getElementById("editTeamName").value.trim(), perwakilan: document.getElementById("editWakil").value.trim(), whatsapp: document.getElementById("editWhatsapp").value.trim(), players: newPlayers };
-                }, background: "#1A1F2E", color: "#fff"
-            });
-            
-            if (formData) {
-                if (!formData.teamName || !formData.perwakilan || !formData.whatsapp) { showToast("error", "Semua field harus diisi"); return; }
-                if (!/^08[0-9]{8,13}$/.test(formData.whatsapp)) { showToast("error", "WhatsApp tidak valid"); return; }
-                await db.collection("teams").doc(id).update({ teamName: formData.teamName, perwakilan: formData.perwakilan, whatsapp: formData.whatsapp, players: formData.players });
-                showToast("success", "Data team berhasil diupdate");
-                renderPage();
-            }
-        };
-        
-        window.cancelTeam = async (id) => {
-            const { value: pwd } = await Swal.fire({ title: "Cancel Team", input: "password", inputPlaceholder: "Masukkan password team", background: "#1A1F2E", color: "#fff" });
-            if (!pwd) return;
-            const doc = await db.collection("teams").doc(id).get();
-            const team = doc.data();
-            if (encryptPassword(pwd) !== team.password) { showToast("error", "Password salah!"); return; }
-            const confirm = await Swal.fire({ title: "Konfirmasi", text: `Yakin ingin membatalkan team ${team.teamName}?`, icon: "warning", showCancelButton: true, background: "#1A1F2E", color: "#fff" });
-            if (confirm.isConfirmed) {
-                await db.collection("teams").doc(id).update({ status: "cancelled" });
-                showToast("success", "Team berhasil dibatalkan");
-                renderPage();
-            }
+        window.cancelTeam = async (id) => { 
+            const { value: pwd } = await Swal.fire({ title: "Cancel Team", input: "password", background: "#1A1F2E", color: "#fff" }); 
+            if (!pwd) return; 
+            const team = (await db.collection("teams").doc(id).get()).data(); 
+            if (encryptPassword(pwd) !== team.password) { showToast("error", "Password salah!"); return; } 
+            const confirm = await Swal.fire({ title: "Konfirmasi", text: `Yakin ingin membatalkan team ${team.teamName}?`, icon: "warning", showCancelButton: true, background: "#1A1F2E", color: "#fff" }); 
+            if (confirm.isConfirmed) { await db.collection("teams").doc(id).update({ status: "cancelled" }); showToast("success", "Team berhasil dibatalkan"); renderPage(); } 
         };
         
         window.copyWhatsapp = (wa) => { navigator.clipboard.writeText(wa); showToast("success", "Nomor WhatsApp disalin!"); };
     }
     
-    function exportCSV(teams) {
-        let csv = "No,Slot,Nama Team,Perwakilan,WhatsApp,Status\n";
-        teams.forEach((t, i) => { csv += `${i+1},${t.slot},${t.teamName},${t.perwakilan},${t.whatsapp},${t.status}\n`; });
-        const blob = new Blob([csv], { type: "text/csv" });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = "peserta_tournament.csv";
-        link.click();
-        showToast("success", "CSV berhasil diexport");
+    function exportCSV(teams) { 
+        let csv = "No,Slot,Nama Team,Perwakilan,WhatsApp,Status\n"; 
+        teams.forEach((t,i)=>csv+=`${i+1},${t.slot},${t.teamName},${t.perwakilan},${t.whatsapp},${t.status}\n`); 
+        const blob=new Blob([csv],{type:"text/csv"}), link=document.createElement("a"); 
+        link.href=URL.createObjectURL(blob); 
+        link.download="peserta_tournament.csv"; 
+        link.click(); 
+        showToast("success","CSV berhasil diexport"); 
     }
     
-    // ========== ADMIN LOGIN ==========
-    function renderAdminLogin() {
-        const html = `<div class="card" style="max-width:400px"><h2><i class="fas fa-lock"></i> Admin Login</h2><div class="form-group"><label>Username</label><input type="text" id="adminUser"></div><div class="form-group"><label>Password</label><input type="password" id="adminPass"></div><button class="btn btn-primary" id="adminLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</button></div>`;
-        document.getElementById("mainContent").innerHTML = html;
-        document.getElementById("adminLoginBtn").addEventListener("click", () => {
-            const user = document.getElementById("adminUser").value;
-            const pass = document.getElementById("adminPass").value;
-            if (user === "JBAdmin" && pass === "FastTour2025") {
-                adminLoggedIn = true;
-                showToast("success", "Login berhasil!");
-                navigateTo("admin");
-            } else { showToast("error", "Username atau password salah!"); }
-        });
+    // ========== BANNED, WINNER, PRIZE PAGES ==========
+    function renderBannedTeams(bannedTeams) { 
+        document.getElementById("mainContent").innerHTML = `<div class="card"><h2><i class="fas fa-ban"></i> Daftar Team yang Di-BAN</h2><div class="table-wrapper"><table><thead><tr><th>Nama Team</th><th>Alasan BAN</th><th>Tanggal BAN</th></tr></thead><tbody>${bannedTeams.length?bannedTeams.map(t=>`<tr><td><strong>${escapeHtml(t.teamName)}</strong></td><td>${escapeHtml(t.reason||'Melanggar aturan')}</td><td>${formatDate(t.bannedAt)}</td></tr>`).join(''):'<tr><td colspan="3" class="empty-state">Belum ada team yang di-BAN</td></tr>'}</tbody></table></div></div>`; 
     }
     
-    // ========== ADMIN PANEL ==========
-    async function renderAdminPanel(teams, bannedTeams, winner) {
-        const activeTeams = teams.filter(t => t.status === "active");
-        const cancelledTeams = teams.filter(t => t.status === "cancelled");
-        const targetDateForInput = countdownTarget.toISOString().slice(0, 16);
-        
-        const html = `
-            <div class="stats-grid">
-                <div class="stat-card"><h2>${teams.length}</h2><p>Total Team</p></div>
-                <div class="stat-card"><h2>${activeTeams.length}/${SLOTS.length}</h2><p>Slot Terisi</p></div>
-                <div class="stat-card"><h2>${SLOTS.length - activeTeams.length}</h2><p>Slot Kosong</p></div>
-                <div class="stat-card"><h2>${cancelledTeams.length}</h2><p>Total Cancel</p></div>
-                <div class="stat-card"><h2>${bannedTeams.length}</h2><p>Total Banned</p></div>
-            </div>
-            <div class="card"><h3><i class="fas fa-hourglass-half"></i> Pengaturan Countdown</h3><div class="form-group"><label>Tanggal & Waktu Tournament</label><input type="datetime-local" id="countdownDateInput" value="${targetDateForInput}"></div><button class="btn btn-primary" id="saveCountdownBtn"><i class="fas fa-save"></i> Simpan Countdown</button><div style="margin-top:1rem"><p>Preview: <strong id="previewCountdown">-- : -- : --</strong></p></div></div>
-            <div class="card"><h3><i class="fas fa-trophy"></i> Set Pemenang Tournament</h3><div class="form-group"><label>Juara 1</label><select id="winner1Select">${activeTeams.map(t => `<option value="${t.id}" ${winner?.winner1Id === t.id ? 'selected' : ''}>${escapeHtml(t.teamName)} - ${escapeHtml(t.perwakilan)}</option>`).join('')}</select></div><div class="form-group"><label>Juara 2</label><select id="winner2Select">${activeTeams.map(t => `<option value="${t.id}" ${winner?.winner2Id === t.id ? 'selected' : ''}>${escapeHtml(t.teamName)} - ${escapeHtml(t.perwakilan)}</option>`).join('')}</select></div><button class="btn btn-success" id="setWinnerBtn"><i class="fas fa-crown"></i> Tetapkan Juara</button></div>
-            <div class="card"><h3><i class="fas fa-tasks"></i> Manajemen Tim</h3><div class="search-bar"><input type="text" id="adminSearch" placeholder="Cari Team..."></div><button class="btn btn-outline" id="exportAllDataBtn" style="margin-bottom:1rem"><i class="fas fa-database"></i> Export Data Lengkap (CSV)</button><div class="table-wrapper"><table><thead><tr><th>Slot</th><th>Nama Team</th><th>Perwakilan</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="adminTeamList"></tbody></table></div><div style="margin-top:1rem; display:flex; gap:1rem; flex-wrap:wrap"><button class="btn btn-danger" id="adminResetSlot">Reset Semua Slot</button><button class="btn btn-outline" id="adminCancelAll">Cancel Semua Peserta</button></div></div>
-        `;
-        
-        document.getElementById("mainContent").innerHTML = html;
-        
-        function updatePreview() {
-            const dateValue = document.getElementById("countdownDateInput").value;
-            if (dateValue) {
-                const target = new Date(dateValue);
-                const now = new Date();
-                const diff = target - now;
-                if (diff <= 0) document.getElementById("previewCountdown").innerText = "Tournament LIVE!";
-                else { const days = Math.floor(diff / (86400000)); const hours = Math.floor((diff % 86400000) / 3600000); const minutes = Math.floor((diff % 3600000) / 60000); const seconds = Math.floor((diff % 60000) / 1000); document.getElementById("previewCountdown").innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`; }
-            }
-        }
-        
-        document.getElementById("countdownDateInput")?.addEventListener("change", updatePreview);
-        updatePreview();
-        
-        document.getElementById("saveCountdownBtn")?.addEventListener("click", async () => {
-            const dateValue = document.getElementById("countdownDateInput").value;
-            if (dateValue) { await saveCountdownSetting(new Date(dateValue)); showToast("success", "Countdown berhasil diupdate!"); updatePreview(); }
-        });
-        
-        document.getElementById("setWinnerBtn")?.addEventListener("click", async () => {
-            const winner1Id = document.getElementById("winner1Select").value;
-            const winner2Id = document.getElementById("winner2Select").value;
-            let winner1Data = null, winner2Data = null;
-            if (winner1Id) { const teamDoc = await db.collection("teams").doc(winner1Id).get(); winner1Data = teamDoc.data(); }
-            if (winner2Id) { const teamDoc = await db.collection("teams").doc(winner2Id).get(); winner2Data = teamDoc.data(); }
-            await db.collection("settings").doc("winner").set({ winner1Id: winner1Id || null, winner1Name: winner1Data?.teamName || null, winner1Wakil: winner1Data?.perwakilan || null, winner2Id: winner2Id || null, winner2Name: winner2Data?.teamName || null, winner2Wakil: winner2Data?.perwakilan || null, winnerAt: new Date().toISOString() });
-            showToast("success", "Pemenang berhasil ditetapkan!");
-            renderPage();
-        });
-        
-        document.getElementById("exportAllDataBtn")?.addEventListener("click", () => {
-            let csv = "Nama Team,Perwakilan,WhatsApp,Slot,Status,Tanggal Daftar,Players (Nick-UID)\n";
-            teams.forEach(t => { const playersStr = t.players ? t.players.map(p => `${p.nick}(${p.uid})`).join("; ") : "-"; csv += `"${t.teamName}","${t.perwakilan}","${t.whatsapp}","${t.slot || '-'}","${t.status}","${t.createdAt || '-'}","${playersStr}"\n`; });
-            const blob = new Blob([csv], { type: "text/csv" }); const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = "data_registrasi_lengkap.csv"; link.click(); showToast("success", "Data lengkap berhasil diexport");
-        });
-        
-        const renderAdminTable = (data) => {
-            const tbody = document.getElementById("adminTeamList");
-            const sortedData = [...data].sort((a,b) => SLOTS.indexOf(a.slot) - SLOTS.indexOf(b.slot));
-            tbody.innerHTML = sortedData.map(team => `<tr><td><span class="slot-badge">${team.slot || '-'}</span></td><td>${escapeHtml(team.teamName)}</td><td>${escapeHtml(team.perwakilan)}</td><td><span class="badge ${team.status === 'active' ? 'badge-active' : team.status === 'banned' ? 'badge-banned' : 'badge-cancelled'}">${team.status === 'active' ? 'Active' : team.status === 'banned' ? 'BANNED' : 'Cancelled'}</span></td><td><button class="action-btn" onclick="adminEdit('${team.id}')"><i class="fas fa-edit"></i></button><button class="action-btn" onclick="adminFullEdit('${team.id}')"><i class="fas fa-user-edit"></i></button><button class="action-btn" onclick="adminBanTeam('${team.id}')"><i class="fas fa-gavel"></i></button><button class="action-btn" onclick="adminDelete('${team.id}')"><i class="fas fa-trash"></i></button><button class="action-btn" onclick="adminMoveSlot('${team.id}')"><i class="fas fa-exchange-alt"></i></button></td></tr>`).join('');
-        };
-        
-        renderAdminTable(teams);
-        
-        document.getElementById("adminSearch")?.addEventListener("input", (e) => { const filtered = teams.filter(t => t.teamName.toLowerCase().includes(e.target.value.toLowerCase())); renderAdminTable(filtered); });
-        
-        window.adminEdit = async (id) => {
-            const doc = await db.collection("teams").doc(id).get();
-            const team = doc.data();
-            const { value: newName } = await Swal.fire({ title: "Edit Nama Team", input: "text", inputValue: team.teamName, background: "#1A1F2E", color: "#fff" });
-            if (newName && newName !== team.teamName) { await db.collection("teams").doc(id).update({ teamName: newName }); showToast("success", "Team berhasil diupdate"); renderPage(); }
-        };
-        
-        window.adminFullEdit = async (id) => {
-            const doc = await db.collection("teams").doc(id).get();
-            const team = doc.data();
-            const playersHtml = team.players ? team.players.slice(0,4).map((p,i) => `<div class="form-row"><input id="fullNick${i}" placeholder="Nickname P${i+1}" value="${p.nick}"><input id="fullUid${i}" placeholder="UID P${i+1}" value="${p.uid}"></div>`).join('') : '';
-            const cadangan = team.players && team.players.length > 4 ? team.players[4] : { nick: "", uid: "" };
-            const { value: formData } = await Swal.fire({ title: `Edit Lengkap: ${team.teamName}`, html: `<div class="form-group"><label>Nama Team</label><input id="fullTeamName" value="${team.teamName}"></div><div class="form-group"><label>Perwakilan</label><input id="fullWakil" value="${team.perwakilan}"></div><div class="form-group"><label>WhatsApp</label><input id="fullWhatsapp" value="${team.whatsapp}"></div><div class="form-group"><label>Password Baru (kosongkan jika tidak diubah)</label><input type="password" id="fullPassword" placeholder="Password baru"></div><h3>Pemain Utama</h3>${playersHtml}<h3>Cadangan</h3><div class="form-row"><input id="fullNickCad" placeholder="Nickname Cadangan" value="${cadangan.nick}"><input id="fullUidCad" placeholder="UID Cadangan" value="${cadangan.uid}"></div>`, width: "600px", preConfirm: () => { const newPlayers = []; for (let i=0;i<4;i++) { const nick = document.getElementById(`fullNick${i}`)?.value.trim(); const uid = document.getElementById(`fullUid${i}`)?.value.trim(); if (nick && uid) newPlayers.push({ nick, uid }); } const nickCad = document.getElementById("fullNickCad")?.value.trim(); const uidCad = document.getElementById("fullUidCad")?.value.trim(); if (nickCad && uidCad) newPlayers.push({ nick: nickCad, uid: uidCad }); return { teamName: document.getElementById("fullTeamName")?.value.trim(), perwakilan: document.getElementById("fullWakil")?.value.trim(), whatsapp: document.getElementById("fullWhatsapp")?.value.trim(), newPassword: document.getElementById("fullPassword")?.value, players: newPlayers }; }, background: "#1A1F2E", color: "#fff" });
-            if (formData && formData.teamName && formData.perwakilan && formData.whatsapp) { let updateData = { teamName: formData.teamName, perwakilan: formData.perwakilan, whatsapp: formData.whatsapp, players: formData.players }; if (formData.newPassword) updateData.password = encryptPassword(formData.newPassword); await db.collection("teams").doc(id).update(updateData); showToast("success", "Team berhasil diupdate"); renderPage(); }
-        };
-        
-        window.adminBanTeam = async (id) => {
-            const doc = await db.collection("teams").doc(id).get();
-            const team = doc.data();
-            const existingBan = await db.collection("bannedTeams").where("teamName", "==", team.teamName).get();
-            if (!existingBan.empty) {
-                const confirm = await Swal.fire({ title: "Copot BAN", text: `Team "${team.teamName}" sedang dalam status BAN. Ingin mencopot BAN-nya?`, icon: "question", showCancelButton: true, confirmButtonText: "Ya, Copot BAN", background: "#1A1F2E", color: "#fff" });
-                if (confirm.isConfirmed) { await db.collection("bannedTeams").doc(existingBan.docs[0].id).delete(); await db.collection("teams").doc(id).update({ status: "active" }); showToast("success", `BAN untuk team ${team.teamName} telah dicopot!`); renderPage(); }
-                return;
-            }
-            const { value: reason } = await Swal.fire({ title: "BAN Team", text: `Ban team: ${team.teamName}`, input: "text", inputPlaceholder: "Alasan BAN (wajib diisi)", confirmButtonText: "Ya, BAN Team", showCancelButton: true, background: "#1A1F2E", color: "#fff" });
-            if (reason && reason.trim()) { await db.collection("bannedTeams").add({ teamName: team.teamName, reason: reason, bannedAt: new Date().toISOString() }); await db.collection("teams").doc(id).update({ status: "banned" }); showToast("success", `Team ${team.teamName} telah di-BAN`); renderPage(); }
-        };
-        
-        window.adminDelete = async (id) => {
-            const confirm = await Swal.fire({ title: "Hapus Team?", text: "Data akan dihapus permanen", icon: "warning", showCancelButton: true, background: "#1A1F2E", color: "#fff" });
-            if (confirm.isConfirmed) { await db.collection("teams").doc(id).delete(); showToast("success", "Team dihapus"); renderPage(); }
-        };
-        
-        window.adminMoveSlot = async (id) => {
-            const doc = await db.collection("teams").doc(id).get();
-            const activeTeamsList = teams.filter(t => t.status === "active" && t.id !== id);
-            const takenSlots = activeTeamsList.map(t => t.slot);
-            const availableSlots = SLOTS.filter(s => !takenSlots.includes(s));
-            if (availableSlots.length === 0) { showToast("error", "Tidak ada slot kosong!"); return; }
-            const { value: newSlot } = await Swal.fire({ title: "Pindah Slot", input: "select", inputOptions: availableSlots.reduce((acc,s) => ({...acc,[s]:s}), {}), background: "#1A1F2E", color: "#fff" });
-            if (newSlot) { await db.collection("teams").doc(id).update({ slot: newSlot }); showToast("success", `Slot dipindah ke ${newSlot}`); renderPage(); }
-        };
-        
-        document.getElementById("adminResetSlot")?.addEventListener("click", async () => {
-            const confirm = await Swal.fire({ title: "Reset Semua Slot?", text: "Semua team akan di-cancel", icon: "warning", showCancelButton: true, background: "#1A1F2E" });
-            if (confirm.isConfirmed) { const batch = db.batch(); teams.forEach(team => { batch.update(db.collection("teams").doc(team.id), { status: "cancelled" }); }); await batch.commit(); showToast("success", "Semua slot telah direset"); renderPage(); }
-        });
-        
-        document.getElementById("adminCancelAll")?.addEventListener("click", async () => {
-            const confirm = await Swal.fire({ title: "Cancel Semua Peserta?", icon: "warning", showCancelButton: true, background: "#1A1F2E" });
-            if (confirm.isConfirmed) { const batch = db.batch(); teams.filter(t => t.status === "active").forEach(team => { batch.update(db.collection("teams").doc(team.id), { status: "cancelled" }); }); await batch.commit(); showToast("success", "Semua peserta telah dicancel"); renderPage(); }
-        });
+    function renderWinnerPage(winner) { 
+        const hasWinner1=winner?.winner1Name, hasWinner2=winner?.winner2Name; 
+        document.getElementById("mainContent").innerHTML = `<div class="card"><h2><i class="fas fa-trophy"></i> Pemenang Tournament</h2>${hasWinner1||hasWinner2?`<div class="winner-card">${hasWinner1?`<div><i class="fas fa-crown" style="font-size:3rem;color:#FFD600"></i><h1 style="color:#FFD600">🥇 JUARA 1</h1><h2>${escapeHtml(winner.winner1Name)}</h2><p><strong>Perwakilan:</strong> ${escapeHtml(winner.winner1Wakil)}</p></div>`:''}${hasWinner2?`<div><i class="fas fa-medal" style="font-size:3rem;color:#C0C0C0"></i><h1 style="color:#C0C0C0">🥈 JUARA 2</h1><h2>${escapeHtml(winner.winner2Name)}</h2><p><strong>Perwakilan:</strong> ${escapeHtml(winner.winner2Wakil)}</p></div>`:''}<p><small>Diumumkan: ${formatDate(winner.winnerAt)}</small></p></div>`:`<div class="winner-card"><p>Belum ada pemenang</p></div>`}</div>`; 
     }
     
-    // ========== BANNED TEAMS PAGE ==========
-    function renderBannedTeams(bannedTeams) {
-        const html = `<div class="card"><h2><i class="fas fa-ban"></i> Daftar Team yang Di-BAN</h2><p><small>Team yang di-BAN tidak bisa mengikuti tournament ini.</small></p><div class="table-wrapper"><table><thead><tr><th>Nama Team</th><th>Alasan BAN</th><th>Tanggal BAN</th></tr></thead><tbody>${bannedTeams.length > 0 ? bannedTeams.map(t => `<tr><td><strong>${escapeHtml(t.teamName)}</strong></td><td>${escapeHtml(t.reason || 'Melanggar aturan tournament')}</td><td>${formatDate(t.bannedAt)}</td></tr>`).join('') : `<tr><td colspan="3" style="text-align:center">Belum ada team yang di-BAN</td></tr>`}</tbody></table></div></div>`;
-        document.getElementById("mainContent").innerHTML = html;
-    }
-    
-    // ========== WINNER PAGE ==========
-    function renderWinnerPage(winner) {
-        const hasWinner1 = winner?.winner1Name;
-        const hasWinner2 = winner?.winner2Name;
-        const html = `<div class="card"><h2><i class="fas fa-trophy"></i> Pemenang Tournament</h2>${hasWinner1 || hasWinner2 ? `<div class="winner-card">${hasWinner1 ? `<div style="margin-bottom:2rem"><i class="fas fa-crown" style="font-size:3rem;color:#FFD600"></i><h1 style="color:#FFD600">🥇 JUARA 1</h1><h2>${escapeHtml(winner.winner1Name)}</h2><p><strong>Perwakilan:</strong> ${escapeHtml(winner.winner1Wakil)}</p><button class="btn btn-primary" id="downloadCert1Btn"><i class="fas fa-download"></i> Download Sertifikat Juara 1</button></div>` : ''}${hasWinner2 ? `<div><i class="fas fa-medal" style="font-size:3rem;color:#C0C0C0"></i><h1 style="color:#C0C0C0">🥈 JUARA 2</h1><h2>${escapeHtml(winner.winner2Name)}</h2><p><strong>Perwakilan:</strong> ${escapeHtml(winner.winner2Wakil)}</p><button class="btn btn-outline" id="downloadCert2Btn"><i class="fas fa-download"></i> Download Sertifikat Juara 2</button></div>` : ''}<p style="margin-top:1rem"><small>Diumumkan pada: ${formatDate(winner.winnerAt)}</small></p></div>` : `<div class="winner-card"><p>Belum ada pemenang yang diumumkan.</p><p>Pantau terus halaman ini setelah tournament selesai!</p></div>`}</div>`;
-        document.getElementById("mainContent").innerHTML = html;
-        if (hasWinner1) document.getElementById("downloadCert1Btn")?.addEventListener("click", () => { const link = document.createElement('a'); link.href = 'certi-1.png'; link.download = 'sertifikat_juara1.png'; link.click(); showToast("success", "Sertifikat Juara 1 berhasil diunduh!"); });
-        if (hasWinner2) document.getElementById("downloadCert2Btn")?.addEventListener("click", () => { const link = document.createElement('a'); link.href = 'certi-2.png'; link.download = 'sertifikat_juara2.png'; link.click(); showToast("success", "Sertifikat Juara 2 berhasil diunduh!"); });
-    }
-    
-    // ========== HADIAH PAGE ==========
-    function renderPrizePage() {
-        const html = `<div class="card"><h2><i class="fas fa-gift"></i> Daftar Hadiah Tournament</h2><div class="prize-card"><h3><i class="fas fa-medal"></i> Juara 1</h3><img src="Decoration12 (1).png" alt="Hadiah Juara 1"><p style="margin-top:0.5rem">🎁 Hadiah menarik untuk juara pertama!</p></div><hr style="border-color:var(--gray-light); margin:1rem 0"><p style="text-align:center"><small>*Hadiah akan dikirim setelah tournament selesai dan verifikasi data.</small></p></div>`;
-        document.getElementById("mainContent").innerHTML = html;
+    function renderPrizePage() { 
+        document.getElementById("mainContent").innerHTML = `<div class="card"><h2><i class="fas fa-gift"></i> Daftar Hadiah Tournament</h2><div class="prize-card"><h3><i class="fas fa-medal"></i> Juara 1</h3><p>🎁 1500 Gold + Sertifikat + Trophy</p></div><div class="prize-card"><h3><i class="fas fa-medal"></i> Juara 2</h3><p>🎁 1000 Gold + Sertifikat</p></div><div class="prize-card"><h3><i class="fas fa-medal"></i> Juara 3</h3><p>🎁 500 Gold Gold + Sertifikat</p></div><hr><p style="text-align:center"><small>*Hadiah akan dikirim setelah tournament selesai</small></p></div>`; 
     }
     
     // ========== INITIALIZATION ==========
     function init() {
-        setTimeout(() => { document.getElementById("loading").style.display = "none"; }, 800);
-        
-        document.getElementById("hamburger").addEventListener("click", () => { document.getElementById("navMenu").classList.toggle("active"); });
-        
-        document.querySelectorAll('.nav-menu a').forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); navigateTo(link.getAttribute('data-page')); }); });
-        
-        let darkMode = true;
-        document.getElementById("darkModeBtn").addEventListener("click", () => { darkMode = !darkMode; document.body.style.background = darkMode ? "#0A0E1A" : "#F0F2F5"; document.body.style.color = darkMode ? "#E0E4F0" : "#1A1F2E"; document.querySelectorAll(".card, .stat-card").forEach(card => { card.style.background = darkMode ? "#1A1F2E" : "#FFFFFF"; }); });
-        
-        const scrollBtn = document.getElementById("scrollTopBtn");
-        window.addEventListener("scroll", () => { scrollBtn.style.display = window.scrollY > 300 ? "flex" : "none"; });
-        scrollBtn.addEventListener("click", () => { window.scrollTo({ top: 0, behavior: "smooth" }); });
-        
+        setTimeout(()=>document.getElementById("loading").style.display="none",800);
+        document.getElementById("hamburger").addEventListener("click",()=>document.getElementById("navMenu").classList.toggle("active"));
+        document.querySelectorAll('.nav-menu a').forEach(link=>{ link.addEventListener('click',(e)=>{ e.preventDefault(); navigateTo(link.getAttribute('data-page')); }); });
+        let darkMode=true;
+        document.getElementById("darkModeBtn").addEventListener("click",()=>{ darkMode=!darkMode; document.body.style.background=darkMode?"#0A0E1A":"#F0F2F5"; document.body.style.color=darkMode?"#E0E4F0":"#1A1F2E"; document.querySelectorAll(".card, .stat-card").forEach(card=>{ card.style.background=darkMode?"#1A1F2E":"#FFFFFF"; }); });
+        const scrollBtn=document.getElementById("scrollTopBtn");
+        window.addEventListener("scroll",()=>scrollBtn.style.display=window.scrollY>300?"flex":"none");
+        scrollBtn.addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}));
         navigateTo("dashboard");
     }
-    
     init();
+    
+    
 </script>
+
+<!-- Start of LiveChat (www.livechat.com) code -->
+<script>
+    window.__lc = window.__lc || {};
+    window.__lc.license = 19699266;
+    window.__lc.integration_name = "manual_channels";
+    window.__lc.product_name = "livechat";
+    ;(function(n,t,c){function i(n){return e._h?e._h.apply(null,n):e._q.push(n)}var e={_q:[],_h:null,_v:"2.0",on:function(){i(["on",c.call(arguments)])},once:function(){i(["once",c.call(arguments)])},off:function(){i(["off",c.call(arguments)])},get:function(){if(!e._h)throw new Error("[LiveChatWidget] You can't use getters before load.");return i(["get",c.call(arguments)])},call:function(){i(["call",c.call(arguments)])},init:function(){var n=t.createElement("script");n.async=!0,n.type="text/javascript",n.src="https://cdn.livechatinc.com/tracking.js",t.head.appendChild(n)}};!n.__lc.asyncInit&&e.init(),n.LiveChatWidget=n.LiveChatWidget||e}(window,document,[].slice))
+</script>
+<noscript><a href="https://www.livechat.com/chat-with/19699266/" rel="nofollow">Chat with us</a>, powered by <a href="https://www.livechat.com/?welcome" rel="noopener nofollow" target="_blank">LiveChat</a></noscript>
+<!-- End of LiveChat code -->
+
 </body>
 </html>
