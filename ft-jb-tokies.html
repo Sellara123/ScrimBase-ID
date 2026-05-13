@@ -17,6 +17,10 @@
             --blue-light: #1A3D6E; --dark: #0A0E1A; --gray: #1A1F2E;
             --gray-light: #2A2F3E; --white: #FFFFFF; --text-light: #E0E4F0;
             --card-bg: #1A1F2E; --border: #2A2F3E;
+            --jb-yellow: #FFD700;
+    --jb-yellow-dark: #E6C200;
+    --jb-yellow-light: #FFE44D;
+    --dark-overlay: rgba(0, 0, 0, 0.85);
         }
         body { background: var(--dark); color: var(--text-light); transition: background 0.3s, color 0.3s; }
         body.light-mode { background: #F0F2F5; color: #1A1F2E; }
@@ -171,6 +175,125 @@
             .match-header-score { flex-direction: column; align-items: flex-start; }
             .score-table th, .score-table td { padding: 8px 6px; font-size: 0.7rem; }
         }
+        /* Pop Up Styles */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--dark-overlay);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: popupFadeIn 0.3s ease;
+}
+
+.popup-container {
+    max-width: 500px;
+    width: 90%;
+    animation: popupScale 0.3s ease;
+}
+
+.popup-content {
+    background: var(--jb-yellow);
+    border-radius: 20px;
+    overflow: hidden;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    border: 2px solid var(--jb-yellow-light);
+}
+
+.popup-poster-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-bottom: 3px solid var(--jb-yellow-dark);
+}
+
+.popup-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(0, 0, 0, 0.7);
+    border: none;
+    color: white;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    z-index: 10;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.popup-close:hover {
+    background: var(--jb-yellow-dark);
+    color: #000;
+    transform: scale(1.1);
+}
+
+.popup-button {
+    width: 100%;
+    padding: 14px;
+    background: var(--jb-yellow-dark);
+    color: #000;
+    border: none;
+    font-weight: 800;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.popup-button:hover {
+    background: var(--jb-yellow-light);
+    transform: scale(1.02);
+}
+
+/* Animations */
+@keyframes popupFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes popupScale {
+    from { 
+        transform: scale(0.9); 
+        opacity: 0; 
+    }
+    to { 
+        transform: scale(1); 
+        opacity: 1; 
+    }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .popup-container {
+        width: 95%;
+    }
+    
+    .popup-button {
+        padding: 12px;
+        font-size: 1rem;
+    }
+    
+    .popup-close {
+        width: 30px;
+        height: 30px;
+        font-size: 1rem;
+        top: 8px;
+        right: 8px;
+    }
+}
     </style>
 </head>
 <body>
@@ -197,6 +320,15 @@
 <div id="mainContent" class="container"></div>
 <button class="scroll-top" id="scrollTopBtn"><i class="fas fa-arrow-up"></i></button>
 
+    <div id="popupPoster" class="popup-overlay">
+        <div class="popup-container">
+            <div class="popup-content">
+                <button class="popup-close" id="closeBtn">✕</button>
+                <img src="poster-utama.png" alt="JB Tokies Poster" class="popup-poster-img" id="posterImg">
+                <button class="popup-button" id="actionBtn">Next →</button>
+            </div>
+        </div>
+    </div>
 <script>
     // ========== FIREBASE CONFIG ==========
     const firebaseConfig = {
@@ -728,6 +860,66 @@
         navigateTo("dashboard");
     }
     init();
+    
+    // Ambil elemen DOM
+const popup = document.getElementById('popupPoster');
+const closeBtn = document.getElementById('closeBtn');
+const actionBtn = document.getElementById('actionBtn');
+const posterImg = document.getElementById('posterImg');
+
+// Fungsi untuk membuka popup
+function openPopup() {
+    popup.style.display = 'flex';
+    // Animasi reappear
+    popup.style.animation = 'none';
+    popup.offsetHeight; // Trigger reflow
+    popup.style.animation = 'popupFadeIn 0.3s ease';
+}
+
+// Fungsi untuk menutup popup
+function closePopup() {
+    popup.style.display = 'none';
+}
+
+// Event listener untuk tombol close
+closeBtn.addEventListener('click', closePopup);
+
+// Event listener untuk tombol action (Next/Tutup)
+actionBtn.addEventListener('click', function() {
+    // Bisa diubah sesuai kebutuhan
+    // Contoh: redirect ke link tertentu
+    // window.location.href = 'https://jbtokies.com';
+    
+    // Atau langsung tutup popup
+    closePopup();
+    
+    // Bisa juga ganti teks tombol dan fungsi
+    console.log('Tombol diklik - Poster JB Tokies');
+});
+
+// Tutup popup jika klik di luar konten (optional)
+popup.addEventListener('click', function(e) {
+    if (e.target === popup) {
+        closePopup();
+    }
+});
+
+// Ganti teks tombol sesuai kebutuhan
+// actionBtn.textContent = 'Tutup'; // Ubah ke "Tutup" jika perlu
+
+// Tampilkan popup saat halaman dimuat (auto muncul)
+document.addEventListener('DOMContentLoaded', function() {
+    // Popup muncul setelah 1 detik
+    setTimeout(() => {
+        openPopup();
+    }, 1000);
+});
+
+// Optional: Fungsi untuk mengganti poster dari sumber lain
+function changePoster(imageUrl, buttonText = 'Tutup') {
+    posterImg.src = imageUrl;
+    actionBtn.textContent = buttonText;
+}
 </script>
 
 <!-- Start of LiveChat code -->
@@ -740,6 +932,8 @@
 </script>
 <noscript><a href="https://www.livechat.com/chat-with/19699266/" rel="nofollow">Chat with us</a>, powered by <a href="https://www.livechat.com/?welcome" rel="noopener nofollow" target="_blank">LiveChat</a></noscript>
 <!-- End of LiveChat code -->
+
+
 
 </body>
 </html>
