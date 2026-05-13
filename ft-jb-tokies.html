@@ -175,7 +175,8 @@
             .match-header-score { flex-direction: column; align-items: flex-start; }
             .score-table th, .score-table td { padding: 8px 6px; font-size: 0.7rem; }
         }
-        /* Pop Up Styles */
+  
+/* POP UP STYLES */
 .popup-overlay {
     position: fixed;
     top: 0;
@@ -256,43 +257,6 @@
 .popup-button:hover {
     background: var(--jb-yellow-light);
     transform: scale(1.02);
-}
-
-/* Animations */
-@keyframes popupFadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@keyframes popupScale {
-    from { 
-        transform: scale(0.9); 
-        opacity: 0; 
-    }
-    to { 
-        transform: scale(1); 
-        opacity: 1; 
-    }
-}
-
-/* Responsive */
-@media (max-width: 480px) {
-    .popup-container {
-        width: 95%;
-    }
-    
-    .popup-button {
-        padding: 12px;
-        font-size: 1rem;
-    }
-    
-    .popup-close {
-        width: 30px;
-        height: 30px;
-        font-size: 1rem;
-        top: 8px;
-        right: 8px;
-    }
 }
 
 /* FOOTER STYLES */
