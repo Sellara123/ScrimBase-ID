@@ -1182,6 +1182,13 @@ if (footerLogo) {
         parent.insertBefore(fallback, this);
     };
 }
+
+// ========== TAMPILKAN POPUP SAAT LOAD ==========
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+        openPopup();
+    }, 1000);
+});
 </script>
 
 <!-- Start of LiveChat code -->
