@@ -1141,8 +1141,7 @@ function changePoster(imageUrl, buttonText = 'Tutup') {
 
 // ========== SPONSOR LOGO (via JS) ==========
 const sponsorData = [
-    { name: "ScrimBaseID", logo: "sponsor1.png", url: "https://ScrimBaseID
-netlify.app" },
+    { name: "ScrimBaseID", logo: "sponsor1.png", url: "https://scrimbaseid.netlify.app" },
     { name: "Sabada Organizer", logo: "sponsor2.png", url: "https://sabada-organizer.netlify.app" }
 ];
 
@@ -1188,6 +1187,21 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => {
         openPopup();
     }, 1000);
+});
+
+// Hentikan semua event bubbling yang mengganggu
+document.querySelectorAll('.popup-close, .popup-button').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        document.getElementById('popupPoster').style.display = 'none';
+    });
+});
+
+// Klik overlay untuk close
+document.getElementById('popupPoster').addEventListener('click', function(e) {
+    if (e.target === this) {
+        this.style.display = 'none';
+    }
 });
 </script>
 
