@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Admin Panel - FT JB Tokies</title>
+    <link rel="icon" type="image/png" href="https://imageshack.com/i/po0tg7N3p">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --yellow: #FFD600;
+            --yellow-dark: #E6B800;
+            --blue: #0A2E5C;
+            --blue-light: #1A3D6E;
+            --dark: #0A0E1A;
+            --gray: #1A1F2E;
+            --gray-light: #2A2F3E;
+            --white: #FFFFFF;
+            --text-light: #E0E4F0;
+            --border: #2A2F3E;
+            --success: #10B981;
+            --danger: #DC2626;
+            --warning: #F59E0B;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: var(--dark); color: var(--text-light); padding: 20px; }
+        .card { background: var(--gray); border-radius: 20px; padding: 1.8rem; margin-bottom: 1.8rem; border: 1px solid var(--border); max-width: 1400px; margin-left: auto; margin-right: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .card h2 { color: var(--yellow); margin-bottom: 1.2rem; font-size: 1.4rem; border-bottom: 3px solid var(--yellow); display: inline-block; padding-bottom: 0.4rem; }
+        .card h3 { color: var(--yellow); margin: 1.2rem 0 0.7rem 0; font-size: 1rem; }
+        .form-group { margin-bottom: 1.2rem; }
+        .form-group label { display: block; margin-bottom: 0.4rem; font-weight: 600; color: var(--yellow); font-size: 0.85rem; }
+        input, select, textarea { width: 100%; padding: 12px 16px; background: var(--gray-light); border: 1px solid var(--blue-light); border-radius: 12px; color: white; font-size: 0.9rem; outline: none; transition: all 0.2s ease; }
+        input:focus, select:focus { border-color: var(--yellow); box-shadow: 0 0 0 3px rgba(255,214,0,0.2); background: var(--gray); }
+        .btn { padding: 12px 28px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; transition: all 0.25s ease; font-size: 0.9rem; margin: 5px; display: inline-flex; align-items: center; gap: 10px; }
+        .btn-primary { background: linear-gradient(135deg, var(--yellow), #FFB800); color: var(--blue); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255,214,0,0.3); }
+        .btn-outline { background: transparent; border: 2px solid var(--yellow); color: var(--yellow); }
+        .btn-outline:hover { background: var(--yellow); color: var(--blue); transform: translateY(-2px); }
+        .btn-danger { background: linear-gradient(135deg, var(--danger), #B91C1C); color: white; }
+        .btn-danger:hover { transform: translateY(-2px); }
+        .btn-success { background: linear-gradient(135deg, var(--success), #059669); color: white; }
+        .btn-sm { padding: 6px 14px; font-size: 0.7rem; gap: 6px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .stat-card { background: linear-gradient(135deg, var(--gray), #1f2436); border-radius: 20px; padding: 1.5rem; text-align: center; border-left: 5px solid var(--yellow); transition: all 0.3s ease; }
+        .stat-card:hover { transform: translateY(-5px); }
+        .stat-card i { font-size: 2.2rem; color: var(--yellow); margin-bottom: 0.7rem; }
+        .stat-card h2 { font-size: 2.2rem; color: white; }
+        .stat-card p { color: #8ba0c0; font-size: 0.85rem; }
+        .table-wrapper { overflow-x: auto; border-radius: 16px; margin-top: 1rem; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th, td { padding: 14px 12px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        th { color: var(--yellow); font-weight: 700; background: rgba(42,47,62,0.8); white-space: nowrap; }
+        tr:hover td { background: rgba(255,214,0,0.05); }
+        .slot-badge { display: inline-block; background: linear-gradient(135deg, var(--yellow), #FFB800); color: var(--blue); padding: 5px 12px; border-radius: 20px; font-weight: 800; font-size: 0.75rem; min-width: 55px; text-align: center; }
+        .badge { display: inline-block; padding: 5px 14px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; }
+        .badge-active { background: linear-gradient(135deg, #10B981, #059669); color: white; }
+        .badge-cancelled { background: linear-gradient(135deg, #EF4444, #DC2626); color: white; }
+        .badge-banned { background: linear-gradient(135deg, #F59E0B, #D97706); color: white; }
+        .action-btn { background: var(--gray-light); border: none; color: var(--yellow); cursor: pointer; margin: 0 4px; font-size: 0.9rem; padding: 8px 14px; border-radius: 10px; transition: all 0.2s; }
+        .action-btn:hover { background: var(--yellow); color: var(--blue); transform: scale(1.05); }
+        .search-bar { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; align-items: center; }
+        .search-bar input, .search-bar select { padding: 12px 18px; background: var(--gray-light); border: 1px solid var(--border); border-radius: 12px; color: white; font-size: 0.85rem; flex: 1; min-width: 180px; }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 3px solid var(--yellow); flex-wrap: wrap; gap: 15px; }
+        .admin-header h1 { color: var(--yellow); font-size: 1.8rem; display: flex; align-items: center; gap: 12px; }
+        .loading { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+        .spinner { width: 55px; height: 55px; border: 4px solid var(--gray-light); border-top-color: var(--yellow); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .rank-list { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+        .rank-item { background: var(--gray-light); border-radius: 14px; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+        .rank-item.top1 { background: linear-gradient(135deg, #2a1f0a, #1f2436); border-left: 5px solid #fbbf24; }
+        .rank-item.top2 { background: linear-gradient(135deg, #1a1f2a, #1f2436); border-left: 5px solid #94a3b8; }
+        .rank-item.top3 { background: linear-gradient(135deg, #2a1a1a, #1f2436); border-left: 5px solid #cd7f32; }
+        .points-container { display: flex; flex-wrap: wrap; gap: 12px; margin: 15px 0; }
+        .point-chip { background: var(--gray-light); border-radius: 30px; padding: 8px 16px; display: flex; align-items: center; gap: 12px; }
+        .point-chip input { width: 65px; background: var(--dark); border: 1px solid var(--border); border-radius: 8px; padding: 5px 8px; color: var(--yellow); text-align: center; }
+        .rank-input, .kill-input { width: 75px; text-align: center; padding: 7px 10px; background: var(--dark); border: 1px solid var(--border); border-radius: 10px; color: white; }
+        .total-cell { color: var(--yellow); font-weight: 800; }
+        @media (max-width: 768px) {
+            body { padding: 12px; }
+            .card { padding: 1rem; }
+            .btn { width: 100%; justify-content: center; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+            table { min-width: 800px; }
+            .admin-header h1 { font-size: 1.2rem; }
+        }
+        .empty-state { text-align: center; padding: 50px; color: #888; }
+        .form-row { display: flex; gap: 1rem; margin-bottom: 0.8rem; flex-wrap: wrap; }
+        .form-row input { flex: 1; min-width: 120px; }
+        select.form-select { background: var(--gray-light); color: white; border: 1px solid var(--blue-light); border-radius: 10px; padding: 12px; }
+        .location-warning { color: var(--danger); font-size: 0.7rem; margin-top: 5px; display: none; }
+        .swal2-select {
+    background: #2A2F3E !important;
+    color: white !important;
+    border: 1px solid #FFD600 !important;
+    padding: 10px !important;
+    border-radius: 10px !important;
+}
+.swal2-input {
+    background: #2A2F3E !important;
+    color: white !important;
+    border: 1px solid #FFD600 !important;
+}
+    </style>
+</head>
+<body>
+<div id="loading" class="loading"><div class="spinner"></div></div>
+
+<div style="max-width: 1400px; margin: 0 auto;">
+    <div class="admin-header">
+        <h1><i class="fas fa-user-shield"></i> ADMIN PANEL FT JB TOKIES</h1>
+        <button class="btn btn-outline" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+    <div id="adminContent"></div>
+</div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyAtjv5s27qF5mM97SsLZ3IVQ1nCtYjHzLs",
+        authDomain: "bloodstrike-regional-community.firebaseapp.com",
+        projectId: "bloodstrike-regional-community",
+        storageBucket: "bloodstrike-regional-community.firebasestorage.app",
+        messagingSenderId: "539672460244",
+        appId: "1:539672460244:web:1b165c018c87a372f4f441"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    
+    let adminLoggedIn = false;
+    const SLOTS = ["A1","B2","C3","D4","E5","F6","G7","H8","I9","J10","K11","L12","M13","N14","O15","P16","Q17","R18","S19","T20","U21","V22","W23","X24","Y25"];
+    let countdownTarget = new Date();
+    let scoreTeams = [];
+    let scoreMatches = [];
+    let scoreRankPoints = { 1:30, 2:20, 3:15, 4:12, 5:10, 6:8, 7:6, 8:4, 9:2, 10:1 };
+    let scoreKillPoint = 1;
+    let scoreNextMatchId = 1;
+    
+    const indonesiaCities = {
+    "Aceh": ["Banda Aceh", "Sabang", "Lhokseumawe", "Langsa", "Subulussalam", "Sigli", "Calang", "Tapaktuan", "Jantho", "Kutacane", "Blangpidie", "Meulaboh", "Takengon", "Sinabang", "Bireuen"],
+    "Bali": ["Denpasar", "Singaraja", "Negara", "Tabanan", "Bangli", "Klungkung", "Karangasem", "Gianyar", "Badung", "Jembrana", "Buleleng"],
+    "Banten": ["Serang", "Cilegon", "Tangerang", "Tangerang Selatan", "Pandeglang", "Lebak", "Rangkasbitung", "Balaraja"],
+    "Bengkulu": ["Bengkulu", "Manna", "Arga Makmur", "Curup", "Muko-Muko", "Bintuhan", "Kepahiang"],
+    "DI Yogyakarta": ["Yogyakarta", "Sleman", "Bantul", "Gunung Kidul", "Kulon Progo"],
+    "DKI Jakarta": ["Jakarta Pusat", "Jakarta Utara", "Jakarta Barat", "Jakarta Selatan", "Jakarta Timur", "Kepulauan Seribu"],
+    "Gorontalo": ["Gorontalo", "Limboto", "Marisa", "Suwawa"],
+    "Jambi": ["Jambi", "Sungai Penuh", "Kualatungkal", "Bangko", "Muara Bulian", "Muara Tebo", "Sarolangun", "Muarabungo"],
+    "Jawa Barat": ["Bandung", "Bekasi", "Bogor", "Cimahi", "Cirebon", "Depok", "Sukabumi", "Tasikmalaya", "Banjar", "Purwakarta", "Karawang", "Subang", "Sumedang", "Garut", "Ciamis", "Pangandaran", "Majalengka", "Kuningan", "Indramayu"],
+    "Jawa Tengah": ["Semarang", "Surakarta", "Salatiga", "Magelang", "Pekalongan", "Tegal", "Purwokerto", "Kudus", "Jepara", "Demak", "Kendal", "Batang", "Pemalang", "Brebes", "Slawi", "Wonosobo", "Kebumen", "Cilacap", "Purbalingga", "Banjarnegara", "Purworejo", "Klaten", "Sukoharjo", "Boyolali", "Sragen", "Grobogan", "Blora", "Rembang"],
+    "Jawa Timur": ["Surabaya", "Malang", "Kediri", "Blitar", "Madiun", "Probolinggo", "Pasuruan", "Mojokerto", "Batu", "Sidoarjo", "Gresik", "Lamongan", "Tuban", "Bojonegoro", "Ngawi", "Magetan", "Ponorogo", "Pacitan", "Trenggalek", "Tulungagung", "Nganjuk", "Jombang", "Jember", "Banyuwangi", "Lumajang", "Situbondo", "Bondowoso", "Sumenep", "Pamekasan", "Sampang"],
+    "Kalimantan Barat": ["Pontianak", "Singkawang", "Sintang", "Sanggau", "Mempawah", "Bengkayang", "Landak", "Sekadau", "Melawi", "Kayong Utara", "Ketapang"],
+    "Kalimantan Selatan": ["Banjarmasin", "Banjarbaru", "Martapura", "Pelaihari", "Barabai", "Kandangan", "Rantau", "Kotabaru", "Batulicin"],
+    "Kalimantan Tengah": ["Palangka Raya", "Kasongan", "Kuala Kurun", "Kuala Kapuas", "Buntok", "Muara Teweh", "Puruk Cahu", "Sampit", "Pangkalan Bun"],
+    "Kalimantan Timur": ["Samarinda", "Balikpapan", "Bontang", "Tenggarong", "Sendawar", "Sangatta", "Tanjung Redeb"],
+    "Kalimantan Utara": ["Tanjung Selor", "Tarakan", "Malinau", "Nunukan"],
+    "Kepulauan Bangka Belitung": ["Pangkal Pinang", "Sungailiat", "Tanjung Pandan", "Manggar", "Toboali", "Koba", "Mentok"],
+    "Kepulauan Riau": ["Tanjung Pinang", "Batam", "Karimun", "Tarempa", "Ranai", "Daik"],
+    "Lampung": ["Bandar Lampung", "Metro", "Kotabumi", "Liwa", "Gunung Sugih", "Kalianda", "Pringsewu", "Sukadana"],
+    "Maluku": ["Ambon", "Tual", "Masohi", "Saumlaki", "Namlea", "Dobo"],
+    "Maluku Utara": ["Sofifi", "Ternate", "Tidore", "Tobelo", "Labuha", "Sanana", "Maba"],
+    "Nusa Tenggara Barat": ["Mataram", "Bima", "Dompu", "Sumbawa Besar", "Praya", "Selong"],
+    "Nusa Tenggara Timur": ["Kupang", "Ende", "Maumere", "Ruteng", "Atambua", "Kefamenanu", "Soe", "Waingapu", "Labuan Bajo", "Bajawa"],
+    "Papua": ["Jayapura", "Merauke", "Timika", "Wamena", "Biak", "Nabire", "Serui", "Enarotali"],
+    "Papua Barat": ["Manokwari", "Sorong", "Bintuni", "Fakfak", "Teminabuan", "Ransiki"],
+    "Riau": ["Pekanbaru", "Dumai", "Bangkinang", "Siak", "Selat Panjang", "Pasir Pengaraian", "Tembilahan", "Rengat", "Ujung Batu"],
+    "Sulawesi Barat": ["Mamuju", "Polewali", "Majene", "Pasangkayu"],
+    "Sulawesi Selatan": ["Makassar", "Palopo", "Parepare", "Watampone", "Sinjai", "Maros", "Sungguminasa", "Sengkang", "Pinrang", "Enrekang", "Rantepao", "Soroako", "Bantaeng", "Bulukumba"],
+    "Sulawesi Tengah": ["Palu", "Poso", "Banggai", "Luwuk", "Ampana", "Tolitoli", "Buol", "Morowali", "Donggala"],
+    "Sulawesi Tenggara": ["Kendari", "Baubau", "Raha", "Unaaha", "Andoolo", "Langgara", "Pasarwajo"],
+    "Sulawesi Utara": ["Manado", "Bitung", "Tomohon", "Kotamobagu", "Tondano", "Amurang", "Tahuna", "Airmadidi"],
+    "Sumatera Barat": ["Padang", "Bukittinggi", "Payakumbuh", "Padang Panjang", "Pariaman", "Sawahlunto", "Solok", "Batusangkar", "Lubuk Basung", "Painan", "Simpang Empat"],
+    "Sumatera Selatan": ["Palembang", "Prabumulih", "Lubuk Linggau", "Pagar Alam", "Kayuagung", "Baturaja", "Martapura", "Muara Enim", "Sekayu", "Lahat", "Tebing Tinggi"],
+    "Sumatera Utara": ["Medan", "Binjai", "Pematang Siantar", "Tebing Tinggi", "Tanjung Balai", "Sibolga", "Padang Sidempuan", "Gunungsitoli", "Kisaran", "Rantauprapat", "Sidikalang", "Balige", "Tarutung", "Berastagi", "Stabat", "Lubuk Pakam", "Perbaungan", "Sei Rampah", "Kabanjahe"]
+};
+    
+    function showLoading(show) { document.getElementById("loading").style.display = show ? "flex" : "none"; }
+    function showToast(type, msg) { Swal.fire({ title: type==="success"?"Sukses":"Error", text: msg, icon: type, timer: 2000, showConfirmButton: false, background: "#1A1F2E", color: "#fff" }); }
+    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'); }
+    function encryptPassword(pwd) { return btoa(pwd); }
+    function decryptPassword(encrypted) { try { return atob(encrypted); } catch(e) { return "???"; } }
+    function formatDate(dateStr) { return dateStr ? new Date(dateStr).toLocaleString('id-ID') : "-"; }
+    function calcScore(rank, kills) { return (scoreRankPoints[rank] || 0) + (kills * scoreKillPoint); }
+    function getTeamScore(teamId) { let total=0; scoreMatches.forEach(m=>{ const r=m.results.find(r=>r.teamId===teamId); if(r) total+=calcScore(r.rank, r.kills); }); return total; }
+    function saveScoreMatches() { localStorage.setItem('bsrc_score_matches', JSON.stringify(scoreMatches)); }
+    function saveScoreRankPoints() { localStorage.setItem('bsrc_score_rankPoints', JSON.stringify(scoreRankPoints)); }
+    function saveScoreKillPoint() { localStorage.setItem('bsrc_score_killPoint', scoreKillPoint); }
+    
+    async function loadScoreData() {
+        const teamsSnap = await db.collection("teams").where("status", "==", "active").get();
+        scoreTeams = teamsSnap.docs.map(doc => ({ id: doc.id, name: doc.data().teamName, slot: doc.data().slot || '-', perwakilan: doc.data().perwakilan }));
+        const savedMatches = localStorage.getItem('bsrc_score_matches');
+        if(savedMatches) { scoreMatches = JSON.parse(savedMatches); if(scoreMatches.length) scoreNextMatchId = Math.max(...scoreMatches.map(m=>m.matchId)) + 1; }
+        const savedRank = localStorage.getItem('bsrc_score_rankPoints');
+        if(savedRank) scoreRankPoints = JSON.parse(savedRank);
+        const savedKill = localStorage.getItem('bsrc_score_killPoint');
+        if(savedKill) scoreKillPoint = parseFloat(savedKill);
+    }
+    
+    async function getAvailableSlot(teams) { const taken = teams.map(t=>t.slot); for(let s of SLOTS) if(!taken.includes(s)) return s; return null; }
+    async function loadCountdownSetting() { const settingDoc = await db.collection("settings").doc("tournament").get(); if (settingDoc.exists && settingDoc.data().countdownDate) countdownTarget = new Date(settingDoc.data().countdownDate); }
+    async function saveCountdownSetting(newDate) { await db.collection("settings").doc("tournament").set({ countdownDate: newDate.toISOString() }); countdownTarget = newDate; }
+    
+    function updateCityOptions(provinsiId, kotaId) {
+        const provinceSelect = document.getElementById(provinsiId);
+        const citySelect = document.getElementById(kotaId);
+        if (!provinceSelect || !citySelect) return;
+        const selectedProvince = provinceSelect.value;
+        citySelect.innerHTML = '<option value="">-- Pilih Kabupaten/Kota --</option>';
+        if (selectedProvince && indonesiaCities[selectedProvince]) {
+            indonesiaCities[selectedProvince].forEach(city => {
+                const option = document.createElement("option");
+                option.value = city;
+                option.textContent = city;
+                citySelect.appendChild(option);
+            });
+            citySelect.disabled = false;
+        } else {
+            citySelect.disabled = true;
+        }
+    }
+    
+    async function renderAdminPanel() {
+        showLoading(true);
+        await loadScoreData();
+        await loadCountdownSetting();
+        
+        const teamsSnap = await db.collection("teams").get();
+        const teams = teamsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const bannedSnap = await db.collection("bannedTeams").get();
+        const bannedTeams = bannedSnap.docs.map(doc => doc.data());
+        const winnerDoc = await db.collection("settings").doc("winner").get();
+        let winner = winnerDoc.exists ? winnerDoc.data() : null;
+        
+        const activeTeams = teams.filter(t=>t.status==="active");
+        const targetDateForInput = countdownTarget.toISOString().slice(0,16);
+        
+        const html = `
+            <div class="stats-grid">
+                <div class="stat-card"><i class="fas fa-users"></i><h2>${teams.length}</h2><p>Total Team</p></div>
+                <div class="stat-card"><i class="fas fa-check-circle"></i><h2>${activeTeams.length}</h2><p>Tim Aktif</p></div>
+                <div class="stat-card"><i class="fas fa-ban"></i><h2>${bannedTeams.length}</h2><p>Tim Banned</p></div>
+                <div class="stat-card"><i class="fas fa-chair"></i><h2>${activeTeams.length}/${SLOTS.length}</h2><p>Slot Terisi</p></div>
+            </div>
+            
+            <div class="card"><h2>Pengaturan Countdown</h2>
+                <div class="form-group"><label>Tanggal & Waktu Tournament</label><input type="datetime-local" id="countdownDateInput" value="${targetDateForInput}"></div>
+                <button class="btn btn-primary" id="saveCountdownBtn"><i class="fas fa-save"></i> Simpan Countdown</button>
+                <div style="margin-top:1rem"><p>Preview: <strong id="previewCountdown">-- : -- : --</strong></p></div>
+            </div>
+            
+            <div class="card"><h2>🏆 Set Pemenang Tournament</h2>
+                <div class="form-group"><label>🏅 Juara 1</label><select id="winner1Select"><option value="">- Kosongkan -</option>${activeTeams.map(t=>`<option value="${t.id}" ${winner?.winner1Id===t.id?'selected':''}>${escapeHtml(t.teamName)}</option>`).join('')}</select></div>
+                <div class="form-group"><label>🥈 Juara 2</label><select id="winner2Select"><option value="">- Kosongkan -</option>${activeTeams.map(t=>`<option value="${t.id}" ${winner?.winner2Id===t.id?'selected':''}>${escapeHtml(t.teamName)}</option>`).join('')}</select></div>
+                <div class="form-group"><label>🥉 Juara 3</label><select id="winner3Select"><option value="">- Kosongkan -</option>${activeTeams.map(t=>`<option value="${t.id}" ${winner?.winner3Id===t.id?'selected':''}>${escapeHtml(t.teamName)}</option>`).join('')}</select></div>
+                <button class="btn btn-success" id="setWinnerBtn"><i class="fas fa-crown"></i> Tetapkan Juara</button>
+            </div>
+            
+            <div class="card"><h2>Manajemen Tim</h2>
+                <div class="search-bar"><input type="text" id="searchAdmin" placeholder="Cari Team..."></div>
+                <button class="btn btn-primary" id="addTeamBtn"><i class="fas fa-plus"></i> Daftarkan Tim Manual</button>
+                <button class="btn btn-outline" id="exportAllDataBtn"><i class="fas fa-database"></i> Export Data Lengkap</button>
+                <div class="table-wrapper"><table><thead><tr><th>Slot</th><th>Nama Tim</th><th>Perwakilan</th><th>Provinsi</th><th>Kota</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="adminTeamList"></tbody></table></div>
+                <div style="margin-top:1rem; display:flex; gap:1rem; flex-wrap:wrap"><button class="btn btn-danger" id="adminResetSlot">Reset Semua Slot</button><button class="btn btn-outline" id="adminCancelAll">Cancel Semua Peserta</button></div>
+            </div>
+            
+            <div class="card"><h2>SCORE MANAGER</h2>
+                <div class="form-group"><label>Poin per Kill</label><input type="number" id="killPoint" value="${scoreKillPoint}" step="0.5"></div>
+                <div id="pointsContainer" class="points-container"></div>
+                <button id="addRankBtn" class="btn btn-outline btn-sm">+ Tambah Peringkat</button>
+                <button id="resetRankBtn" class="btn btn-outline btn-sm">Reset Default Poin</button>
+                <hr style="margin: 20px 0;">
+                <button id="addMatchBtn" class="btn btn-primary"><i class="fas fa-plus"></i> Tambah Match</button>
+                <button id="resetMatchesBtn" class="btn btn-danger">Reset Semua Match</button>
+                <div id="matchesContainer" style="margin-top: 20px;"></div>
+                <div style="margin-top: 20px;"><h3>🏅 Final Ranking</h3><div id="finalRanking" class="rank-list"></div></div>
+            </div>
+        `;
+        
+        document.getElementById("adminContent").innerHTML = html;
+        
+        // Countdown
+        const updatePreview = () => { 
+            const dateValue = document.getElementById("countdownDateInput").value; 
+            if(dateValue){ 
+                const target=new Date(dateValue), now=new Date(), diff=target-now; 
+                if(diff<=0) document.getElementById("previewCountdown").innerText="Tournament LIVE!"; 
+                else{ const d=Math.floor(diff/86400000), h=Math.floor((diff%86400000)/3600000), m=Math.floor((diff%3600000)/60000), s=Math.floor((diff%60000)/1000); 
+                document.getElementById("previewCountdown").innerText=`${d}d ${h}h ${m}m ${s}s`; } 
+            } 
+        };
+        document.getElementById("countdownDateInput")?.addEventListener("change",updatePreview); 
+        updatePreview();
+        document.getElementById("saveCountdownBtn")?.addEventListener("click",async()=>{ const dateValue=document.getElementById("countdownDateInput").value; if(dateValue){ await saveCountdownSetting(new Date(dateValue)); showToast("success","Countdown berhasil diupdate!"); updatePreview(); } });
+        
+        // Set Winner
+        document.getElementById("setWinnerBtn")?.addEventListener("click", async () => {
+            const w1 = document.getElementById("winner1Select")?.value || null;
+            const w2 = document.getElementById("winner2Select")?.value || null;
+            const w3 = document.getElementById("winner3Select")?.value || null;
+            let winnerData = { winnerAt: new Date().toISOString() };
+            if(w1) { const t = await db.collection("teams").doc(w1).get(); winnerData.winner1Id = w1; winnerData.winner1Name = t.data()?.teamName; winnerData.winner1Wakil = t.data()?.perwakilan; }
+            else { winnerData.winner1Id = null; winnerData.winner1Name = null; winnerData.winner1Wakil = null; }
+            if(w2) { const t = await db.collection("teams").doc(w2).get(); winnerData.winner2Id = w2; winnerData.winner2Name = t.data()?.teamName; winnerData.winner2Wakil = t.data()?.perwakilan; }
+            else { winnerData.winner2Id = null; winnerData.winner2Name = null; winnerData.winner2Wakil = null; }
+            if(w3) { const t = await db.collection("teams").doc(w3).get(); winnerData.winner3Id = w3; winnerData.winner3Name = t.data()?.teamName; winnerData.winner3Wakil = t.data()?.perwakilan; }
+            else { winnerData.winner3Id = null; winnerData.winner3Name = null; winnerData.winner3Wakil = null; }
+            await db.collection("settings").doc("winner").set(winnerData);
+            showToast("success", "Juara ditetapkan!");
+            renderAdminPanel();
+        });
+        
+        // Export Data
+        document.getElementById("exportAllDataBtn")?.addEventListener("click",()=>{ 
+            let csv="Nama Team,Perwakilan,WhatsApp,Provinsi,Kota,Slot,Status,Tanggal Daftar,Players\n"; 
+            teams.forEach(t=>{ const playersStr=t.players?t.players.map(p=>`${p.nick}(${p.uid})`).join("; "):"-"; csv+=`"${t.teamName}","${t.perwakilan}","${t.whatsapp}","${t.provinsi||'-'}","${t.kota||'-'}","${t.slot||'-'}","${t.status}","${t.createdAt||'-'}","${playersStr}"\n`; }); 
+            const blob=new Blob([csv],{type:"text/csv"}), link=document.createElement("a"); 
+            link.href=URL.createObjectURL(blob); link.download="data_registrasi_lengkap.csv"; link.click(); showToast("success","Data lengkap berhasil diexport"); 
+        });
+        
+        // Points Settings
+        const renderPoints = () => {
+            const container = document.getElementById("pointsContainer");
+            if(container) container.innerHTML = Object.keys(scoreRankPoints).map(Number).sort((a,b)=>a-b).map(rank => `<div class="point-chip"><span>Peringkat ${rank}</span><input type="number" id="rank_${rank}" value="${scoreRankPoints[rank]}" min="0" step="1" style="width:70px;"><button onclick="deleteRank(${rank})" style="background:#DC2626; border:none; border-radius:50%; width:24px; color:white; cursor:pointer;">✕</button></div>`).join('');
+            Object.keys(scoreRankPoints).forEach(rank => { document.getElementById(`rank_${rank}`)?.addEventListener('change', (e) => { scoreRankPoints[rank] = parseFloat(e.target.value) || 0; saveScoreRankPoints(); renderAdminPanel(); }); });
+        };
+        renderPoints();
+        
+        document.getElementById("killPoint")?.addEventListener("change", (e) => { scoreKillPoint = parseFloat(e.target.value) || 1; saveScoreKillPoint(); renderAdminPanel(); });
+        document.getElementById("addRankBtn")?.addEventListener("click", () => { let max = Math.max(...Object.keys(scoreRankPoints).map(Number), 0); scoreRankPoints[max+1] = 0; saveScoreRankPoints(); renderAdminPanel(); });
+        document.getElementById("resetRankBtn")?.addEventListener("click", () => { scoreRankPoints = { 1:30,2:20,3:15,4:12,5:10,6:8,7:6,8:4,9:2,10:1 }; saveScoreRankPoints(); renderAdminPanel(); });
+        document.getElementById("addMatchBtn")?.addEventListener("click", () => { scoreMatches.push({ matchId: scoreNextMatchId++, matchName: `Match ${scoreMatches.length+1}`, results: [] }); saveScoreMatches(); renderAdminPanel(); });
+        document.getElementById("resetMatchesBtn")?.addEventListener("click", async () => { if(await Swal.fire({title:"Reset semua match?", icon:"warning", showCancelButton:true}).then(r=>r.isConfirmed)) { scoreMatches = []; scoreNextMatchId = 1; saveScoreMatches(); renderAdminPanel(); } });
+        
+        // Render Matches
+        const matchesDiv = document.getElementById("matchesContainer");
+        if(matchesDiv) {
+            matchesDiv.innerHTML = scoreMatches.map((match, idx) => `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
+                <strong>🏆 ${escapeHtml(match.matchName)}</strong> 
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <button class="btn btn-outline btn-sm" onclick="window.duplicateMatch(${idx})"><i class="fas fa-copy"></i> Duplikat</button>
+                    <button class="btn btn-outline btn-sm" onclick="window.clearMatchResults(${idx})"><i class="fas fa-eraser"></i> Kosongkan</button>
+                    <button class="btn btn-danger btn-sm" onclick="window.deleteMatch(${idx})"><i class="fas fa-trash"></i> Hapus</button>
+                </div>
+            </div>
+            <div class="table-wrapper"><table><thead><tr><th>Tim</th><th>Slot</th><th>Peringkat</th><th>Kill</th><th>Skor</th><th>Aksi</th></tr></thead><tbody id="matchBody-${idx}">${match.results.map((res, ri) => { const team = scoreTeams.find(t=>t.id===res.teamId); return `<tr><td>${team ? team.name : 'Unknown'}</td><td>${team ? team.slot : '-'}</td><td><input type="number" class="rank-input" data-m="${idx}" data-r="${ri}" value="${res.rank}"></td><td><input type="number" class="kill-input" data-m="${idx}" data-r="${ri}" value="${res.kills}"></td><td class="total-cell">${calcScore(res.rank, res.kills)}</td><td><button onclick="deleteResult(${idx},${ri})" class="action-btn btn-sm">Hapus</button></td></tr>`; }).join('')}</tbody>}</div>
+            <button class="btn btn-outline btn-sm" onclick="addResultToMatch(${idx})" style="margin-top:10px;">+ Tambah Hasil Tim</button></div>`).join('');
+            document.querySelectorAll('.rank-input').forEach(inp => inp.addEventListener('change', function() { let m=parseInt(this.dataset.m), r=parseInt(this.dataset.r); scoreMatches[m].results[r].rank = parseInt(this.value) || 1; saveScoreMatches(); renderAdminPanel(); }));
+            document.querySelectorAll('.kill-input').forEach(inp => inp.addEventListener('change', function() { let m=parseInt(this.dataset.m), r=parseInt(this.dataset.r); scoreMatches[m].results[r].kills = parseInt(this.value) || 0; saveScoreMatches(); renderAdminPanel(); }));
+        }
+        
+        // Final Ranking
+        const finalDiv = document.getElementById("finalRanking");
+        if(finalDiv && scoreTeams.length) finalDiv.innerHTML = [...scoreTeams].sort((a,b)=>getTeamScore(b.id)-getTeamScore(a.id)).map((t,i)=>`<div class="rank-item ${i===0?'top1':i===1?'top2':i===2?'top3':''}"><div><strong>${i+1}.</strong> ${t.name} (${t.slot})</div><div style="color:var(--yellow); font-weight:bold;">${getTeamScore(t.id)} pts</div></div>`).join('');
+        
+        // Render Team Table
+        const renderTeamTable = (data) => {
+            const tbody = document.getElementById("adminTeamList");
+            if(!tbody) return;
+            tbody.innerHTML = data.sort((a,b)=>SLOTS.indexOf(a.slot)-SLOTS.indexOf(b.slot)).map(team => `<tr>
+                <td><span class="slot-badge">${team.slot||'-'}</span></td>
+                <td><strong>${escapeHtml(team.teamName)}</strong></td>
+                <td>${escapeHtml(team.perwakilan)}</td>
+                <td>${escapeHtml(team.provinsi || '-')}</td>
+                <td>${escapeHtml(team.kota || '-')}</td>
+                <td><span class="badge ${team.status==='active'?'badge-active':team.status==='banned'?'badge-banned':'badge-cancelled'}">${team.status==='active'?'Active':team.status==='banned'?'BANNED':'Cancelled'}</span></td>
+                <td>
+                    <button class="action-btn" onclick="window.editTeamFull('${team.id}')"><i class="fas fa-edit"></i></button>
+                    <button class="action-btn" onclick="window.changePassword('${team.id}')"><i class="fas fa-key"></i></button>
+                    <button class="action-btn" onclick="window.banTeam('${team.id}')"><i class="fas fa-gavel"></i></button>
+                    <button class="action-btn" onclick="window.deleteTeam('${team.id}')"><i class="fas fa-trash"></i></button>
+                    <button class="action-btn" onclick="window.moveSlot('${team.id}')"><i class="fas fa-exchange-alt"></i></button>
+                </td>
+            </tr>`).join('');
+        };
+        renderTeamTable(teams);
+        document.getElementById("searchAdmin")?.addEventListener("input", (e) => renderTeamTable(teams.filter(t=>t.teamName.toLowerCase().includes(e.target.value.toLowerCase()))));
+        
+        document.getElementById("adminResetSlot")?.addEventListener("click", async () => { 
+            if(await Swal.fire({title:"Reset Semua Slot?", text:"Semua team akan di-cancel", icon:"warning", showCancelButton:true}).then(r=>r.isConfirmed)) { 
+                const batch = db.batch(); 
+                teams.forEach(t=>{ batch.update(db.collection("teams").doc(t.id), { status: "cancelled" }); }); 
+                await batch.commit(); 
+                showToast("success","Semua slot telah direset"); 
+                renderAdminPanel(); 
+            } 
+        });
+        
+        document.getElementById("adminCancelAll")?.addEventListener("click", async () => { 
+            if(await Swal.fire({title:"Cancel Semua Peserta?", icon:"warning", showCancelButton:true}).then(r=>r.isConfirmed)) { 
+                const batch = db.batch(); 
+                teams.filter(t=>t.status==="active").forEach(team=>{ batch.update(db.collection("teams").doc(team.id), { status: "cancelled" }); }); 
+                await batch.commit(); 
+                showToast("success","Semua peserta telah dicancel"); 
+                renderAdminPanel(); 
+            } 
+        });
+        
+        document.getElementById("addTeamBtn")?.addEventListener("click", async () => { 
+            const { value: form } = await Swal.fire({ 
+                title: "Registrasi Manual", 
+                html: `<div class="form-group"><label>Nama Tim</label><input id="mTeam" class="swal2-input" style="background:#2A2F3E;color:white;"></div>
+                       <div class="form-group"><label>Perwakilan</label><input id="mWakil" class="swal2-input" style="background:#2A2F3E;color:white;"></div>
+                       <div class="form-group"><label>WhatsApp</label><input id="mWa" class="swal2-input" style="background:#2A2F3E;color:white;"></div>
+                       <div class="form-group"><label>Provinsi</label><select id="mProvinsi" class="swal2-select" style="background:#2A2F3E;color:white;"><option value="">-- Pilih --</option>${Object.keys(indonesiaCities).map(p=>`<option value="${p}">${p}</option>`).join('')}</select></div>
+                       <div class="form-group"><label>Kota</label><select id="mKota" class="swal2-select" style="background:#2A2F3E;color:white;" disabled><option value="">-- Pilih Kota --</option></select></div>
+                       <div class="form-group"><label>Password</label><input type="password" id="mPass" class="swal2-input" style="background:#2A2F3E;color:white;"></div>`, 
+                preConfirm: () => ({ 
+                    teamName: document.getElementById("mTeam").value, 
+                    perwakilan: document.getElementById("mWakil").value, 
+                    whatsapp: document.getElementById("mWa").value, 
+                    provinsi: document.getElementById("mProvinsi").value,
+                    kota: document.getElementById("mKota").value,
+                    password: document.getElementById("mPass").value 
+                }), 
+                background: "#1A1F2E", 
+                didOpen: () => {
+                    const provSelect = document.getElementById("mProvinsi");
+                    const citySelect = document.getElementById("mKota");
+                    provSelect.addEventListener("change", () => {
+                        const prov = provSelect.value;
+                        citySelect.innerHTML = '<option value="">-- Pilih Kota --</option>';
+                        if(prov && indonesiaCities[prov]) {
+                            indonesiaCities[prov].forEach(city => {
+                                const opt = document.createElement("option");
+                                opt.value = city;
+                                opt.textContent = city;
+                                citySelect.appendChild(opt);
+                            });
+                            citySelect.disabled = false;
+                        } else {
+                            citySelect.disabled = true;
+                        }
+                    });
+                }
+            });
+            if(form && form.teamName) {
+                const allTeams = (await db.collection("teams").get()).docs.map(d=>d.data()).filter(t=>t.status==="active");
+                const slot = await getAvailableSlot(allTeams);
+                if(!slot) { showToast("error","Slot penuh"); return; }
+                if(!form.provinsi || !form.kota) { showToast("error","Provinsi dan Kota wajib diisi"); return; }
+                await db.collection("teams").add({ 
+                    teamName: form.teamName, 
+                    perwakilan: form.perwakilan, 
+                    whatsapp: form.whatsapp, 
+                    provinsi: form.provinsi,
+                    kota: form.kota,
+                    password: encryptPassword(form.password), 
+                    slot: slot, 
+                    status: "active", 
+                    players: [{nick:"Manual", uid:"0"}], 
+                    createdAt: new Date().toISOString() 
+                });
+                showToast("success","Tim ditambahkan"); 
+                renderAdminPanel();
+            }
+        });
+        
+        showLoading(false);
+    }
+    
+    // ========== FUNGSI EDIT LENGKAP ==========
+    window.editTeamFull = async (id) => {
+        const doc = await db.collection("teams").doc(id).get();
+        const team = doc.data();
+        if(!team) return;
+        
+        const playersHtml = team.players.slice(0,4).map((p,i)=>`<div class="form-row"><input id="editNick${i+1}" value="${escapeHtml(p.nick)}" placeholder="Nick ${i+1}" style="background:#2A2F3E;color:white;"><input id="editUid${i+1}" value="${p.uid}" placeholder="UID ${i+1}" style="background:#2A2F3E;color:white;"></div>`).join('');
+        const cadangan = team.players[4] || { nick: "", uid: "" };
+        
+        const { value: formData } = await Swal.fire({
+            title: `Edit Team: ${team.teamName}`,
+            html: `<div class="form-group"><label>Nama Team</label><input id="editTeamName" value="${escapeHtml(team.teamName)}" style="background:#2A2F3E;color:white;"></div>
+                   <div class="form-group"><label>Perwakilan</label><input id="editWakil" value="${escapeHtml(team.perwakilan)}" style="background:#2A2F3E;color:white;"></div>
+                   <div class="form-group"><label>WhatsApp</label><input id="editWhatsapp" value="${team.whatsapp}" style="background:#2A2F3E;color:white;"></div>
+                   <div class="form-group"><label>Provinsi</label><select id="editProvinsi" class="swal2-select" style="background:#2A2F3E;color:white;"><option value="">-- Pilih --</option>${Object.keys(indonesiaCities).map(p=>`<option value="${p}" ${team.provinsi===p?'selected':''}>${p}</option>`).join('')}</select></div>
+                   <div class="form-group"><label>Kota</label><select id="editKota" class="swal2-select" style="background:#2A2F3E;color:white;"><option value="">-- Pilih Kota --</option></select></div>
+                   <h3>Pemain Utama</h3>${playersHtml}
+                   <h3>Cadangan</h3>
+                   <div class="form-row"><input id="editNickCad" value="${escapeHtml(cadangan.nick)}" placeholder="Nick Cadangan" style="background:#2A2F3E;color:white;"><input id="editUidCad" value="${cadangan.uid}" placeholder="UID Cadangan" style="background:#2A2F3E;color:white;"></div>`,
+            width: "600px",
+            background: "#1A1F2E",
+            didOpen: () => {
+                const provSelect = document.getElementById("editProvinsi");
+                const citySelect = document.getElementById("editKota");
+                const populateCities = (prov) => {
+                    citySelect.innerHTML = '<option value="">-- Pilih Kota --</option>';
+                    if(prov && indonesiaCities[prov]) {
+                        indonesiaCities[prov].forEach(city => {
+                            const opt = document.createElement("option");
+                            opt.value = city;
+                            opt.textContent = city;
+                            if(team.kota === city) opt.selected = true;
+                            citySelect.appendChild(opt);
+                        });
+                        citySelect.disabled = false;
+                    } else {
+                        citySelect.disabled = true;
+                    }
+                };
+                populateCities(team.provinsi);
+                provSelect.addEventListener("change", () => populateCities(provSelect.value));
+            },
+            preConfirm: () => {
+                const newPlayers = [];
+                for(let i=1;i<=4;i++) {
+                    const nick = document.getElementById(`editNick${i}`)?.value.trim() || '';
+                    const uid = document.getElementById(`editUid${i}`)?.value.trim() || '';
+                    if(!nick || !uid) { Swal.showValidationMessage(`Player ${i} tidak lengkap`); return false; }
+                    if(!/^\d+$/.test(uid)) { Swal.showValidationMessage(`UID harus angka`); return false; }
+                    newPlayers.push({ nick, uid });
+                }
+                const nickCad = document.getElementById("editNickCad")?.value.trim() || '';
+                const uidCad = document.getElementById("editUidCad")?.value.trim() || '';
+                if(nickCad && uidCad) {
+                    if(!/^\d+$/.test(uidCad)) { Swal.showValidationMessage("UID Cadangan harus angka"); return false; }
+                    newPlayers.push({ nick: nickCad, uid: uidCad });
+                }
+                const provinsi = document.getElementById("editProvinsi")?.value;
+                const kota = document.getElementById("editKota")?.value;
+                if(!provinsi || !kota) { Swal.showValidationMessage("Provinsi dan Kota wajib diisi"); return false; }
+                return {
+                    teamName: document.getElementById("editTeamName")?.value.trim() || '',
+                    perwakilan: document.getElementById("editWakil")?.value.trim() || '',
+                    whatsapp: document.getElementById("editWhatsapp")?.value.trim() || '',
+                    provinsi: provinsi,
+                    kota: kota,
+                    players: newPlayers
+                };
+            }
+        });
+        
+        if(formData && formData.teamName && formData.perwakilan && /^08[0-9]{8,13}$/.test(formData.whatsapp)) {
+            await db.collection("teams").doc(id).update(formData);
+            showToast("success", "Data team berhasil diupdate");
+            renderAdminPanel();
+        } else if(formData) {
+            showToast("error", "WhatsApp tidak valid (harus 08xxxx)");
+        }
+    };
+    
+    // ========== FUNGSI UBAH PASSWORD ==========
+    window.changePassword = async (id) => {
+        const doc = await db.collection("teams").doc(id).get();
+        const team = doc.data();
+        if(!team) return;
+        
+        const { value: newPassword } = await Swal.fire({
+            title: `Ubah Password: ${team.teamName}`,
+            text: "Masukkan password baru (minimal 6 karakter)",
+            input: "password",
+            inputPlaceholder: "Password baru",
+            background: "#1A1F2E",
+            color: "#fff",
+            preConfirm: (pwd) => {
+                if(!pwd || pwd.length < 6) {
+                    Swal.showValidationMessage("Password minimal 6 karakter");
+                    return false;
+                }
+                return pwd;
+            }
+        });
+        
+        if(newPassword) {
+            await db.collection("teams").doc(id).update({ password: encryptPassword(newPassword) });
+            showToast("success", "Password berhasil diubah!");
+        }
+    };
+    
+    // ========== ADMIN ACTIONS ==========
+    window.deleteMatch = (idx) => { scoreMatches.splice(idx,1); saveScoreMatches(); renderAdminPanel(); };
+    window.deleteResult = (mIdx, rIdx) => { scoreMatches[mIdx].results.splice(rIdx,1); saveScoreMatches(); renderAdminPanel(); };
+    window.deleteRank = (rank) => { if(Object.keys(scoreRankPoints).length>1) { delete scoreRankPoints[rank]; saveScoreRankPoints(); renderAdminPanel(); } else showToast("error","Minimal 1 peringkat"); };
+    window.addResultToMatch = (matchIdx) => {
+        if(!scoreTeams.length) { showToast("error","Tidak ada tim"); return; }
+        Swal.fire({ title: `Tambah Hasil ke Match ${scoreMatches[matchIdx].matchName}`, html: `<select id="teamSelect" class="swal2-select">${scoreTeams.map(t=>`<option value="${t.id}">${t.name} (${t.slot})</option>`).join('')}</select><input id="rankInput" class="swal2-input" placeholder="Peringkat" type="number" min="1"><input id="killInput" class="swal2-input" placeholder="Kill" type="number" min="0" value="0">`, preConfirm: () => ({ teamId: document.getElementById("teamSelect").value, rank: parseInt(document.getElementById("rankInput").value), kills: parseInt(document.getElementById("killInput").value) || 0 }), background: "#1A1F2E" }).then(res => { if(res.value) { if(scoreMatches[matchIdx].results.find(r=>r.teamId===res.value.teamId)) { showToast("error","Tim sudah ada di match ini"); return; } scoreMatches[matchIdx].results.push(res.value); saveScoreMatches(); renderAdminPanel(); } });
+    };
+    
+    window.banTeam = async (id) => { 
+        const team = (await db.collection("teams").doc(id).get()).data(); 
+        const existingBan = await db.collection("bannedTeams").where("teamName","==",team.teamName).get();
+        if(!existingBan.empty){
+            const confirm = await Swal.fire({title:"Copot BAN",text:`Team "${team.teamName}" sedang di-BAN. Copot?`, icon:"question", showCancelButton:true, background:"#1A1F2E"});
+            if(confirm.isConfirmed){ await db.collection("bannedTeams").doc(existingBan.docs[0].id).delete(); await db.collection("teams").doc(id).update({status:"active"}); showToast("success","BAN dicopot"); renderAdminPanel(); }
+            return;
+        }
+        const { value: reason } = await Swal.fire({ title: `Ban Team: ${team.teamName}`, input: "text", inputPlaceholder: "Alasan BAN", background: "#1A1F2E" }); 
+        if(reason) { await db.collection("bannedTeams").add({ teamName: team.teamName, reason, bannedAt: new Date().toISOString() }); await db.collection("teams").doc(id).update({ status: "banned" }); showToast("success","Team di-BAN"); renderAdminPanel(); } 
+    };
+    
+    window.deleteTeam = async (id) => { 
+        const team = (await db.collection("teams").doc(id).get()).data();
+        if(await Swal.fire({title:"Hapus Team?", text:`Yakin hapus ${team.teamName}? Data permanen!`, icon:"warning", showCancelButton:true}).then(r=>r.isConfirmed)) { 
+            await db.collection("teams").doc(id).delete(); 
+            showToast("success","Team dihapus"); 
+            renderAdminPanel(); 
+        } 
+    };
+    
+    window.moveSlot = async (id) => { 
+        const teams = (await db.collection("teams").get()).docs.map(d=>d.data()).filter(t=>t.status==="active" && t.id!==id); 
+        const taken = teams.map(t=>t.slot); 
+        const avail = SLOTS.filter(s=>!taken.includes(s)); 
+        if(!avail.length) { showToast("error","Tidak ada slot kosong"); return; } 
+        const { value: newSlot } = await Swal.fire({ title: "Pindah Slot", input: "select", inputOptions: avail.reduce((a,s)=>({...a,[s]:s}),{}), background: "#1A1F2E" }); 
+        if(newSlot) { await db.collection("teams").doc(id).update({ slot: newSlot }); showToast("success",`Slot dipindah ke ${newSlot}`); renderAdminPanel(); } 
+    };
+    
+    window.duplicateMatch = (idx) => {
+        const originalMatch = scoreMatches[idx];
+        if(!originalMatch) return;
+        const newMatch = { matchId: scoreNextMatchId++, matchName: `${originalMatch.matchName} (Copy)`, results: [...originalMatch.results.map(r => ({ ...r }))] };
+        scoreMatches.push(newMatch);
+        saveScoreMatches();
+        showToast("success", `Match "${newMatch.matchName}" berhasil diduplikasi!`);
+        renderAdminPanel();
+    };
+    
+    window.clearMatchResults = (idx) => {
+        Swal.fire({ title: "Kosongkan Match?", text: `Semua hasil di "${scoreMatches[idx].matchName}" akan dihapus!`, icon: "warning", showCancelButton: true, background: "#1A1F2E" }).then(res => { if(res.isConfirmed) { scoreMatches[idx].results = []; saveScoreMatches(); showToast("success", "Hasil match telah dikosongkan!"); renderAdminPanel(); } });
+    };
+    
+function checkLogin() { 
+    if(!adminLoggedIn) { 
+        const pwd = prompt("Admin Password:"); 
+        if(pwd === "FastTour2025") {
+            adminLoggedIn = true; 
+            renderAdminPanel();
+        } else { 
+            alert("Password salah!"); 
+            document.getElementById("adminContent").innerHTML = "<div class='card'><h2>Akses Ditolak</h2><p>Silakan refresh dan masukkan password yang benar.</p></div>";
+            showLoading(false);
+        } 
+    } else { 
+        renderAdminPanel(); 
+    } 
+}
+
+// PANGGIL LANGSUNG SAAT LOAD
+setTimeout(() => {
+    checkLogin();
+}, 100);
+</script>
+</body>
+</html>
