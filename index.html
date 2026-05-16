@@ -1,1226 +1,1935 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCRIMBASE ID - Esports Tournament Platform</title>
+    <title>ScrimBase ID - Platform Scrim & Tournament</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- GSAP loaded before everything -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        :root {
-            --primary: #4361ee;
-            --primary-dark: #3a56d4;
-            --secondary: #7209b7;
-            --accent: #f72585;
-            --dark: #1a1a2e;
-            --light: #f8f9fa;
-            --gray: #6c757d;
-            --success: #4cc9f0;
-            --warning: #ffd166;
-            --danger: #ef476f;
-        }
-        
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #0c0c1d 0%, #1a1a2e 100%);
-            color: var(--light);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-        
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 700;
-        }
-        
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        /* Header Styles */
-        .main-header {
-            background: rgba(26, 26, 46, 0.95);
-            backdrop-filter: blur(10px);
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            border-bottom: 2px solid rgba(67, 97, 238, 0.3);
-            padding: 15px 0;
-        }
-        
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .logo-icon {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            color: white;
-        }
-        
-        .logo-text h1 {
-            font-size: 1.8rem;
-            background: linear-gradient(45deg, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 5px;
-        }
-        
-        .logo-text p {
-            font-size: 0.9rem;
-            color: var(--gray);
-        }
-        
-        .main-nav ul {
-            display: flex;
-            gap: 30px;
-            list-style: none;
-        }
-        
-        .nav-link {
-            color: var(--light);
-            text-decoration: none;
-            font-weight: 500;
-            padding: 8px 15px;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-        
-        .nav-link:hover {
-            background: rgba(67, 97, 238, 0.1);
-            color: var(--primary);
-        }
-        
-        .nav-link.active {
-            background: rgba(67, 97, 238, 0.2);
-            color: var(--primary);
-        }
-        
-        .nav-link.active::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 5px;
-            height: 5px;
-            background: var(--primary);
-            border-radius: 50%;
-        }
-        
-        .cta-buttons {
-            display: flex;
-            gap: 15px;
-        }
-        
-        .btn {
-            padding: 12px 28px;
-            border-radius: 10px;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: none;
-            font-size: 1rem;
-            font-family: 'Montserrat', sans-serif;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
-        }
-        
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-3px);
-        }
-        
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-        }
-        
-        /* Hero Section */
-        .hero-section {
-            padding: 180px 0 100px;
-            background: radial-gradient(circle at 50% 0%, rgba(114, 9, 183, 0.2) 0%, transparent 50%);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .hero-content {
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: center;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .hero-title {
-            font-size: 3.5rem;
-            margin-bottom: 20px;
-            background: linear-gradient(45deg, var(--primary), var(--accent), var(--success));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            line-height: 1.2;
-        }
-        
-        .hero-subtitle {
-            font-size: 1.3rem;
-            color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 40px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .hero-stats {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin-top: 60px;
-        }
-        
-        .stat-item {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 25px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-        }
-        
-        .stat-item:hover {
-            transform: translateY(-10px);
-            border-color: var(--primary);
-            box-shadow: 0 15px 30px rgba(67, 97, 238, 0.2);
-        }
-        
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 10px;
-            display: block;
-        }
-        
-        .stat-label {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.9rem;
-        }
-        
-        /* Tournament Info */
-        .tournament-info {
-            padding: 100px 0;
-            background: rgba(12, 12, 29, 0.5);
-        }
-        
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 60px;
-            position: relative;
-        }
-        
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 4px;
-            background: linear-gradient(45deg, var(--primary), var(--accent));
-            border-radius: 2px;
-        }
-        
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-bottom: 60px;
-        }
-        
-        .info-card {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            padding: 30px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .info-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(45deg, var(--primary), var(--accent));
-        }
-        
-        .info-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--primary);
-        }
-        
-        .info-icon {
-            width: 70px;
-            height: 70px;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-            color: white;
-            margin-bottom: 25px;
-        }
-        
-        .info-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            color: white;
-        }
-        
-        .info-card p {
-            color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 20px;
-        }
-        
-        /* Form Section */
-        .form-section {
-            padding: 100px 0;
-            background: rgba(26, 26, 46, 0.7);
-        }
-        
-        .form-container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 25px;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-        }
-        
-        .form-header {
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            padding: 30px;
-            text-align: center;
-        }
-        
-        .form-header h2 {
-            font-size: 2rem;
-            color: white;
-        }
-        
-        .form-frame-container {
-            padding: 20px;
-        }
-        
-        .form-frame {
-            width: 100%;
-            height: 700px;
-            border: none;
-            border-radius: 15px;
-        }
-        
-        /* Contact Section */
-        .contact-section {
-            padding: 100px 0;
-            background: rgba(12, 12, 29, 0.5);
-        }
-        
-        .contact-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 50px;
-            align-items: center;
-        }
-        
-        .contact-info h2 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            background: linear-gradient(45deg, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        
-        .contact-list {
-            list-style: none;
-            margin-top: 30px;
-        }
-        
-        .contact-list li {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 25px;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            transition: all 0.3s ease;
-        }
-        
-        .contact-list li:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateX(10px);
-        }
-        
-        .contact-icon {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            color: white;
-        }
-        
-        .contact-text h4 {
-            font-size: 1.2rem;
-            margin-bottom: 5px;
-            color: white;
-        }
-        
-        .contact-text p {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.9rem;
-        }
-        
-        .whatsapp-cta {
-            background: linear-gradient(45deg, #25D366, #128C7E);
-            color: white;
-            padding: 20px 30px;
-            border-radius: 15px;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-top: 30px;
-            transition: all 0.3s ease;
-            font-weight: 600;
-        }
-        
-        .whatsapp-cta:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3);
-        }
-        
-        /* Floating Elements */
-        .floating-elements {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            z-index: 100;
-        }
-        
-        .floating-btn {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            border: none;
-        }
-        
-        .floating-btn.whatsapp {
-            background: linear-gradient(45deg, #25D366, #128C7E);
-        }
-        
-        .floating-btn.group {
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-        }
-        
-        .floating-btn:hover {
-            transform: scale(1.1) translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-        }
-        
-        /* Footer */
-        .main-footer {
-            background: rgba(12, 12, 29, 0.9);
-            padding: 60px 0 30px;
-            border-top: 2px solid rgba(67, 97, 238, 0.3);
-        }
-        
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px;
-            margin-bottom: 40px;
-        }
-        
-        .footer-logo h3 {
-            font-size: 1.8rem;
-            margin-bottom: 15px;
-            background: linear-gradient(45deg, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        
-        .footer-links h4 {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            color: white;
-        }
-        
-        .footer-links ul {
-            list-style: none;
-        }
-        
-        .footer-links li {
-            margin-bottom: 10px;
-        }
-        
-        .footer-links a {
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-        
-        .footer-links a:hover {
-            color: var(--primary);
-            padding-left: 5px;
-        }
-        
-        .social-links {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .social-link {
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-        
-        .social-link:hover {
-            background: var(--primary);
-            transform: translateY(-5px);
-        }
-        
-        .copyright {
-            text-align: center;
-            padding-top: 30px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 0.9rem;
-        }
-        
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        
-        .modal-content {
-            background: rgba(26, 26, 46, 0.95);
-            border-radius: 20px;
-            max-width: 500px;
-            width: 100%;
-            border: 1px solid rgba(67, 97, 238, 0.3);
-            backdrop-filter: blur(20px);
-            overflow: hidden;
-            position: relative;
-        }
-        
-        .close-modal {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-            z-index: 10;
-        }
-        
-        .modal-header {
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            padding: 25px;
-            text-align: center;
-        }
-        
-        .modal-header h3 {
-            font-size: 1.8rem;
-            color: white;
-        }
-        
-        .modal-body {
-            padding: 30px;
-        }
-        
-        .modal-options {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        
-        .modal-option {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            text-decoration: none;
-            color: white;
-            transition: all 0.3s ease;
-        }
-        
-        .modal-option:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateX(10px);
-        }
-        
-        .option-icon {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 992px) {
-            .hero-title {
-                font-size: 2.8rem;
-            }
-            
-            .hero-stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .main-nav {
-                display: none;
-                position: fixed;
-                top: 80px;
-                left: 0;
-                right: 0;
-                background: rgba(26, 26, 46, 0.98);
-                padding: 20px;
-                border-bottom: 2px solid rgba(67, 97, 238, 0.3);
-            }
-            
-            .main-nav.active {
-                display: block;
-            }
-            
-            .main-nav ul {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .mobile-menu-btn {
-                display: block;
-            }
-            
-            .cta-buttons {
-                display: none;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .hero-title {
-                font-size: 2.2rem;
-            }
-            
-            .hero-subtitle {
-                font-size: 1.1rem;
-            }
-            
-            .section-title {
-                font-size: 2rem;
-            }
-            
-            .stat-number {
-                font-size: 2rem;
-            }
-            
-            .form-frame {
-                height: 600px;
-            }
-        }
-        
-        @media (max-width: 576px) {
-            .hero-stats {
-                grid-template-columns: 1fr;
-            }
-            
-            .hero-title {
-                font-size: 1.8rem;
-            }
-            
-            .btn {
-                padding: 10px 20px;
-                font-size: 0.9rem;
-            }
-            
-            .floating-elements {
-                bottom: 20px;
-                right: 20px;
-            }
-            
-            .floating-btn {
-                width: 50px;
-                height: 50px;
-                font-size: 20px;
-            }
-        }
-        
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .animate-fade-in-up {
-            animation: fadeInUp 0.6s ease forwards;
-        }
-        
-        .delay-1 { animation-delay: 0.1s; opacity: 0; }
-        .delay-2 { animation-delay: 0.2s; opacity: 0; }
-        .delay-3 { animation-delay: 0.3s; opacity: 0; }
-        .delay-4 { animation-delay: 0.4s; opacity: 0; }
-        .delay-5 { animation-delay: 0.5s; opacity: 0; }
+/* ===== RESET & BASE ===== */
+*, *::before, *::after {
+    margin: 0; padding: 0;
+    box-sizing: border-box;
+    border-radius: 0 !important;
+}
+:root {
+    --bg: #0a0c15;
+    --card: #111827;
+    --border: #1e293b;
+    --primary: #3b82f6;
+    --accent: #1d4ed8;
+    --text: #f3f4f6;
+    --muted: #9ca3af;
+    --dim: #6b7280;
+}
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+h1,h2,h3,h4,h5,h6,.brand {
+    font-family: 'Orbitron', monospace;
+    letter-spacing: -0.02em;
+}
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--primary); }
+
+/* ===== LOADING OVERLAY ===== */
+#loading-overlay {
+    position: fixed; inset: 0; z-index: 9999;
+    background: var(--bg);
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    transition: opacity 0.3s;
+}
+#loading-overlay.hidden { display: none; }
+.spinner {
+    width: 48px; height: 48px;
+    border: 3px solid var(--border);
+    border-top-color: var(--primary);
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 16px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ===== POPUP MODAL ===== */
+#custom-popup {
+    position: fixed; inset: 0; z-index: 9998;
+    background: rgba(0,0,0,0.85);
+    display: flex; justify-content: center; align-items: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.25s;
+}
+#custom-popup.active { opacity: 1; pointer-events: all; }
+.popup-box {
+    background: var(--card);
+    border-top: 3px solid var(--primary);
+    padding: 28px;
+    max-width: 440px; width: calc(100% - 32px);
+    box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+}
+.popup-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.popup-header i { font-size: 1.4rem; }
+.popup-header h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.9rem;
+    text-transform: uppercase; letter-spacing: 0.08em;
+}
+#popup-message { color: var(--muted); font-size: 0.9rem; margin-bottom: 20px; line-height: 1.6; white-space: pre-line; }
+#popup-actions { display: flex; justify-content: flex-end; gap: 10px; }
+#popup-actions button {
+    padding: 8px 20px; font-weight: 700;
+    font-family: 'Rajdhani', sans-serif;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    font-size: 0.75rem; cursor: pointer; border: none;
+    transition: background 0.2s;
+}
+
+/* ===== NAVBAR ===== */
+nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,12,21,0.9);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+}
+.nav-inner {
+    max-width: 1280px; margin: 0 auto;
+    padding: 0 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 68px;
+}
+.nav-logo {
+    display: flex; align-items: center; gap: 10px;
+    cursor: pointer; text-decoration: none;
+    font-family: 'Orbitron', monospace;
+    font-size: 1.1rem; font-weight: 900;
+    color: #fff; letter-spacing: -0.02em;
+}
+.nav-logo span { color: var(--primary); }
+.nav-logo i { color: var(--primary); font-size: 1.5rem; }
+.nav-links { display: flex; align-items: center; gap: 2px; }
+.nav-btn {
+    background: none; border: none; cursor: pointer;
+    padding: 8px 12px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700; font-size: 0.78rem;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--muted);
+    transition: color 0.2s;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+}
+.nav-btn:hover { color: #fff; }
+.nav-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+.nav-btn.admin-btn { color: #ef4444; }
+.nav-btn.admin-btn:hover { color: #f87171; }
+.nav-btn.admin-btn.active { border-bottom-color: #ef4444; }
+#auth-btn {
+    background: none;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    padding: 8px 18px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700; font-size: 0.8rem;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+#auth-btn:hover { background: var(--primary); color: #fff; }
+.hamburger {
+    display: none;
+    background: none; border: none; cursor: pointer;
+    color: #fff; font-size: 1.4rem; padding: 8px;
+}
+/* Mobile Menu */
+#mobile-menu {
+    display: none;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 16px;
+    flex-direction: column; gap: 4px;
+}
+#mobile-menu.open { display: flex; }
+.mob-btn {
+    background: none; border: none; cursor: pointer;
+    padding: 10px 12px; text-align: left;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700; font-size: 0.85rem;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--muted); width: 100%;
+    border-left: 3px solid transparent;
+    transition: all 0.2s;
+}
+.mob-btn:hover { color: #fff; border-left-color: var(--border); }
+.mob-btn.active { color: var(--primary); border-left-color: var(--primary); }
+.mob-btn.admin-mob { color: #ef4444; }
+#auth-btn-mob {
+    margin-top: 10px; padding: 11px;
+    border: 1px solid var(--primary); background: none;
+    color: var(--primary); cursor: pointer; width: 100%;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; font-size: 0.85rem;
+    transition: all 0.2s;
+}
+#auth-btn-mob:hover { background: var(--primary); color: #fff; }
+
+/* ===== TAB SECTIONS ===== */
+main { flex: 1; }
+.tab-section { display: none; }
+.tab-section.active { display: block; }
+
+/* ===== HERO ===== */
+.hero {
+    background: linear-gradient(180deg, rgba(30,58,138,0.15) 0%, var(--bg) 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 80px 20px 60px;
+    text-align: center;
+}
+.hero h1 {
+    font-size: clamp(1.8rem, 5vw, 3.5rem);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    margin-bottom: 16px;
+    line-height: 1.1;
+}
+.hero h1 span { color: var(--primary); }
+.hero p { color: var(--muted); font-size: 1.05rem; max-width: 580px; margin: 0 auto 48px; }
+.partners {
+    max-width: 1100px; margin: 0 auto;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 24px 16px;
+    background: rgba(0,0,0,0.35);
+}
+.partners-label {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.65rem; color: var(--primary);
+    text-transform: uppercase; letter-spacing: 0.14em;
+    margin-bottom: 16px;
+}
+.partners-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+@media(min-width:600px){ .partners-grid { grid-template-columns: repeat(3,1fr); } }
+@media(min-width:900px){ .partners-grid { grid-template-columns: repeat(6,1fr); } }
+.partner-item {
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--muted);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: border-color 0.2s, color 0.2s;
+    text-align: center;
+}
+.partner-item:hover { border-color: var(--primary); color: #fff; }
+
+/* ===== FEED CONTROLS ===== */
+.feed-controls {
+    max-width: 1280px; margin: 0 auto;
+    padding: 32px 20px 0;
+    display: flex;
+    flex-direction: column; gap: 14px;
+}
+@media(min-width:700px){ .feed-controls { flex-direction: row; justify-content: space-between; align-items: center; } }
+.search-wrap {
+    position: relative; flex: 1; max-width: 400px;
+}
+.search-wrap i {
+    position: absolute; left: 12px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--dim);
+}
+#search-bar {
+    width: 100%; padding: 10px 14px 10px 36px;
+    background: var(--card); border: 1px solid var(--border);
+    color: #fff; font-family: 'Rajdhani', sans-serif;
+    font-size: 0.85rem;
+}
+#search-bar:focus { outline: none; border-color: var(--primary); }
+.filter-group {
+    display: flex;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    background: var(--bg);
+}
+.filter-btn {
+    padding: 9px 20px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700; font-size: 0.78rem;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    background: none; border: none; cursor: pointer;
+    color: var(--muted); transition: all 0.2s;
+}
+.filter-btn.active { background: var(--primary); color: #fff; }
+.filter-btn:hover:not(.active) { color: #fff; }
+
+/* ===== EVENT GRID ===== */
+.event-grid {
+    max-width: 1280px; margin: 0 auto;
+    padding: 24px 20px 48px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+@media(min-width:640px){ .event-grid { grid-template-columns: repeat(2,1fr); } }
+@media(min-width:1024px){ .event-grid { grid-template-columns: repeat(3,1fr); } }
+
+/* ===== EVENT CARD ===== */
+.event-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    transition: transform 0.25s, border-color 0.25s;
+}
+.event-card:hover { transform: translateY(-5px); border-color: var(--primary); }
+.card-img {
+    height: 200px; overflow: hidden;
+    position: relative; background: #000;
+    border-bottom: 1px solid var(--border);
+}
+.card-img img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.5s;
+}
+.event-card:hover .card-img img { transform: scale(1.06); }
+.card-badge {
+    position: absolute; top: 0; left: 0;
+    padding: 5px 12px;
+    font-size: 0.6rem; font-weight: 900;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    font-family: 'Orbitron', monospace;
+}
+.badge-scrim { background: var(--primary); color: #fff; }
+.badge-tournament { background: #d97706; color: #000; }
+.card-body { padding: 18px; flex: 1; display: flex; flex-direction: column; }
+.card-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.88rem; font-weight: 900;
+    text-transform: uppercase; letter-spacing: 0.04em;
+    color: #fff; margin-bottom: 12px;
+    transition: color 0.2s;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.event-card:hover .card-title { color: var(--primary); }
+.card-meta {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 6px; margin-bottom: 12px;
+    font-size: 0.75rem; color: var(--muted);
+}
+.card-meta span i { color: var(--primary); margin-right: 4px; }
+.card-meta span b { color: #fff; }
+.card-desc {
+    font-size: 0.8rem; color: var(--muted);
+    line-height: 1.55;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 12px; flex: 1;
+}
+.card-sponsor { font-size: 0.72rem; color: var(--dim); margin-bottom: 14px; }
+.card-sponsor i { color: var(--primary); margin-right: 4px; }
+.card-join {
+    display: block; width: 100%; padding: 12px;
+    text-align: center; text-decoration: none;
+    background: var(--bg); border: 1px solid var(--border);
+    color: #fff;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 900; font-size: 0.75rem;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    transition: all 0.2s;
+}
+.card-join:hover { background: var(--primary); border-color: var(--primary); }
+.empty-state {
+    grid-column: 1 / -1;
+    padding: 64px 20px; text-align: center;
+    border: 1px solid var(--border); background: var(--card);
+    color: var(--muted);
+}
+.empty-state i { font-size: 3rem; color: var(--dim); display: block; margin-bottom: 14px; }
+.empty-state p { text-transform: uppercase; font-weight: 700; letter-spacing: 0.06em; font-size: 0.85rem; }
+.empty-state small { font-size: 0.78rem; color: var(--dim); }
+#load-more-wrap { text-align: center; padding-bottom: 48px; }
+#load-more-btn {
+    display: none; /* JS controls visibility */
+    padding: 12px 36px;
+    border: 1px solid var(--primary); background: none;
+    color: var(--primary); cursor: pointer;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; font-size: 0.82rem;
+    transition: all 0.2s;
+}
+#load-more-btn:hover { background: rgba(59,130,246,0.1); }
+
+/* ===== FORM SECTIONS ===== */
+.form-wrap {
+    max-width: 760px; margin: 0 auto;
+    padding: 40px 20px;
+}
+.form-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 36px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+.form-header {
+    display: flex; align-items: center; gap: 14px;
+    padding-bottom: 20px; margin-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+}
+.form-header i { font-size: 1.8rem; }
+.form-header h2 {
+    font-size: 1.1rem; font-weight: 900;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: #fff;
+}
+.form-notice {
+    padding: 14px 16px; margin-bottom: 24px;
+    background: rgba(30,58,138,0.2);
+    border: 1px solid rgba(59,130,246,0.3);
+    font-size: 0.82rem; color: #93c5fd;
+}
+.form-row { display: grid; gap: 20px; margin-bottom: 20px; }
+.form-row.cols-2 { grid-template-columns: 1fr 1fr; }
+@media(max-width:600px){ .form-row.cols-2 { grid-template-columns: 1fr; } }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group label {
+    font-size: 0.7rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--muted);
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+    background: var(--bg);
+    border: 1px solid #374151;
+    color: #fff; padding: 11px 14px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.9rem;
+    transition: border-color 0.2s;
+    width: 100%;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none; border-color: var(--primary);
+}
+.form-group input.error { border-color: #ef4444; }
+.form-group select option { background: var(--card); }
+.form-group textarea { resize: vertical; min-height: 110px; }
+input[type="file"] { cursor: pointer; padding: 8px; }
+input[type="file"]::file-selector-button {
+    background: var(--primary); border: none; color: #fff;
+    padding: 7px 16px; font-weight: 700;
+    text-transform: uppercase; font-size: 0.75rem;
+    cursor: pointer; margin-right: 12px;
+    font-family: 'Rajdhani', sans-serif;
+    transition: background 0.2s;
+}
+input[type="file"]::file-selector-button:hover { background: var(--accent); }
+.btn-submit {
+    width: 100%; padding: 15px;
+    background: var(--primary); color: #fff; border: none;
+    cursor: pointer;
+    font-family: 'Orbitron', monospace;
+    font-weight: 700; font-size: 0.82rem;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    transition: background 0.2s;
+    margin-top: 8px;
+}
+.btn-submit:hover { background: var(--accent); }
+
+/* ===== PAKET SECTION ===== */
+.paket-wrap {
+    max-width: 1100px; margin: 0 auto;
+    padding: 48px 20px;
+}
+.section-title {
+    text-align: center; margin-bottom: 40px;
+}
+.section-title h2 {
+    font-size: 1.6rem; font-weight: 900;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 10px;
+}
+.section-title p { color: var(--muted); font-size: 0.9rem; }
+.paket-grid {
+    display: grid; grid-template-columns: 1fr;
+    gap: 24px;
+}
+@media(min-width:768px){ .paket-grid { grid-template-columns: repeat(3,1fr); } }
+.paket-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 32px;
+    display: flex; flex-direction: column;
+    transition: border-color 0.2s;
+    position: relative;
+}
+.paket-card:hover { border-color: #4b5563; }
+.paket-card.popular { border: 2px solid var(--primary); }
+.paket-badge-popular {
+    position: absolute; top: 0; right: 0;
+    background: var(--primary); color: #fff;
+    font-size: 0.6rem; font-weight: 900;
+    padding: 5px 12px; letter-spacing: 0.1em;
+    font-family: 'Orbitron', monospace;
+}
+.paket-name {
+    font-family: 'Orbitron', monospace;
+    font-weight: 700; font-size: 0.95rem;
+    text-transform: uppercase; margin-bottom: 8px;
+}
+.paket-price {
+    font-size: 1.6rem; font-weight: 900;
+    color: var(--primary); margin-bottom: 24px;
+}
+.paket-price span { font-size: 0.75rem; font-weight: 400; color: var(--muted); }
+.paket-features { list-style: none; margin-bottom: 28px; flex: 1; }
+.paket-features li {
+    padding: 6px 0; font-size: 0.88rem;
+    color: #d1d5db; display: flex; gap: 8px;
+    align-items: flex-start;
+}
+.paket-features li i.fa-check { color: var(--primary); margin-top: 2px; }
+.paket-features li i.fa-times { color: #ef4444; margin-top: 2px; }
+.paket-btn {
+    padding: 12px; width: 100%; cursor: pointer;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; font-size: 0.82rem;
+    border: none; transition: all 0.2s;
+}
+.paket-btn-primary { background: var(--primary); color: #fff; }
+.paket-btn-primary:hover { background: var(--accent); }
+.paket-btn-outline {
+    background: var(--bg);
+    border: 1px solid #374151; color: #fff;
+}
+.paket-btn-outline:hover { border-color: var(--primary); }
+
+/* ===== LEADERBOARD ===== */
+.lb-wrap {
+    max-width: 900px; margin: 0 auto; padding: 48px 20px;
+}
+.lb-card { background: var(--card); border: 1px solid var(--border); padding: 36px; }
+.lb-header { text-align: center; margin-bottom: 32px; }
+.lb-header i { font-size: 2.5rem; color: #d97706; display: block; margin-bottom: 12px; }
+table { width: 100%; border-collapse: collapse; }
+thead th {
+    padding: 12px 16px; font-size: 0.68rem;
+    font-family: 'Orbitron', monospace;
+    font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; background: var(--bg);
+    color: var(--primary); text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+tbody td {
+    padding: 12px 16px; font-size: 0.88rem;
+    border-bottom: 1px solid var(--border);
+}
+tbody tr:hover { background: rgba(255,255,255,0.02); }
+tbody tr:last-child td { border-bottom: none; }
+
+/* ===== KALENDER ===== */
+.kal-wrap { max-width: 900px; margin: 0 auto; padding: 48px 20px; }
+.kal-card { background: var(--card); border: 1px solid var(--border); padding: 36px; }
+.kal-header {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 28px; padding-bottom: 18px;
+    border-bottom: 1px solid var(--border);
+}
+.kal-header i { font-size: 1.6rem; color: var(--primary); }
+.kal-header h2 {
+    font-size: 1.1rem; font-weight: 900;
+    text-transform: uppercase; letter-spacing: 0.06em;
+}
+.cal-item {
+    display: flex; align-items: center;
+    background: var(--bg); border: 1px solid var(--border);
+    padding: 16px; margin-bottom: 10px;
+    transition: border-color 0.2s;
+}
+.cal-item:hover { border-color: #374151; }
+.cal-date {
+    text-align: center; padding-right: 20px;
+    margin-right: 20px; border-right: 1px solid var(--border);
+    min-width: 60px; flex-shrink: 0;
+}
+.cal-date .day {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.6rem; font-weight: 900; line-height: 1;
+}
+.cal-date .mon {
+    font-size: 0.62rem; color: var(--dim);
+    font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.cal-info { flex: 1; min-width: 0; }
+.cal-type {
+    font-size: 0.65rem; font-weight: 900;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    margin-bottom: 4px; display: flex; align-items: center; gap: 5px;
+}
+.type-scrim { color: var(--primary); }
+.type-tournament { color: #f59e0b; }
+.cal-name {
+    font-weight: 700; font-size: 0.9rem; color: #e5e7eb;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.cal-org { font-size: 0.75rem; color: var(--dim); margin-top: 3px; }
+.cal-slots {
+    display: none; flex-shrink: 0;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.65rem; color: var(--muted);
+    background: var(--card); border: 1px solid var(--border);
+    padding: 6px 10px; font-weight: 700;
+}
+@media(min-width:600px){ .cal-slots { display: block; } }
+
+/* ===== PROFIL ===== */
+.profil-wrap { max-width: 1000px; margin: 0 auto; padding: 48px 20px; }
+.profil-grid { display: grid; gap: 24px; }
+@media(min-width:768px){ .profil-grid { grid-template-columns: 280px 1fr; } }
+.profil-card { background: var(--card); border: 1px solid var(--border); padding: 24px; }
+.profil-card h3 {
+    font-family: 'Orbitron', monospace; font-size: 0.8rem;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--primary); padding-bottom: 14px;
+    margin-bottom: 20px; border-bottom: 1px solid var(--border);
+}
+.profil-field { margin-bottom: 18px; }
+.profil-field .field-label {
+    font-size: 0.65rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--dim); margin-bottom: 5px;
+}
+.profil-field .field-value {
+    font-size: 0.88rem; color: #d1d5db;
+    word-break: break-all;
+}
+.edit-row { display: flex; gap: 8px; margin-top: 6px; }
+.edit-row input {
+    flex: 1; padding: 7px 10px;
+    background: var(--bg); border: 1px solid var(--border);
+    color: #fff; font-family: 'Rajdhani', sans-serif; font-size: 0.85rem;
+}
+.edit-row input:focus { outline: none; border-color: var(--primary); }
+.edit-row button {
+    padding: 7px 14px; background: var(--primary);
+    color: #fff; border: none; cursor: pointer;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700; font-size: 0.75rem;
+    text-transform: uppercase; transition: background 0.2s;
+}
+.edit-row button:hover { background: var(--accent); }
+.history-card { background: var(--card); border: 1px solid var(--border); padding: 24px; }
+.history-card h3 {
+    font-family: 'Orbitron', monospace; font-size: 0.8rem;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: #fff; padding-bottom: 14px;
+    margin-bottom: 20px; border-bottom: 1px solid var(--border);
+}
+.history-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px; background: var(--bg); border: 1px solid var(--border);
+    margin-bottom: 8px; transition: background 0.2s;
+}
+.history-item:hover { background: rgba(255,255,255,0.02); }
+.history-item-name { font-weight: 700; font-size: 0.88rem; text-transform: uppercase; }
+.history-item-meta { font-size: 0.7rem; color: var(--muted); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.05em; }
+.status-badge {
+    font-size: 0.62rem; font-weight: 900;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    padding: 4px 10px; border: 1px solid;
+    font-family: 'Orbitron', monospace; white-space: nowrap;
+}
+.status-approved { color: #22c55e; border-color: #166534; }
+.status-pending { color: #f59e0b; border-color: #92400e; }
+.status-active { color: var(--muted); border-color: var(--border); }
+
+/* ===== ADMIN ===== */
+.admin-wrap { max-width: 1200px; margin: 0 auto; padding: 48px 20px; }
+.admin-card {
+    background: var(--card);
+    border: 1px solid #7f1d1d; padding: 36px;
+    box-shadow: 0 0 40px rgba(239,68,68,0.05);
+    margin-bottom: 32px;
+}
+.admin-header {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 28px; padding-bottom: 18px;
+    border-bottom: 1px solid #7f1d1d;
+}
+.admin-header i { font-size: 1.8rem; color: #ef4444; }
+.admin-header h2 {
+    font-size: 1.1rem; font-weight: 900;
+    color: #ef4444; text-transform: uppercase; letter-spacing: 0.06em;
+}
+.admin-section-title {
+    font-family: 'Orbitron', monospace; font-size: 0.8rem;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: #fff; margin-bottom: 16px;
+    padding-left: 12px; border-left: 4px solid;
+}
+.admin-section-title.yellow { border-color: #f59e0b; }
+.admin-section-title.red { border-color: #ef4444; }
+.overflow-wrap { overflow-x: auto; }
+.admin-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.admin-table th {
+    padding: 10px 14px; font-size: 0.65rem;
+    font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; background: var(--bg);
+    color: var(--muted); text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+.admin-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    color: #d1d5db;
+}
+.admin-table tr:hover td { background: rgba(255,255,255,0.02); }
+.btn-approve {
+    background: #15803d; color: #fff; border: none;
+    padding: 6px 14px; cursor: pointer;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700; font-size: 0.72rem;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    transition: background 0.2s; margin-right: 6px;
+}
+.btn-approve:hover { background: #16a34a; }
+.btn-delete {
+    background: #b91c1c; color: #fff; border: none;
+    padding: 6px 14px; cursor: pointer;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700; font-size: 0.72rem;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    transition: background 0.2s;
+}
+.btn-delete:hover { background: #ef4444; }
+
+/* ===== FOOTER ===== */
+footer {
+    background: #000;
+    border-top: 1px solid var(--border);
+    padding: 60px 20px 28px;
+    margin-top: auto;
+}
+.footer-inner {
+    max-width: 1280px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr;
+    gap: 36px; margin-bottom: 40px;
+}
+@media(min-width:600px){ .footer-inner { grid-template-columns: repeat(2,1fr); } }
+@media(min-width:900px){ .footer-inner { grid-template-columns: repeat(4,1fr); } }
+.footer-logo {
+    display: flex; align-items: center; gap: 9px;
+    font-family: 'Orbitron', monospace;
+    font-size: 1rem; font-weight: 900; color: #fff;
+    margin-bottom: 12px;
+}
+.footer-logo i { color: var(--primary); }
+.footer-logo span { color: var(--primary); }
+.footer-desc { font-size: 0.75rem; color: #475569; line-height: 1.7; }
+.footer-col h4 {
+    font-family: 'Orbitron', monospace; font-size: 0.65rem;
+    font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.12em; color: #fff; margin-bottom: 14px;
+}
+.footer-col p, .footer-col a {
+    font-size: 0.75rem; color: #475569;
+    line-height: 1.8; display: block;
+    text-decoration: none;
+}
+.footer-col a:hover { color: var(--primary); }
+.footer-col i { color: var(--primary); margin-right: 6px; }
+.footer-bottom {
+    max-width: 1280px; margin: 0 auto;
+    padding-top: 20px; border-top: 1px solid #0f172a;
+    text-align: center; font-size: 0.7rem;
+    color: #334155; font-family: monospace; letter-spacing: 0.08em;
+}
+
+/* ===== UTILS ===== */
+.hidden-nav { display: none !important; }
     </style>
+
+    <!-- Firebase Import Map -->
+    <script type="importmap">
+    {
+        "imports": {
+            "firebase/app": "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js",
+            "firebase/auth": "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js",
+            "firebase/firestore": "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js",
+            "firebase/storage": "https://www.gstatic.com/firebasejs/10.13.0/firebase-storage.js"
+        }
+    }
+    </script>
 </head>
 <body>
-    <!-- Header -->
-    <header class="main-header">
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">
-                    <div class="logo-icon">
-                        <i href="https://imageshack.com/i/pmHojowFp"></i>
+
+<!-- LOADING OVERLAY -->
+<div id="loading-overlay">
+    <div class="spinner"></div>
+    <p style="font-family:'Orbitron',monospace;color:var(--primary);font-size:0.85rem;letter-spacing:0.14em;animation:spin 0s;">MEMUAT DATA...</p>
+</div>
+
+<!-- POPUP MODAL -->
+<div id="custom-popup">
+    <div class="popup-box">
+        <div class="popup-header">
+            <i id="popup-icon" class="fas fa-info-circle" style="color:var(--primary)"></i>
+            <h3 id="popup-title">Informasi</h3>
+        </div>
+        <p id="popup-message"></p>
+        <div id="popup-actions"></div>
+    </div>
+</div>
+
+<!-- NAVBAR -->
+<nav>
+    <div class="nav-inner">
+        <div class="nav-logo" onclick="switchTab('beranda')">
+            <i class="fas fa-crosshairs"></i>
+            SCRIMBASE<span>ID</span>
+        </div>
+
+        <!-- Desktop Links -->
+        <div class="nav-links" id="desktop-links">
+            <button class="nav-btn active" id="navbtn-beranda" onclick="switchTab('beranda')">
+                <i class="fas fa-home" style="margin-right:5px"></i>Beranda
+            </button>
+            <button class="nav-btn" id="navbtn-scrim" onclick="switchTab('scrim')">
+                <i class="fas fa-gamepad" style="margin-right:5px"></i>Buat Scrim
+            </button>
+            <button class="nav-btn" id="navbtn-tournament" onclick="switchTab('tournament')">
+                <i class="fas fa-trophy" style="margin-right:5px"></i>Tournament
+            </button>
+            <button class="nav-btn" id="navbtn-paket" onclick="switchTab('paket')">
+                <i class="fas fa-box-open" style="margin-right:5px"></i>Paket
+            </button>
+            <button class="nav-btn" id="navbtn-leaderboard" onclick="switchTab('leaderboard')">
+                <i class="fas fa-chart-bar" style="margin-right:5px"></i>Leaderboard
+            </button>
+            <button class="nav-btn" id="navbtn-kalender" onclick="switchTab('kalender')">
+                <i class="fas fa-calendar-alt" style="margin-right:5px"></i>Kalender
+            </button>
+            <button class="nav-btn hidden-nav" id="navbtn-profil" onclick="switchTab('profil')">
+                <i class="fas fa-user-circle" style="margin-right:5px"></i>Profil
+            </button>
+            <button class="nav-btn admin-btn hidden-nav" id="navbtn-admin" onclick="switchTab('admin')">
+                <i class="fas fa-user-shield" style="margin-right:5px"></i>Admin
+            </button>
+        </div>
+
+        <button id="auth-btn"><i class="fab fa-google" style="margin-right:6px"></i>LOGIN</button>
+        <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu">
+        <button class="mob-btn active" id="mobbtn-beranda" onclick="switchTab('beranda')">
+            <i class="fas fa-home" style="margin-right:8px"></i>Beranda
+        </button>
+        <button class="mob-btn" id="mobbtn-scrim" onclick="switchTab('scrim')">
+            <i class="fas fa-gamepad" style="margin-right:8px"></i>Buat Scrim
+        </button>
+        <button class="mob-btn" id="mobbtn-tournament" onclick="switchTab('tournament')">
+            <i class="fas fa-trophy" style="margin-right:8px"></i>Ajukan Tournament
+        </button>
+        <button class="mob-btn" id="mobbtn-paket" onclick="switchTab('paket')">
+            <i class="fas fa-box-open" style="margin-right:8px"></i>Paket
+        </button>
+        <button class="mob-btn" id="mobbtn-leaderboard" onclick="switchTab('leaderboard')">
+            <i class="fas fa-chart-bar" style="margin-right:8px"></i>Leaderboard
+        </button>
+        <button class="mob-btn" id="mobbtn-kalender" onclick="switchTab('kalender')">
+            <i class="fas fa-calendar-alt" style="margin-right:8px"></i>Kalender
+        </button>
+        <button class="mob-btn hidden-nav" id="mobbtn-profil" onclick="switchTab('profil')">
+            <i class="fas fa-user-circle" style="margin-right:8px"></i>Profil Saya
+        </button>
+        <button class="mob-btn admin-mob hidden-nav" id="mobbtn-admin" onclick="switchTab('admin')">
+            <i class="fas fa-user-shield" style="margin-right:8px"></i>Admin Panel
+        </button>
+        <button id="auth-btn-mob"><i class="fab fa-google" style="margin-right:6px"></i>LOGIN DENGAN GOOGLE</button>
+    </div>
+</nav>
+
+<main>
+
+<!-- ===== BERANDA ===== -->
+<section id="section-beranda" class="tab-section active">
+    <!-- Hero -->
+    <div class="hero">
+        <div style="max-width:860px;margin:0 auto">
+            <h1>AJANG PEMBUKTIAN <span>STRIKERS SEJATI</span></h1>
+            <p>Temukan Scrim harian dan turnamen kompetitif Bloodstrike paling bergengsi di Indonesia. Hubungkan tim Anda sekarang!</p>
+        </div>
+        <div class="partners">
+            <p class="partners-label"><i class="fas fa-handshake" style="margin-right:6px"></i>OFFICIAL PARTNERS</p>
+            <div class="partners-grid">
+                <div class="partner-item">House Of Strike</div>
+                <div class="partner-item">Bloodstrike</div>
+                <div class="partner-item">NeatEase</div>
+                <div class="partner-item">Sabada Organizer</div>
+                <div class="partner-item">Scrim Mingguan Bloodstrike</div>
+                <div class="partner-item">Dunia Strikers</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feed Controls -->
+    <div class="feed-controls">
+        <div class="search-wrap">
+            <i class="fas fa-search"></i>
+            <input type="text" id="search-bar" placeholder="Cari nama event, deskripsi, sponsor...">
+        </div>
+        <div class="filter-group">
+            <button class="filter-btn active" id="fbtn-all" onclick="filterFeed('all')">Semua</button>
+            <button class="filter-btn" id="fbtn-tournament" onclick="filterFeed('tournament')">Tournament</button>
+            <button class="filter-btn" id="fbtn-scrim" onclick="filterFeed('scrim')">Scrim</button>
+        </div>
+    </div>
+
+    <!-- Grid -->
+    <div class="event-grid" id="event-grid"></div>
+
+    <!-- Load More -->
+    <div id="load-more-wrap">
+        <button id="load-more-btn" onclick="loadMore()">
+            <i class="fas fa-plus-circle" style="margin-right:8px"></i>LOAD MORE EVENTS
+        </button>
+    </div>
+</section>
+
+<!-- ===== BUAT SCRIM ===== -->
+<section id="section-scrim" class="tab-section">
+    <div class="form-wrap">
+        <div class="form-card">
+            <div class="form-header">
+                <i class="fas fa-gamepad" style="color:var(--primary)"></i>
+                <h2>Buat Scrim Baru</h2>
+            </div>
+            <form id="scrim-form">
+                <div class="form-row cols-2">
+                    <div class="form-group">
+                        <label>Nama Scrim *</label>
+                        <input type="text" id="s-name" placeholder="Contoh: Scrim Fast Track T7">
                     </div>
-                    <div class="logo-text">
-                        <h1>SCRIMBASE ID</h1>
-                        <p>Esports Tournament Platform</p>
+                    <div class="form-group">
+                        <label>Nama Leader / Penanggung Jawab *</label>
+                        <input type="text" id="s-leader" placeholder="Nama in-game / Real Name">
                     </div>
                 </div>
-                
-                <nav class="main-nav">
-                    <ul>
-                        <li><a href="#home" class="nav-link active">Beranda</a></li>
-                        <li><a href="#tournament" class="nav-link">Turnamen</a></li>
-                        <li><a href="https://docs.google.com/forms/d/e/1FAIpQLScQ6esjfHt_rvoaaIdIwQlbwH7K3wQIenxJcbsAS_LqXlQA6g/viewform?usp=send_form" class="nav-link">Pendaftaran</a></li>
-                        <li><a href="#contact" class="nav-link">Kontak</a></li>
-                        <li><a href="https://docs.google.com/spreadsheets/d/1LxBJjx89wiVNfG4pfxt8eqNRbx8Zu80S8HAxTHJJve4/edit?usp=drivesdk" class="nav-link">Data Team dan Peserta</a></li>
-                    </ul>
-                </nav>
-                
-                <div class="cta-buttons">
-                    <a href="#form" class="btn btn-primary">
-                        <i class="fas fa-user-plus"></i> Daftar Sekarang
-                    </a>
+                <div class="form-row cols-2">
+                    <div class="form-group">
+                        <label>Sponsor (Opsional)</label>
+                        <input type="text" id="s-sponsor" placeholder="ROG, Bloodstrike ID (pisah koma)">
+                    </div>
+                    <div class="form-group">
+                        <label>Sistem Point *</label>
+                        <select id="s-points">
+                            <option value="Standard NetEase">Standard NetEase</option>
+                            <option value="Custom Kompetitif">Custom Kompetitif</option>
+                            <option value="Kill Only">Kill Only Tier</option>
+                        </select>
+                    </div>
                 </div>
-                
-                <button class="mobile-menu-btn">
-                    <i class="fas fa-bars"></i>
+                <div class="form-row cols-2">
+                    <div class="form-group">
+                        <label>Slot Maksimal Tim *</label>
+                        <input type="number" id="s-slots" placeholder="Contoh: 20" min="2">
+                    </div>
+                    <div class="form-group">
+                        <label>Link Grup WhatsApp / Discord *</label>
+                        <input type="url" id="s-link" placeholder="https://chat.whatsapp.com/...">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Deskripsi Detail & Regulasi Scrim *</label>
+                        <textarea id="s-desc" placeholder="Tanggal main, jam, mode game, aturan khusus..."></textarea>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Upload Poster Resmi Scrim *</label>
+                        <input type="file" id="s-poster" accept="image/*">
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-paper-plane" style="margin-right:8px"></i>PUBLIKASIKAN SCRIM SEKARANG
                 </button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- ===== AJUKAN TOURNAMENT ===== -->
+<section id="section-tournament" class="tab-section">
+    <div class="form-wrap">
+        <div class="form-card">
+            <div class="form-header">
+                <i class="fas fa-trophy" style="color:#f59e0b"></i>
+                <h2>Ajukan Tournament</h2>
+            </div>
+            <div class="form-notice">
+                <i class="fas fa-exclamation-circle" style="margin-right:8px"></i>
+                Pengajuan turnamen memerlukan proses moderasi admin dalam waktu maksimal 1x24 jam sebelum diterbitkan.
+            </div>
+            <form id="tournament-form">
+                <div class="form-row cols-2">
+                    <div class="form-group">
+                        <label>Nama Tournament *</label>
+                        <input type="text" id="t-name" placeholder="Bloodstrike Indonesia Major Cup">
+                    </div>
+                    <div class="form-group">
+                        <label>Nama Panitia / Organizer *</label>
+                        <input type="text" id="t-organizer" placeholder="Nama Organisasi / Komunitas">
+                    </div>
+                </div>
+                <div class="form-row cols-2">
+                    <div class="form-group">
+                        <label>Sponsor & Partners (Opsional)</label>
+                        <input type="text" id="t-sponsor" placeholder="Telkomsel, ASUS ROG">
+                    </div>
+                    <div class="form-group">
+                        <label>Sistem Point *</label>
+                        <select id="t-points">
+                            <option value="Official Point NetEase">Official Point NetEase</option>
+                            <option value="Custom Point System">Custom Point System</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row cols-2">
+                    <div class="form-group">
+                        <label>Total Slot Tim *</label>
+                        <input type="number" id="t-slots" placeholder="64" min="4">
+                    </div>
+                    <div class="form-group">
+                        <label>Link Registrasi / Formulir *</label>
+                        <input type="url" id="t-link" placeholder="https://forms.gle/...">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Deskripsi, Prizepool & Aturan Turnamen *</label>
+                        <textarea id="t-desc" placeholder="Total hadiah, format bracket, jadwal kualifikasi..."></textarea>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Upload Poster Resmi Tournament *</label>
+                        <input type="file" id="t-poster" accept="image/*">
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit" style="background:#1d4ed8">
+                    <i class="fas fa-shield-alt" style="margin-right:8px"></i>AJUKAN UNTUK REVIEW
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- ===== PAKET ===== -->
+<section id="section-paket" class="tab-section">
+    <div class="paket-wrap">
+        <div class="section-title">
+            <h2>Paket Integrasi Arena</h2>
+            <p>Tingkatkan jangkauan penonton dan peserta scrim atau tournament komunitas Anda.</p>
+        </div>
+        <div class="paket-grid">
+            <div class="paket-card">
+                <p class="paket-name">Partnership Gratis</p>
+                <p class="paket-price">Rp0 <span>/ selamanya</span></p>
+                <ul class="paket-features">
+                    <li><i class="fas fa-check"></i> Publish Scrim Tanpa Batas</li>
+                    <li><i class="fas fa-check"></i> Log Real-time Sistem</li>
+                    <li><i class="fas fa-times"></i> Approval Manual Turnamen</li>
+                    <li><i class="fas fa-times"></i> Pin Banner Di Beranda</li>
+                </ul>
+                <button class="paket-btn paket-btn-outline" onclick="showPaketPopup('gratis')">HUBUNGI EMAIL</button>
+            </div>
+            <div class="paket-card popular">
+                <div class="paket-badge-popular">POPULER</div>
+                <p class="paket-name">Tournament Premium</p>
+                <p class="paket-price">Rp5.000 <span>/ bulan</span></p>
+                <ul class="paket-features">
+                    <li><i class="fas fa-check"></i> Semua Fitur Paket Gratis</li>
+                    <li><i class="fas fa-check"></i> Approval Instant Turnamen</li>
+                    <li><i class="fas fa-check"></i> Badge Premium Verified</li>
+                    <li><i class="fas fa-times"></i> Akses Boost Feed Utama</li>
+                </ul>
+                <button class="paket-btn paket-btn-primary" onclick="showPaketPopup('premium')">AMBIL PAKET NOW</button>
+            </div>
+            <div class="paket-card">
+                <p class="paket-name">Boost Scrim Arena</p>
+                <p class="paket-price">Rp10.000 <span>/ bulan</span></p>
+                <ul class="paket-features">
+                    <li><i class="fas fa-check"></i> Auto-Pin Di Feed Teratas</li>
+                    <li><i class="fas fa-check"></i> Highlight Card Glow Biru</li>
+                    <li><i class="fas fa-check"></i> Notifikasi Discord Bot</li>
+                    <li><i class="fas fa-check"></i> Prioritas Support 24/7</li>
+                </ul>
+                <button class="paket-btn paket-btn-outline" onclick="showPaketPopup('boost')">HUBUNGI ADMIN</button>
             </div>
         </div>
-    </header>
+    </div>
+</section>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero-section">
-        <div class="container">
-            <div class="hero-content animate-fade-in-up">
-                <h1 class="hero-title">
-                    Turnamen Esports Terbesar 2026
-                </h1>
-                <p class="hero-subtitle">
-                    Bergabunglah dengan kompetisi esports paling bergengsi dengan total hadiah 9.500 Gold. 
-                    Raih kemenangan dan buktikan kehebatan tim Anda di panggung nasional.
+<!-- ===== LEADERBOARD ===== -->
+<section id="section-leaderboard" class="tab-section">
+    <div class="lb-wrap">
+        <div class="lb-card">
+            <div class="lb-header">
+                <i class="fas fa-crown"></i>
+                <h2 style="font-size:1.2rem;font-weight:900;text-transform:uppercase;letter-spacing:0.06em">TOP 10 CREATOR LEADERBOARD</h2>
+                <p style="color:var(--muted);font-size:0.82rem;margin-top:6px">Peringkat berdasarkan total event (Scrim + Tournament) terbanyak yang dipublikasikan.</p>
+            </div>
+            <div class="overflow-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width:60px">Rank</th>
+                            <th>Nama Pengguna</th>
+                            <th>UID</th>
+                            <th style="text-align:right">Total Event</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lb-rows">
+                        <tr><td colspan="4" style="text-align:center;padding:32px;color:var(--dim)">Memuat data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== KALENDER ===== -->
+<section id="section-kalender" class="tab-section">
+    <div class="kal-wrap">
+        <div class="kal-card">
+            <div class="kal-header">
+                <i class="fas fa-calendar-day"></i>
+                <h2>Jadwal & Kalender Event</h2>
+            </div>
+            <div id="kal-list">
+                <div style="text-align:center;padding:40px;color:var(--dim)">Memuat jadwal...</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== PROFIL ===== -->
+<section id="section-profil" class="tab-section">
+    <div class="profil-wrap">
+        <div class="profil-grid">
+            <div class="profil-card">
+                <h3>Profil Saya</h3>
+                <div class="profil-field">
+                    <div class="field-label">UID Akun</div>
+                    <div class="field-value" id="p-uid" style="font-family:monospace;font-size:0.78rem"></div>
+                </div>
+                <div class="profil-field">
+                    <div class="field-label">Email Utama</div>
+                    <div class="field-value" id="p-email"></div>
+                </div>
+                <div class="profil-field">
+                    <div class="field-label">Nama Tampilan</div>
+                    <div class="edit-row">
+                        <input type="text" id="p-name-input" placeholder="Nama Anda">
+                        <button onclick="updateDisplayName()">Simpan</button>
+                    </div>
+                </div>
+                <div class="profil-field">
+                    <div class="field-label">Tanggal Bergabung</div>
+                    <div class="field-value" id="p-join"></div>
+                </div>
+            </div>
+            <div class="history-card">
+                <h3>Riwayat Event Yang Anda Buat</h3>
+                <div id="p-history">
+                    <div style="text-align:center;padding:40px;color:var(--dim)">Memuat riwayat...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== ADMIN ===== -->
+<section id="section-admin" class="tab-section">
+    <div class="admin-wrap">
+        <div class="admin-card">
+            <div class="admin-header">
+                <i class="fas fa-user-shield"></i>
+                <h2>Admin Panel Management</h2>
+            </div>
+
+            <!-- Pending -->
+            <div style="margin-bottom:36px">
+                <p class="admin-section-title yellow">
+                    <i class="fas fa-clock" style="margin-right:6px"></i>Pengajuan Tournament Pending
                 </p>
-                
-                <div class="hero-stats">
-                    <div class="stat-item animate-fade-in-up delay-1">
-                        <span class="stat-number">9.500</span>
-                        <span class="stat-label">Total Hadiah (Gold)</span>
-                    </div>
-                    <div class="stat-item animate-fade-in-up delay-2">
-                        <span class="stat-number">75</span>
-                        <span class="stat-label">Slot Team Tersedia</span>
-                    </div>
-                    <div class="stat-item animate-fade-in-up delay-3">
-                        <span class="stat-number">4+1</span>
-                        <span class="stat-label">Anggota per Team</span>
-                    </div>
-                    <div class="stat-item animate-fade-in-up delay-4">
-                        <span class="stat-number">FREE</span>
-                        <span class="stat-label">Pendaftaran Gratis</span>
-                    </div>
+                <div class="overflow-wrap">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Nama Tournament</th>
+                                <th>Organizer</th>
+                                <th>Email Pembuat</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-pending"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- All Events -->
+            <div>
+                <p class="admin-section-title red">
+                    <i class="fas fa-database" style="margin-right:6px"></i>Seluruh Database Event
+                </p>
+                <div class="overflow-wrap">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Tipe</th>
+                                <th>Nama Event</th>
+                                <th>Organizer</th>
+                                <th>Status</th>
+                                <th>Hapus</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-all"></tbody>
+                    </table>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Tournament Info -->
-    <section id="tournament" class="tournament-info">
-        <div class="container">
-            <h2 class="section-title animate-fade-in-up">Informasi Turnamen</h2>
-            
-            <div class="info-grid">
-                <div class="info-card animate-fade-in-up delay-1">
-                    <div class="info-icon">
-                        <i class="fas fa-calendar-alt"></i>
-                    </div>
-                    <h3>Tanggal Pelaksanaan</h3>
-                    <p>Turnamen akan berlangsung dari tanggal 29 Januari hingga 1 Februari 2025. Pastikan tim Anda siap pada tanggal tersebut.</p>
-                </div>
-                
-                <div class="info-card animate-fade-in-up delay-2">
-                    <div class="info-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <h3>Format Tim</h3>
-                    <p>Setiap tim terdiri dari 4 pemain utama dan 1 pemain cadangan. Total 5 anggota untuk fleksibilitas strategi.</p>
-                </div>
-                
-                <div class="info-card animate-fade-in-up delay-3">
-                    <div class="info-icon">
-                        <i class="fas fa-gamepad"></i>
-                    </div>
-                    <h3>Sistem Kompetisi</h3>
-                    <p>Mode Battle Royal, 75 Team Dibagi Menjadi 5 Group dan Final hanya ada 20 Team Yang lolos.</p>
-                </div>
-                
-                <div class="info-card animate-fade-in-up delay-4">
-                    <div class="info-icon">
-                        <i class="fas fa-award"></i>
-                    </div>
-                    <h3>Hadiah Turnamen</h3>
-                    <p>Total hadiah 9.500 Gold akan dibagikan kepada pemenang dengan distribusi untuk juara 1 sampai 10.</p>
-                </div>
+</main>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-inner">
+        <div>
+            <div class="footer-logo">
+                <i class="fas fa-crosshairs"></i>SCRIMBASE<span>ID</span>
             </div>
-            
-            <div style="text-align: center; margin-top: 50px;">
-                <a href="#form" class="btn btn-primary animate-fade-in-up delay-5" style="padding: 15px 40px; font-size: 1.1rem;">
-                    <i class="fas fa-file-alt"></i> Lihat Rulebook Lengkap
+            <p class="footer-desc">Penyedia ekosistem manajemen scrim digital dan pengarsipan turnamen e-sports Bloodstrike berkinerja tinggi, aman, dan real-time.</p>
+        </div>
+        <div class="footer-col">
+            <h4>Hubungi Kami</h4>
+            <a><i class="fas fa-envelope"></i> scriminfoid@gmail.com</a>
+            <a><i class="fab fa-discord"></i> ScrimBaseID</a>
+        </div>
+        <div class="footer-col">
+            <h4>Partner Utama</h4>
+            <p style="font-weight:700;letter-spacing:0.04em">HOUSE OF STRIKE / BLOODSTRIKE OFFICIAL / NETEASE / SABADA ORGANIZER / DUNIA STRIKERS</p>
+        </div>
+        <div class="footer-col">
+            <h4>Regulasi</h4>
+            <p>Seluruh aset gambar, logo, dan nama dagang Bloodstrike adalah hak milik penuh NetEase Games Inc. Kami berperan sebagai fasilitator komunitas berbasis hobi.</p>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        &copy; 2026 SCRIMBASEID INC. SHARP CORNERS ARCHITECTURE SYSTEM. ALL RIGHTS RESERVED.
+    </div>
+</footer>
+
+<!-- RESPONSIVE: hide desktop links on mobile -->
+<style>
+@media(max-width:900px){
+    #desktop-links, #auth-btn { display:none !important; }
+    .hamburger { display:block !important; }
+}
+@media(min-width:901px){
+    #mobile-menu { display:none !important; }
+}
+</style>
+
+<!-- FIREBASE MODULE -->
+<script type="module">
+import { initializeApp } from "firebase/app";
+import {
+    getAuth, signInWithPopup, GoogleAuthProvider,
+    signOut, onAuthStateChanged, updateProfile
+} from "firebase/auth";
+import {
+    getFirestore, collection, addDoc, setDoc, doc,
+    getDoc, getDocs, query, where, orderBy, limit,
+    onSnapshot, deleteDoc, updateDoc, Timestamp
+} from "firebase/firestore";
+import {
+    getStorage, ref, uploadBytes, getDownloadURL
+} from "firebase/storage";
+
+// ===== CONFIG =====
+const app = initializeApp({
+    apiKey: "AIzaSyDbLeClksCU_Aj_B3zzoZZzFtk6xtP0360",
+    authDomain: "bloodstrike-id.firebaseapp.com",
+    projectId: "bloodstrike-id",
+    storageBucket: "bloodstrike-id.firebasestorage.app",
+    messagingSenderId: "126535874422",
+    appId: "1:126535874422:web:8da15158509be3b89f2c57"
+});
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
+const googleProvider = new GoogleAuthProvider();
+
+// ===== STATE =====
+let currentUser = null;
+let isAdmin = false;
+let currentTab = 'beranda';
+let allEvents = [];
+let feedFilter = 'all';
+let searchQuery = '';
+let displayLimit = 6;
+const PAGE_SIZE = 6;
+let unsubEvents = null;
+
+// ===== LOADING =====
+function setLoading(on) {
+    const el = document.getElementById('loading-overlay');
+    if (on) el.classList.remove('hidden');
+    else el.classList.add('hidden');
+}
+
+// ===== ESCAPE HTML =====
+function esc(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ===== FORMAT DATE =====
+function fmtDate(ts) {
+    if (!ts) return '-';
+    const d = ts.toDate ? ts.toDate() : new Date(ts);
+    return d.toLocaleDateString('id-ID', { day:'numeric', month:'short', year:'numeric' });
+}
+
+// ===== POPUP =====
+function popup(title, message, type='info', onConfirm=null) {
+    const el = document.getElementById('custom-popup');
+    const icon = document.getElementById('popup-icon');
+    const colors = { info:'var(--primary)', success:'#22c55e', error:'#ef4444', warning:'#f59e0b' };
+    const icons = { info:'fas fa-info-circle', success:'fas fa-check-circle', error:'fas fa-exclamation-triangle', warning:'fas fa-exclamation-circle' };
+    document.getElementById('popup-title').textContent = title;
+    document.getElementById('popup-message').textContent = message;
+    icon.className = icons[type] || icons.info;
+    icon.style.color = colors[type] || colors.info;
+
+    const actions = document.getElementById('popup-actions');
+    if (onConfirm) {
+        actions.innerHTML = `
+            <button onclick="window.__closePopup()" style="background:#1e293b;color:var(--muted)">BATAL</button>
+            <button id="popup-confirm" style="background:#ef4444;color:#fff">KONFIRMASI</button>
+        `;
+        document.getElementById('popup-confirm').onclick = () => { window.__closePopup(); onConfirm(); };
+    } else {
+        actions.innerHTML = `<button onclick="window.__closePopup()" style="background:var(--primary);color:#fff">OK</button>`;
+    }
+
+    el.classList.add('active');
+}
+window.__closePopup = function() {
+    document.getElementById('custom-popup').classList.remove('active');
+};
+
+// ===== MOBILE MENU =====
+window.toggleMobileMenu = function() {
+    const m = document.getElementById('mobile-menu');
+    m.classList.toggle('open');
+};
+
+// ===== PAKET POPUPS =====
+window.showPaketPopup = function(type) {
+    const msgs = {
+        gratis: 'Kirim proposal kerjasama komunitas Anda via email ke:\nscriminfoid@gmail.com\n\nKami akan merespon dalam 2x24 jam.',
+        premium: 'Rp5.000 / bulan\n- Approval instant tournament\n- Badge Premium Verified\n\nTransfer ke:\nDana: 088991734780\na/n wrahtt55\n\nKonfirmasi: WhatsApp 0889-9173-4780',
+        boost: 'Auto-Pin di feed teratas\nHighlight card biru\nNotifikasi Discord\nSupport 24/7\n\nHubungi admin WhatsApp: 0889-9173-4780'
+    };
+    const titles = { gratis:'Partnership Gratis', premium:'Tournament Premium', boost:'Boost Scrim Arena' };
+    popup(titles[type], msgs[type], 'info');
+};
+
+// ===== TAB SWITCHING =====
+const PROTECTED = ['scrim','tournament','profil'];
+
+window.switchTab = function(tab) {
+    // Auth guard
+    if (PROTECTED.includes(tab) && !currentUser) {
+        popup('Akses Ditolak', 'Anda harus login menggunakan Google terlebih dahulu.', 'error');
+        return;
+    }
+    if (tab === 'admin' && !isAdmin) {
+        popup('Akses Terbatas', 'Halaman ini hanya untuk administrator sistem.', 'error');
+        return;
+    }
+
+    // Close mobile menu
+    document.getElementById('mobile-menu').classList.remove('open');
+
+    // Hide all sections
+    document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+    const target = document.getElementById(`section-${tab}`);
+    if (target) target.classList.add('active');
+
+    // Update nav buttons
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.mob-btn').forEach(b => b.classList.remove('active'));
+    const navBtn = document.getElementById(`navbtn-${tab}`);
+    const mobBtn = document.getElementById(`mobbtn-${tab}`);
+    if (navBtn) navBtn.classList.add('active');
+    if (mobBtn) mobBtn.classList.add('active');
+
+    currentTab = tab;
+
+    // GSAP animation
+    if (target) {
+        gsap.fromTo(target, { opacity:0, y:16 }, { opacity:1, y:0, duration:0.35, ease:'power2.out' });
+    }
+
+    // Load section data
+    if (tab === 'leaderboard') loadLeaderboard();
+    if (tab === 'kalender') loadCalendar();
+    if (tab === 'profil' && currentUser) loadProfile();
+    if (tab === 'admin' && isAdmin) loadAdmin();
+};
+
+// ===== RENDER FEED =====
+function renderFeed() {
+    const grid = document.getElementById('event-grid');
+    if (!grid) return;
+
+    let filtered = allEvents.filter(ev => {
+        if (feedFilter === 'scrim') return ev.type === 'scrim';
+        if (feedFilter === 'tournament') return ev.type === 'tournament' && ev.status === 'approved';
+        // 'all': scrims + approved tournaments
+        return ev.type === 'scrim' || (ev.type === 'tournament' && ev.status === 'approved');
+    });
+
+    if (searchQuery) {
+        const kw = searchQuery.toLowerCase();
+        filtered = filtered.filter(ev =>
+            ev.name?.toLowerCase().includes(kw) ||
+            ev.desc?.toLowerCase().includes(kw) ||
+            ev.sponsor?.toLowerCase().includes(kw) ||
+            ev.organizer?.toLowerCase().includes(kw)
+        );
+    }
+
+    const btn = document.getElementById('load-more-btn');
+    btn.style.display = filtered.length > displayLimit ? 'inline-block' : 'none';
+
+    const slice = filtered.slice(0, displayLimit);
+
+    if (slice.length === 0) {
+        grid.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-folder-open"></i>
+                <p>Tidak Ada Event Ditemukan</p>
+                <small>Coba ubah filter atau kata kunci pencarian</small>
+            </div>`;
+        return;
+    }
+
+    grid.innerHTML = slice.map(ev => {
+        const isTour = ev.type === 'tournament';
+        return `
+        <div class="event-card">
+            <div class="card-img">
+                <img src="${esc(ev.posterURL) || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600'}"
+                     alt="Poster" loading="lazy"
+                     onerror="this.src='https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600'">
+                <span class="card-badge ${isTour ? 'badge-tournament' : 'badge-scrim'}">${isTour ? 'TOURNAMENT' : 'SCRIM'}</span>
+            </div>
+            <div class="card-body">
+                <div class="card-title">${esc(ev.name)}</div>
+                <div class="card-meta">
+                    <span><i class="fas fa-user-shield"></i>${isTour ? 'Organizer' : 'Leader'}: <b>${esc(ev.organizer)}</b></span>
+                    <span><i class="fas fa-users"></i>Slot: <b>${esc(String(ev.slots))} Tim</b></span>
+                    <span><i class="fas fa-star"></i>Points: <b>${esc(ev.pointSystem)}</b></span>
+                    <span><i class="fas fa-calendar-alt"></i>Tgl: <b>${fmtDate(ev.createdAt)}</b></span>
+                </div>
+                <p class="card-desc">${esc(ev.desc || '')}</p>
+                ${ev.sponsor ? `<p class="card-sponsor"><i class="fas fa-handshake"></i>Sponsor: <b>${esc(ev.sponsor)}</b></p>` : ''}
+                <a href="${esc(ev.link)}" target="_blank" rel="noopener" class="card-join">
+                    GABUNG EVENT <i class="fas fa-arrow-right" style="margin-left:6px;font-size:0.7rem"></i>
                 </a>
             </div>
-        </div>
-    </section>
+        </div>`;
+    }).join('');
 
-    <!-- Form Section -->
-    <section id="form" class="form-section">
-        <div class="container">
-            <h2 class="section-title animate-fade-in-up">Formulir Pendaftaran</h2>
-            
-            <div class="form-container animate-fade-in-up delay-1">
-                <div class="form-header">
-                    <h2>Daftar Turnamen SCRIMBASE ID 2025</h2>
-                </div>
-                <div class="form-frame-container">
-                    <iframe class="form-frame" src="https://docs.google.com/forms/d/e/1FAIpQLScQ6esjfHt_rvoaaIdIwQlbwH7K3wQIenxJcbsAS_LqXlQA6g/viewform?embedded=true"></iframe>
-                </div>
-            </div>
-            <a href="https://forms.gle/Va9QsTRydJN8GcQW7" target="_blank" class="btn btn-secondary" style="width: 100%; justify-content: center;">
-                            <i class="fab fa-website"></i> Alternatif Daftar Kalau error
-                        </a>
-            
-            <div style="text-align: center; margin-top: 40px;">
-                <p style="color: rgba(255, 255, 255, 0.7); max-width: 600px; margin: 0 auto;">
-                    <i class="fas fa-info-circle"></i> Pastikan data yang diisi valid dan lengkap. Setelah mendaftar, 
-                    Anda akan dihubungi oleh panitia melalui WhatsApp untuk konfirmasi lebih lanjut.
-                </p>
-            </div>
-        </div>
-    </section>
+    // Animate cards
+    gsap.from(grid.children, { opacity:0, y:20, stagger:0.06, duration:0.4, ease:'power1.out' });
+}
 
-    <!-- Contact Section -->
-    <section id="contact" class="contact-section">
-        <div class="container">
-            <div class="contact-content">
-                <div class="contact-info animate-fade-in-up">
-                    <h2>Hubungi Kami</h2>
-                    <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 30px;">
-                        Untuk informasi lebih lanjut mengenai turnamen, sponsorship, atau kerjasama, 
-                        jangan ragu untuk menghubungi tim panitia kami.
-                    </p>
-                    
-                    <ul class="contact-list">
-                        <li>
-                            <div class="contact-icon">
-                                <i class="fas fa-user-headset"></i>
-                            </div>
-                            <div class="contact-text">
-                                <h4>Admin Turnamen</h4>
-                                <p>Tim dukungan utama untuk peserta</p>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="contact-icon">
-                                <i class="fab fa-whatsapp"></i>
-                            </div>
-                            <div class="contact-text">
-                                <h4>WhatsApp Admin</h4>
-                                <p>+62 889-9173-4780</p>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="contact-icon">
-                                <i class="fas fa-calendar-check"></i>
-                            </div>
-                            <div class="contact-text">
-                                <h4>Pendaftaran</h4>
-                                <p>Gratis - Sampai slot terpenuhi</p>
-                            </div>
-                        </li>
-                    </ul>
-                    
-                    <a href="https://wa.me/6288991734780" target="_blank" class="whatsapp-cta animate-fade-in-up delay-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Hubungi via WhatsApp
-                    </a>
-                </div>
-                
-                <div class="contact-actions animate-fade-in-up delay-3">
-                    <div style="background: rgba(255, 255, 255, 0.05); border-radius: 20px; padding: 30px; border: 1px solid rgba(255, 255, 255, 0.1);">
-                        <h3 style="font-size: 1.8rem; margin-bottom: 20px; color: white;">Bergabung dengan Komunitas</h3>
-                        <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 25px;">
-                            Setelah mendaftar, jangan lupa bergabung dengan grup WhatsApp kami untuk mendapatkan informasi terbaru, 
-                            pengumuman jadwal, dan berinteraksi dengan peserta lainnya.
-                        </p>
-                        <a href="https://chat.whatsapp.com/L83TmNagTRBJIvvVyiUGAl" target="_blank" class="btn btn-secondary" style="width: 100%; justify-content: center;">
-                            <i class="fab fa-whatsapp"></i> Masuk Grup WhatsApp
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+// ===== REALTIME EVENTS =====
+function startRealtime() {
+    if (unsubEvents) unsubEvents();
+    const q = query(collection(db, 'events'), orderBy('createdAt', 'desc'));
+    unsubEvents = onSnapshot(q, snap => {
+        allEvents = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderFeed();
+    }, err => {
+        console.error('Firestore snapshot error:', err);
+    });
+}
 
-    <!-- Floating Elements -->
-    <div class="floating-elements">
-        <button class="floating-btn whatsapp" id="whatsappBtn">
-            <i class="fab fa-whatsapp"></i>
-        </button>
-        <button class="floating-btn group" id="groupBtn">
-            <i class="fas fa-users"></i>
-        </button>
-    </div>
+// ===== FILTER + SEARCH =====
+window.filterFeed = function(f) {
+    feedFilter = f;
+    displayLimit = PAGE_SIZE;
+    ['all','tournament','scrim'].forEach(t => {
+        const btn = document.getElementById(`fbtn-${t}`);
+        if (btn) btn.classList.toggle('active', t === f);
+    });
+    renderFeed();
+};
 
-    <!-- Footer -->
-    <footer class="main-footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-logo">
-                    <h3>SCRIMBASE ID</h3>
-                    <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 20px;">
-                        Platform turnamen esports terpercaya di Indonesia, menghubungkan pemain dengan kompetisi berkualitas.
-                    </p>
-                    <div class="social-links">
-                        <a href="https://www.instagram.com/scrimbase_id?igsh=N3Flamt0anFhbGNk" class="social-link">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a href="https://tiktok.com/@scrimbaseid" class="social-link">
-                            <i class="fab fa-tiktok"></i>
-                        </a>
-                        <a href="https://youtube.com/@wrahtt_official?si=BAwz7pVb-TRVg4W5" class="social-link">
-                            <i class="fab fa-youtube"></i>
-                        </a>
-                        <a href="https://discord.gg/Jd3ZeqYpb3" class="social-link">
-                            <i class="fab fa-discord"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="footer-links">
-                    <h4>Menu Utama</h4>
-                    <ul>
-                        <li><a href="#home">Beranda</a></li>
-                        <li><a href="#tournament">Turnamen</a></li>
-                        <li><a href="https://docs.google.com/forms/d/e/1FAIpQLScQ6esjfHt_rvoaaIdIwQlbwH7K3wQIenxJcbsAS_LqXlQA6g/viewform?usp=send_form">Pendaftaran</a></li>
-                        <li><a href="#contact">Kontak</a></li>
-                        <li><a href="https://docs.google.com/spreadsheets/d/1LxBJjx89wiVNfG4pfxt8eqNRbx8Zu80S8HAxTHJJve4/edit?usp=drivesdk">Data Team dan peserta</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-links">
-                    <h4>Informasi</h4>
-                    <ul>
-                        <li><a href="Https://s.id/RULEBOOKSBIDWEEK4">Rulebook</a></li>
-                        <li><a href="#">FAQ</a></li>
-                        <li><a href="scrimbaseid.netlify.app/collaborations">Sponsorship</a></li>
-                        <li><a href="#">Terms & Conditions</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-links">
-                    <h4>Kontak Panitia</h4>
-                    <ul>
-                        <li><i class="fas fa-phone" style="margin-right: 10px; color: var(--primary);"></i> +62 889-9173-4780</li>
-                        <li><i class="fas fa-envelope" style="margin-right: 10px; color: var(--primary);"></i> scriminfoid@gmail.com</li>
-                        <li><i class="fas fa-map-marker-alt" style="margin-right: 10px; color: var(--primary);"></i> Indonesia</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="copyright">
-                <p>&copy; 2025 SCRIMBASE ID. All rights reserved. | Designed with <i class="fas fa-heart" style="color: var(--accent);"></i> by Wrahtt55</p>
-            </div>
-        </div>
-    </footer>
+document.getElementById('search-bar').addEventListener('input', e => {
+    searchQuery = e.target.value;
+    displayLimit = PAGE_SIZE;
+    renderFeed();
+});
 
-    <!-- Modal -->
-    <div class="modal" id="contactModal">
-        <div class="modal-content">
-            <button class="close-modal" id="closeModal">&times;</button>
-            <div class="modal-header">
-                <h3>Hubungi Panitia</h3>
-            </div>
-            <div class="modal-body">
-                <div class="modal-options">
-                    <a href="https://wa.me/6288991734780" target="_blank" class="modal-option">
-                        <div class="option-icon">
-                            <i class="fab fa-whatsapp"></i>
-                        </div>
-                        <div>
-                            <h4>WhatsApp Admin</h4>
-                            <p>+62 889-9173-4780</p>
-                        </div>
-                    </a>
-                    
-                    <a href="https://chat.whatsapp.com/L83TmNagTRBJIvvVyiUGAl" target="_blank" class="modal-option">
-                        <div class="option-icon">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <div>
-                            <h4>Grup WhatsApp</h4>
-                            <p>Bergabung dengan komunitas</p>
-                        </div>
-                    </a>
-                
-                    <a href="mailto:scriminfoid@gmail.com" class="modal-option">
-                        <div class="option-icon">
-                            <i class="fas fa-envelope"></i>
-                        </div>
-                        <div>
-                            <h4>Email Panitia</h4>
-                            <p>scriminfoid@gmail.com</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
+window.loadMore = function() {
+    displayLimit += PAGE_SIZE;
+    renderFeed();
+};
 
-    <script>
-        // Mobile Menu Toggle
-        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-        const mainNav = document.querySelector('.main-nav');
-        
-        mobileMenuBtn.addEventListener('click', () => {
-            mainNav.classList.toggle('active');
-            mobileMenuBtn.innerHTML = mainNav.classList.contains('active') 
-                ? '<i class="fas fa-times"></i>' 
-                : '<i class="fas fa-bars"></i>';
+// ===== CREATE SCRIM =====
+document.getElementById('scrim-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    if (!currentUser) { popup('Login Diperlukan', 'Silakan login terlebih dahulu.', 'error'); return; }
+
+    const fields = {
+        name: document.getElementById('s-name').value.trim(),
+        leader: document.getElementById('s-leader').value.trim(),
+        sponsor: document.getElementById('s-sponsor').value.trim(),
+        points: document.getElementById('s-points').value,
+        slots: document.getElementById('s-slots').value,
+        link: document.getElementById('s-link').value.trim(),
+        desc: document.getElementById('s-desc').value.trim(),
+    };
+    const poster = document.getElementById('s-poster').files[0];
+
+    // Validate
+    let invalid = false;
+    ['s-name','s-leader','s-slots','s-link','s-desc'].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el.value.trim()) { el.classList.add('error'); invalid = true; }
+        else el.classList.remove('error');
+    });
+    if (!poster) { popup('Poster Wajib', 'Silakan upload poster scrim.', 'warning'); return; }
+    if (invalid) { popup('Validasi Gagal', 'Harap isi semua field yang wajib.', 'error'); return; }
+
+    setLoading(true);
+    try {
+        const storageRef = ref(storage, `posters/scrim_${Date.now()}_${poster.name}`);
+        const snap = await uploadBytes(storageRef, poster);
+        const posterURL = await getDownloadURL(snap.ref);
+
+        await addDoc(collection(db, 'events'), {
+            type: 'scrim',
+            name: fields.name,
+            organizer: fields.leader,
+            sponsor: fields.sponsor,
+            desc: fields.desc,
+            pointSystem: fields.points,
+            slots: parseInt(fields.slots) || 0,
+            link: fields.link,
+            posterURL,
+            status: 'approved',
+            createdAt: Timestamp.now(),
+            createdBy: currentUser.uid,
+            userEmail: currentUser.email
         });
-        
-        // Smooth Scroll for Navigation
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                const targetId = this.getAttribute('href');
-                if(targetId === '#') return;
-                
-                const targetElement = document.querySelector(targetId);
-                if(targetElement) {
-                    // Update active nav link
-                    document.querySelectorAll('.nav-link').forEach(link => {
-                        link.classList.remove('active');
-                    });
-                    this.classList.add('active');
-                    
-                    // Close mobile menu if open
-                    if(mainNav.classList.contains('active')) {
-                        mainNav.classList.remove('active');
-                        mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
-                    }
-                    
-                    // Smooth scroll to target
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 80,
-                        behavior: 'smooth'
-                    });
-                }
-            });
+
+        popup('Berhasil!', 'Scrim Anda telah dipublikasikan dan langsung tampil di feed.', 'success');
+        document.getElementById('scrim-form').reset();
+        switchTab('beranda');
+    } catch (err) {
+        console.error(err);
+        popup('Gagal Menyimpan', err.message, 'error');
+    } finally {
+        setLoading(false);
+    }
+});
+
+// ===== SUBMIT TOURNAMENT =====
+document.getElementById('tournament-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    if (!currentUser) { popup('Login Diperlukan', 'Silakan login terlebih dahulu.', 'error'); return; }
+
+    const poster = document.getElementById('t-poster').files[0];
+    let invalid = false;
+    ['t-name','t-organizer','t-slots','t-link','t-desc'].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el.value.trim()) { el.classList.add('error'); invalid = true; }
+        else el.classList.remove('error');
+    });
+    if (!poster) { popup('Poster Wajib', 'Silakan upload poster tournament.', 'warning'); return; }
+    if (invalid) { popup('Validasi Gagal', 'Harap isi semua field yang wajib.', 'error'); return; }
+
+    setLoading(true);
+    try {
+        const storageRef = ref(storage, `posters/tournament_${Date.now()}_${poster.name}`);
+        const snap = await uploadBytes(storageRef, poster);
+        const posterURL = await getDownloadURL(snap.ref);
+
+        await addDoc(collection(db, 'events'), {
+            type: 'tournament',
+            name: document.getElementById('t-name').value.trim(),
+            organizer: document.getElementById('t-organizer').value.trim(),
+            sponsor: document.getElementById('t-sponsor').value.trim(),
+            desc: document.getElementById('t-desc').value.trim(),
+            pointSystem: document.getElementById('t-points').value,
+            slots: parseInt(document.getElementById('t-slots').value) || 0,
+            link: document.getElementById('t-link').value.trim(),
+            posterURL,
+            status: 'pending',
+            createdAt: Timestamp.now(),
+            createdBy: currentUser.uid,
+            userEmail: currentUser.email
         });
-        
-        // Modal Handling
-        const whatsappBtn = document.getElementById('whatsappBtn');
-        const groupBtn = document.getElementById('groupBtn');
-        const contactModal = document.getElementById('contactModal');
-        const closeModalBtn = document.getElementById('closeModal');
-        
-        whatsappBtn.addEventListener('click', () => {
-            contactModal.style.display = 'flex';
+
+        popup('Pengajuan Terkirim!', 'Tournament Anda masuk antrean moderasi. Kami proses dalam 1x24 jam.', 'success');
+        document.getElementById('tournament-form').reset();
+        switchTab('beranda');
+    } catch (err) {
+        console.error(err);
+        popup('Gagal Mengajukan', err.message, 'error');
+    } finally {
+        setLoading(false);
+    }
+});
+
+// ===== LEADERBOARD =====
+async function loadLeaderboard() {
+    const tbody = document.getElementById('lb-rows');
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:24px;color:var(--dim)">Memuat...</td></tr>`;
+
+    try {
+        const [evSnap, usersSnap] = await Promise.all([
+            getDocs(collection(db, 'events')),
+            getDocs(collection(db, 'users'))
+        ]);
+
+        const map = new Map();
+        evSnap.docs.forEach(d => {
+            const uid = d.data().createdBy;
+            if (uid) map.set(uid, (map.get(uid) || 0) + 1);
         });
-        
-        groupBtn.addEventListener('click', () => {
-            contactModal.style.display = 'flex';
+
+        const names = new Map();
+        usersSnap.docs.forEach(d => {
+            const data = d.data();
+            names.set(d.id, data.displayName || data.email?.split('@')[0] || 'Anon');
         });
-        
-        closeModalBtn.addEventListener('click', () => {
-            contactModal.style.display = 'none';
-        });
-        
-        // Close modal when clicking outside
-        window.addEventListener('click', (e) => {
-            if(e.target === contactModal) {
-                contactModal.style.display = 'none';
-            }
-        });
-        
-        // Animation on scroll
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-        
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if(entry.isIntersecting) {
-                    entry.target.classList.add('animate-fade-in-up');
-                }
-            });
-        }, observerOptions);
-        
-        // Observe elements for animation
-        document.querySelectorAll('.info-card, .stat-item, .form-container, .contact-info, .contact-actions').forEach(el => {
-            observer.observe(el);
-        });
-        
-        // Update active nav link on scroll
-        window.addEventListener('scroll', () => {
-            let current = '';
-            const sections = document.querySelectorAll('section');
-            
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.clientHeight;
-                if(pageYOffset >= sectionTop - 100) {
-                    current = section.getAttribute('id');
-                }
-            });
-            
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.remove('active');
-                if(link.getAttribute('href') === `#${current}`) {
-                    link.classList.add('active');
-                }
-            });
-        });
-        
-        // Form height adjustment for mobile
-        function adjustFormHeight() {
-            const formFrame = document.querySelector('.form-frame');
-            if(window.innerWidth < 768) {
-                formFrame.style.height = '500px';
-            } else {
-                formFrame.style.height = '700px';
-            }
+
+        const sorted = [...map.entries()].sort((a,b) => b[1]-a[1]).slice(0,10);
+
+        if (!sorted.length) {
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:24px;color:var(--dim)">Belum ada data</td></tr>`;
+            return;
         }
-        
-        window.addEventListener('load', adjustFormHeight);
-        window.addEventListener('resize', adjustFormHeight);
-    </script>
+
+        tbody.innerHTML = sorted.map(([uid, cnt], i) => {
+            const icons = ['<i class="fas fa-crown" style="color:#d97706"></i>', '<i class="fas fa-medal" style="color:#9ca3af"></i>', '<i class="fas fa-medal" style="color:#a16207"></i>'];
+            const rank = icons[i] || `<span style="color:var(--muted)">${i+1}</span>`;
+            return `<tr>
+                <td style="text-align:center;font-family:'Orbitron',monospace">${rank}</td>
+                <td style="font-weight:700;color:#fff;text-transform:uppercase">${esc(names.get(uid) || 'Unknown')}</td>
+                <td style="font-family:monospace;font-size:0.72rem;color:var(--dim)">${uid.substring(0,16)}...</td>
+                <td style="text-align:right;font-weight:900;color:var(--primary);font-family:'Orbitron',monospace">${cnt}</td>
+            </tr>`;
+        }).join('');
+    } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:24px;color:#ef4444">Error: ${esc(err.message)}</td></tr>`;
+    }
+}
+
+// ===== KALENDER =====
+async function loadCalendar() {
+    const container = document.getElementById('kal-list');
+    container.innerHTML = `<div style="text-align:center;padding:40px;color:var(--dim)">Memuat jadwal...</div>`;
+
+    try {
+        const q = query(collection(db, 'events'), orderBy('createdAt', 'desc'), limit(25));
+        const snap = await getDocs(q);
+        const docs = snap.docs.filter(d => {
+            const s = d.data().status;
+            return s === 'approved' || s === 'active' || d.data().type === 'scrim';
+        });
+
+        if (!docs.length) {
+            container.innerHTML = `<div style="text-align:center;padding:40px;color:var(--dim)"><i class="fas fa-calendar-times" style="font-size:2rem;display:block;margin-bottom:12px"></i>Belum ada jadwal event</div>`;
+            return;
+        }
+
+        container.innerHTML = docs.map(d => {
+            const ev = d.data();
+            const date = ev.createdAt?.toDate ? ev.createdAt.toDate() : new Date();
+            const day = String(date.getDate()).padStart(2,'0');
+            const mon = date.toLocaleDateString('id-ID', { month:'short' }).toUpperCase();
+            const typeClass = ev.type === 'scrim' ? 'type-scrim' : 'type-tournament';
+            return `
+            <div class="cal-item">
+                <div class="cal-date">
+                    <div class="day">${day}</div>
+                    <div class="mon">${mon}</div>
+                </div>
+                <div class="cal-info">
+                    <div class="cal-type ${typeClass}">
+                        <i class="fas fa-dot-circle" style="font-size:0.6rem"></i>${ev.type.toUpperCase()}
+                    </div>
+                    <div class="cal-name">${esc(ev.name)}</div>
+                    <div class="cal-org">Organizer: ${esc(ev.organizer)}</div>
+                </div>
+                <div class="cal-slots">${ev.slots} SLOTS</div>
+            </div>`;
+        }).join('');
+    } catch (err) {
+        container.innerHTML = `<div style="text-align:center;padding:40px;color:#ef4444">Error: ${esc(err.message)}</div>`;
+    }
+}
+
+// ===== PROFIL =====
+async function loadProfile() {
+    if (!currentUser) return;
+    document.getElementById('p-uid').textContent = currentUser.uid;
+    document.getElementById('p-email').textContent = currentUser.email;
+    document.getElementById('p-name-input').value = currentUser.displayName || '';
+    document.getElementById('p-join').textContent = new Date(currentUser.metadata.creationTime)
+        .toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' });
+
+    const hist = document.getElementById('p-history');
+    hist.innerHTML = `<div style="text-align:center;padding:24px;color:var(--dim)">Memuat...</div>`;
+
+    try {
+        const q = query(collection(db, 'events'), where('createdBy','==',currentUser.uid), orderBy('createdAt','desc'));
+        const snap = await getDocs(q);
+
+        if (snap.empty) {
+            hist.innerHTML = `<div style="text-align:center;padding:40px;color:var(--dim)"><i class="fas fa-inbox" style="font-size:2rem;display:block;margin-bottom:12px"></i>Belum ada event yang Anda buat</div>`;
+            return;
+        }
+
+        hist.innerHTML = snap.docs.map(d => {
+            const ev = d.data();
+            const sc = ev.status === 'approved' ? 'status-approved' : ev.status === 'pending' ? 'status-pending' : 'status-active';
+            return `
+            <div class="history-item">
+                <div>
+                    <div class="history-item-name">${esc(ev.name)}</div>
+                    <div class="history-item-meta">${ev.type} &bull; ${fmtDate(ev.createdAt)}</div>
+                </div>
+                <span class="status-badge ${sc}">${ev.status || 'active'}</span>
+            </div>`;
+        }).join('');
+    } catch (err) {
+        hist.innerHTML = `<div style="color:#ef4444;padding:20px">Error: ${esc(err.message)}</div>`;
+    }
+}
+
+// ===== UPDATE DISPLAY NAME =====
+window.updateDisplayName = async function() {
+    const name = document.getElementById('p-name-input').value.trim();
+    if (!name) { popup('Validasi Gagal', 'Nama tidak boleh kosong.', 'warning'); return; }
+    if (!currentUser) return;
+    setLoading(true);
+    try {
+        await updateProfile(auth.currentUser, { displayName: name });
+        await updateDoc(doc(db, 'users', currentUser.uid), { displayName: name });
+        updateAuthBtn();
+        popup('Berhasil!', 'Nama tampilan diperbarui.', 'success');
+    } catch (err) {
+        popup('Gagal Update', err.message, 'error');
+    } finally {
+        setLoading(false);
+    }
+};
+
+// ===== ADMIN =====
+async function loadAdmin() {
+    if (!isAdmin) return;
+    const pendingEl = document.getElementById('admin-pending');
+    const allEl = document.getElementById('admin-all');
+    pendingEl.innerHTML = `<tr><td colspan="4" style="padding:16px;text-align:center;color:var(--dim)">Memuat...</td></tr>`;
+    allEl.innerHTML = `<tr><td colspan="5" style="padding:16px;text-align:center;color:var(--dim)">Memuat...</td></tr>`;
+
+    try {
+        const snap = await getDocs(collection(db, 'events'));
+        let pendingHTML = '';
+        let allHTML = '';
+
+        snap.docs.forEach(d => {
+            const ev = d.data();
+            const id = d.id;
+
+            allHTML += `<tr>
+                <td style="text-transform:uppercase;font-size:0.75rem;color:var(--muted)">${ev.type}</td>
+                <td style="font-weight:700;color:#fff">${esc(ev.name)}</td>
+                <td style="color:var(--muted)">${esc(ev.organizer)}</td>
+                <td><span style="font-size:0.7rem;color:${ev.status==='approved'?'#22c55e':ev.status==='pending'?'#f59e0b':'var(--muted)'}">${ev.status}</span></td>
+                <td><button class="btn-delete" onclick="window.__adminDelete('${id}')"><i class="fas fa-trash-alt" style="margin-right:4px"></i>HAPUS</button></td>
+            </tr>`;
+
+            if (ev.type === 'tournament' && ev.status === 'pending') {
+                pendingHTML += `<tr style="background:rgba(120,80,0,0.08)">
+                    <td style="font-weight:700;color:#fff">${esc(ev.name)}</td>
+                    <td style="color:#f59e0b">${esc(ev.organizer)}</td>
+                    <td style="font-family:monospace;font-size:0.75rem;color:var(--muted)">${esc(ev.userEmail)}</td>
+                    <td>
+                        <button class="btn-approve" onclick="window.__adminApprove('${id}')"><i class="fas fa-check" style="margin-right:4px"></i>APPROVE</button>
+                        <button class="btn-delete" onclick="window.__adminDelete('${id}')"><i class="fas fa-times" style="margin-right:4px"></i>REJECT</button>
+                    </td>
+                </tr>`;
+            }
+        });
+
+        pendingEl.innerHTML = pendingHTML || `<tr><td colspan="4" style="padding:16px;text-align:center;color:var(--dim)">Tidak ada antrean pending</td></tr>`;
+        allEl.innerHTML = allHTML || `<tr><td colspan="5" style="padding:16px;text-align:center;color:var(--dim)">Belum ada event</td></tr>`;
+    } catch (err) {
+        pendingEl.innerHTML = `<tr><td colspan="4" style="padding:16px;color:#ef4444">Error: ${esc(err.message)}</td></tr>`;
+    }
+}
+
+window.__adminApprove = async function(id) {
+    setLoading(true);
+    try {
+        await updateDoc(doc(db, 'events', id), { status: 'approved' });
+        popup('Approved!', 'Tournament telah disetujui dan ditampilkan di feed.', 'success');
+        loadAdmin();
+    } catch (err) {
+        popup('Error', err.message, 'error');
+    } finally {
+        setLoading(false);
+    }
+};
+
+window.__adminDelete = function(id) {
+    popup('Konfirmasi Hapus', 'Hapus event ini secara permanen? Tindakan tidak dapat dibatalkan.', 'warning', async () => {
+        setLoading(true);
+        try {
+            await deleteDoc(doc(db, 'events', id));
+            popup('Terhapus!', 'Event berhasil dihapus dari database.', 'success');
+            loadAdmin();
+        } catch (err) {
+            popup('Error', err.message, 'error');
+        } finally {
+            setLoading(false);
+        }
+    });
+};
+
+// ===== AUTH BUTTON =====
+function updateAuthBtn() {
+    const name = currentUser?.displayName?.split(' ')[0]?.toUpperCase() || 'USER';
+    const txt = currentUser
+        ? `<i class="fas fa-sign-out-alt" style="margin-right:6px"></i>LOGOUT (${name})`
+        : `<i class="fab fa-google" style="margin-right:6px"></i>LOGIN`;
+    document.getElementById('auth-btn').innerHTML = txt;
+    document.getElementById('auth-btn-mob').innerHTML = currentUser
+        ? `<i class="fas fa-sign-out-alt" style="margin-right:6px"></i>LOGOUT (${name})`
+        : `<i class="fab fa-google" style="margin-right:6px"></i>LOGIN DENGAN GOOGLE`;
+}
+
+function handleAuth() {
+    if (currentUser) {
+        popup('Logout', 'Yakin ingin keluar dari sistem?', 'warning', async () => {
+            setLoading(true);
+            try { await signOut(auth); }
+            catch (err) { popup('Error', err.message, 'error'); }
+            finally { setLoading(false); }
+        });
+    } else {
+        setLoading(true);
+        signInWithPopup(auth, googleProvider)
+            .then(res => popup('Login Berhasil', `Selamat datang, ${res.user.displayName || res.user.email}!`, 'success'))
+            .catch(err => {
+                if (err.code !== 'auth/popup-closed-by-user') {
+                    popup('Login Gagal', err.message, 'error');
+                }
+            })
+            .finally(() => setLoading(false));
+    }
+}
+
+document.getElementById('auth-btn').addEventListener('click', handleAuth);
+document.getElementById('auth-btn-mob').addEventListener('click', handleAuth);
+
+// ===== AUTH STATE LISTENER =====
+onAuthStateChanged(auth, async user => {
+    setLoading(true);
+    currentUser = user;
+    isAdmin = user?.email === 'oranghitam73@gmail.com';
+
+    const showHide = (ids, show) => {
+        ids.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.classList.toggle('hidden-nav', !show);
+        });
+    };
+
+    if (user) {
+        // Save user to Firestore if new
+        const userRef = doc(db, 'users', user.uid);
+        const userDoc = await getDoc(userRef);
+        if (!userDoc.exists()) {
+            await setDoc(userRef, {
+                uid: user.uid,
+                email: user.email,
+                displayName: user.displayName || user.email.split('@')[0],
+                createdAt: Timestamp.now(),
+                photoURL: user.photoURL || null
+            });
+        }
+
+        showHide(['navbtn-profil','mobbtn-profil'], true);
+        showHide(['navbtn-admin','mobbtn-admin'], isAdmin);
+    } else {
+        showHide(['navbtn-profil','mobbtn-profil','navbtn-admin','mobbtn-admin'], false);
+        if (PROTECTED.includes(currentTab) || (currentTab === 'admin')) {
+            switchTab('beranda');
+        }
+    }
+
+    updateAuthBtn();
+    startRealtime();
+    setLoading(false);
+});
+</script>
+
 </body>
 </html>
