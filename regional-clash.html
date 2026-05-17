@@ -227,6 +227,47 @@
         body.light-mode select.form-select { background: #F5F5F5; color: #1A1F2E; }
         body.light-mode select.form-select option { background: #FFFFFF; color: #1A1F2E; }
         .location-warning { color: var(--danger); font-size: 0.7rem; margin-top: 5px; display: none; }
+.popup-text-content {
+    background: linear-gradient(135deg, #fff 0%, #f0f2f5 100%);
+    border-radius: 20px;
+    max-width: 400px;
+}
+.popup-text-wrapper {
+    padding: 30px 25px;
+    text-align: center;
+}
+.popup-wa-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #25D366;
+    color: white;
+    padding: 14px 28px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    margin: 15px 0 10px;
+    border: none;
+    cursor: pointer;
+}
+.popup-wa-button:hover {
+    background: #128C7E;
+    transform: scale(1.05);
+}
+.popup-skip {
+    background: transparent;
+    border: none;
+    color: #999;
+    cursor: pointer;
+    font-size: 0.8rem;
+    margin-top: 10px;
+    text-decoration: underline;
+}
+.popup-skip:hover {
+    color: #666;
+}
     </style>
 </head>
 <body>
