@@ -227,6 +227,308 @@
         body.light-mode select.form-select { background: #F5F5F5; color: #1A1F2E; }
         body.light-mode select.form-select option { background: #FFFFFF; color: #1A1F2E; }
         .location-warning { color: var(--danger); font-size: 0.7rem; margin-top: 5px; display: none; }
+        /* Popup Teks Profesional */
+.popup-text-content {
+    background: #FFFFFF;
+    border-radius: 16px;
+    max-width: 400px;
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+}
+
+.popup-text-wrapper {
+    padding: 35px 30px;
+    text-align: center;
+}
+
+.popup-icon-wa {
+    width: 64px;
+    height: 64px;
+    background: #25D366;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+}
+
+.popup-icon-wa i {
+    font-size: 32px;
+    color: white;
+}
+
+.popup-text-wrapper h2 {
+    color: #1A1F2E;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.popup-text-wrapper p {
+    color: #6B7B9E;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin-bottom: 25px;
+}
+
+.popup-wa-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: #25D366;
+    color: white;
+    padding: 12px 28px;
+    border-radius: 40px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    width: 100%;
+    border: none;
+    cursor: pointer;
+}
+
+.popup-wa-button:hover {
+    background: #128C7E;
+    transform: translateY(-2px);
+}
+
+.popup-skip {
+    background: transparent;
+    border: none;
+    color: #A0AEC0;
+    cursor: pointer;
+    font-size: 0.8rem;
+    margin-top: 15px;
+    width: 100%;
+    padding: 8px;
+}
+
+.popup-skip:hover {
+    color: #718096;
+}
+        /* ========== FOOTER PROFESIONAL ========== */
+.footer {
+    background: #0A0E1A;
+    margin-top: 60px;
+    border-top: 1px solid rgba(255,214,0,0.15);
+}
+
+.footer-main {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 50px 2rem 30px;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 3rem;
+}
+
+/* Brand Section */
+.footer-brand {
+    max-width: 300px;
+}
+
+.brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 1rem;
+}
+
+.logo-icon {
+    font-size: 1.8rem;
+    color: #FFD600;
+}
+
+.logo-text {
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #FFD600;
+}
+
+.brand-desc {
+    color: #8BA0C0;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.brand-badge {
+    display: inline-block;
+    background: rgba(255,214,0,0.08);
+    padding: 6px 12px;
+    border-radius: 20px;
+}
+
+.brand-badge span {
+    font-size: 0.7rem;
+    color: #8BA0C0;
+}
+
+/* Links Section */
+.footer-links h4 {
+    color: #FFD600;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 1.2rem;
+    letter-spacing: 0.5px;
+}
+
+.footer-links ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-links li {
+    margin-bottom: 0.7rem;
+}
+
+.footer-links a {
+    color: #8BA0C0;
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+}
+
+.footer-links a:hover {
+    color: #FFD600;
+    padding-left: 4px;
+}
+
+/* Contact Section */
+.footer-contact h4 {
+    color: #FFD600;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 1.2rem;
+}
+
+.contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 1rem;
+}
+
+.contact-item i {
+    width: 24px;
+    color: #FFD600;
+    font-size: 1rem;
+    margin-top: 2px;
+}
+
+.contact-item div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.contact-item span {
+    font-size: 0.7rem;
+    color: #6B7B9E;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.contact-item a {
+    color: #E0E4F0;
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: color 0.2s;
+}
+
+.contact-item a:hover {
+    color: #FFD600;
+}
+
+/* Footer Bottom */
+.footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding: 1.2rem 2rem;
+}
+
+.footer-bottom-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.copyright span {
+    font-size: 0.75rem;
+    color: #6B7B9E;
+}
+
+.footer-credit span {
+    font-size: 0.75rem;
+    color: #6B7B9E;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .footer-main {
+        padding: 40px 1.5rem 25px;
+    }
+    
+    .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .footer-brand {
+        max-width: 100%;
+        text-align: center;
+    }
+    
+    .brand-logo {
+        justify-content: center;
+    }
+    
+    .footer-links {
+        text-align: center;
+    }
+    
+    .footer-links a:hover {
+        padding-left: 0;
+    }
+    
+    .contact-item {
+        justify-content: center;
+    }
+    
+    .footer-bottom-content {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+body.light-mode .footer {
+    background: #F8F9FC;
+    border-top-color: #E0E4F0;
+}
+
+body.light-mode .brand-desc,
+body.light-mode .footer-links a,
+body.light-mode .contact-item a {
+    color: #4A5568;
+}
+
+body.light-mode .contact-item span,
+body.light-mode .copyright span,
+body.light-mode .footer-credit span {
+    color: #A0AEC0;
+}
+
+body.light-mode .brand-badge {
+    background: #EDF2F7;
+}
 .popup-text-content {
     background: linear-gradient(135deg, #fff 0%, #f0f2f5 100%);
     border-radius: 20px;
@@ -268,6 +570,143 @@
 .popup-skip:hover {
     color: #666;
 }
+
+.footer {
+    background: linear-gradient(135deg, #0A0E1A 0%, #0F1420 100%);
+    color: #fff;
+    padding: 50px 20px 20px;
+    margin-top: 50px;
+    border-top: 3px solid var(--yellow);
+}
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 40px;
+    margin-bottom: 30px;
+}
+.logo-circle {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, var(--yellow), #FFB800);
+    border-radius: 50%;
+    display: flex;
+align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+    font-weight: 800;
+    font-size: 1.2rem;
+    color: var(--blue);
+    box-shadow: 0 5px 15px rgba(255,214,0,0.3);
+}
+.footer-logo h3 {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+    color: var(--yellow);
+}
+.footer-logo p {
+    color: #8ba0c0;
+    font-size: 0.85rem;
+}
+.footer-social h4, .footer-info h4, .footer-sponsors h4 {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    color: var(--yellow);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.social-icons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.social-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 15px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px;
+    text-decoration: none;
+    color: #fff;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+.social-link i {
+    width: 24px;
+    font-size: 1.2rem;
+}
+.social-link:hover {
+    transform: translateX(5px);
+    background: rgba(255,214,0,0.15);
+}
+.social-link.instagram:hover i { color: #E4405F; }
+.social-link.tiktok:hover i { color: #00f2ea; }
+.social-link.youtube:hover i { color: #FF0000; }
+.info-links p {
+    padding: 8px 0;
+    color: #8ba0c0;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.info-links i {
+    width: 24px;
+    color: var(--yellow);
+}
+.sponsor-logos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: flex-start;
+}
+.sponsor-img {
+    max-width: 80px;
+    padding: 8px 12px;
+    background: #fff;
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+.sponsor-img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(255,214,0,0.3);
+}
+.footer-bottom {
+    text-align: center;
+    padding-top: 25px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+.credit-badge {
+    background: rgba(255,214,0,0.1);
+    padding: 12px 20px;
+    border-radius: 50px;
+    display: inline-block;
+}
+.credit-icon {
+    margin-right: 8px;
+}
+@media (max-width: 768px) {
+    .footer-container {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 30px;
+    }
+    .social-icons {
+        align-items: center;
+    }
+    .social-link {
+        justify-content: center;
+    }
+    .info-links p {
+        justify-content: center;
+    }
+    .sponsor-logos {
+        justify-content: center;
+    }
+}
     </style>
 </head>
 <body>
@@ -302,7 +741,7 @@
                 <i class="fab fa-whatsapp" style="font-size: 50px; color: #25D366; margin-bottom: 15px;"></i>
                 <h2 style="color: #000; margin-bottom: 10px;">Join Grup WhatsApp!</h2>
                 <p style="color: #333; margin-bottom: 20px;">Dapatkan informasi terbaru seputar tournament</p>
-                <a href="https://chat.whatsapp.com/你的邀请链接" target="_blank" class="popup-wa-button" id="actionBtn">
+                <a href="https://chat.whatsapp.com/FyRe0WG7CGyBMXVw8pKLR1" target="_blank" class="popup-wa-button" id="actionBtn">
                     <i class="fab fa-whatsapp"></i> Gabung Grup WA
                 </a>
                 <button class="popup-skip" id="skipBtn">Lewati</button>
@@ -312,26 +751,79 @@
 </div>
 
 <footer class="footer">
-    <div class="footer-container">
-        <div class="footer-logo">
-            <img src="logo-jbtokies.png" alt="JB Tokies Logo" class="logo-img" id="footerLogo">
-            <h3>BloodStrike Regional Community</h3>
-            <p>Tempat Berkumpulnya para player Regional</p>
-        </div>
-        <div class="footer-social">
-            <h4>Follow Kami</h4>
-            <div class="social-icons">
-                <a href="https://www.instagram.com/jbtokies?igsh=cHJpMmgwZ3BjbmF6" target="_blank" class="social-link instagram">
-                    <i class="fab fa-instagram"></i> <span>Instagram</span>
-                </a>
+    <div class="footer-main">
+        <div class="footer-grid">
+            <!-- Brand Column -->
+            <div class="footer-brand">
+                <div class="brand-logo">
+                    <span class="logo-icon">⚡</span>
+                    <span class="logo-text">SCRIMMAGE</span>
+                </div>
+                <p class="brand-desc">Platform tournament resmi untuk komunitas Blood Strike Regional. Menyediakan kompetisi fair play dengan standar profesional.</p>
+                <div class="brand-badge">
+                    <span>© 2025 SCRIMMAGE By BSRC</span>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="footer-links">
+                <h4>Navigasi</h4>
+                <ul>
+                    <li><a data-page="dashboard" data-page="dashboard">Dashboard</a></li>
+                    <li><a data-page="register" data-page="register">Pendaftaran</a></li>
+                    <li><a data-page="participants" data-page="participants">Peserta</a></li>
+                    <li><a data-page="score" data-page="score">Scoreboard</a></li>
+                    <li><a data-page="winners" data-page="winners">Pemenang</a></li>
+                </ul>
+            </div>
+
+            <!-- Support -->
+            <div class="footer-links">
+                <h4>Bantuan</h4>
+                <ul>
+                    <li><a href="#">FAQ Tournament</a></li>
+                    <li><a href="#">Rules & Regulations</a></li>
+                    <li><a href="#">Contact Support</a></li>
+                    <li><a href="#">Report Issue</a></li>
+                </ul>
+            </div>
+
+            <!-- Contact -->
+            <div class="footer-contact">
+                <h4>Kontak Resmi</h4>
+                <div class="contact-item">
+                    <i class="fab fa-whatsapp"></i>
+                    <div>
+                        <span>WhatsApp</span>
+                        <a href="https://wa.me/6288991734780">+62 889-9173-4780</a>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <i class="fab fa-instagram"></i>
+                    <div>
+                        <span>Instagram</span>
+                        <a href="https://www.instagram.com/bsrc.official?igsh=MTRwYjFmbWM4bTh1NQ==" target="_blank">@bsrc.official</a>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <i class="far fa-envelope"></i>
+                    <div>
+                        <span>Email</span>
+                        <a href="mailto:scriminfoid@gmail.com">scriminfoid@gmail.com</a>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="footer-sponsors">
-            <h4>Our Partners</h4>
-            <div class="sponsor-logos" id="sponsorContainer"></div>
-        </div>
-        <div class="footer-credit">
-            <p class="copyright">&copy; 2026 ScrimBaseID. All rights reserved.</p>
+    </div>
+    
+    <div class="footer-bottom">
+        <div class="footer-bottom-content">
+            <div class="copyright">
+                <span>BloodStrike Regional Community</span>
+            </div>
+            <div class="footer-credit">
+                <span>Powered by ScrimBaseID</span>
+            </div>
         </div>
     </div>
 </footer>
@@ -820,22 +1312,41 @@
     init();
     
     const popup = document.getElementById('popupPoster');
-    const closeBtn = document.getElementById('closeBtn');
-    const actionBtn = document.getElementById('actionBtn');
-    const posterImg = document.getElementById('posterImg');
-    
-    function openPopup() { popup.style.display = 'flex'; popup.style.animation = 'none'; popup.offsetHeight; popup.style.animation = 'popupFadeIn 0.3s ease'; }
-    function closePopup() { popup.style.display = 'none'; }
-    closeBtn.addEventListener('click', closePopup);
-    actionBtn.addEventListener('click', function() { closePopup(); console.log('Tombol diklik - Poster JB Tokies'); });
-    popup.addEventListener('click', function(e) { if (e.target === popup) closePopup(); });
-    
-    document.addEventListener('DOMContentLoaded', function() { setTimeout(() => { openPopup(); }, 1000); });
+const closeBtn = document.getElementById('closeBtn');
+const actionBtn = document.getElementById('actionBtn');
+const skipBtn = document.getElementById('skipBtn');
+
+function openPopup() { 
+    if (popup) popup.style.display = 'flex'; 
+}
+function closePopup() { 
+    if (popup) popup.style.display = 'none'; 
+}
+if (closeBtn) closeBtn.addEventListener('click', closePopup);
+if (skipBtn) skipBtn.addEventListener('click', closePopup);
+if (actionBtn) {
+    actionBtn.addEventListener('click', function(e) { 
+        e.preventDefault();
+        closePopup(); 
+        window.open('https://chat.whatsapp.com/你的邀请链接', '_blank');
+    });
+}
+if (popup) {
+    popup.addEventListener('click', function(e) { 
+        if (e.target === popup) closePopup(); 
+    });
+}
+// Tampilkan popup setelah 2 detik
+document.addEventListener('DOMContentLoaded', function() { 
+    setTimeout(() => { 
+        if (popup) openPopup(); 
+    }, 2000); 
+});
     
     const sponsorData = [
-        { name: "ScrimBaseID", logo: "sponsor1.png", url: "https://scrimbaseid.netlify.app" },
-        { name: "Sabada Organizer", logo: "sponsor2.png", url: "https://sabada-organizer.netlify.app" }
-    ];
+    { name: "ScrimBaseID", logo: "https://placehold.co/100x50/FFD600/0A2E5C?text=ScrimBaseID", url: "https://scrimbaseid.netlify.app" },
+    { name: "Sabada Org", logo: "https://placehold.co/100x50/FFD600/0A2E5C?text=Sabada", url: "https://sabada-organizer.netlify.app" }
+];
     const sponsorContainer = document.getElementById('sponsorContainer');
     if (sponsorContainer) {
         sponsorData.forEach(sponsor => {
@@ -846,17 +1357,7 @@
         });
     }
     
-    const footerLogo = document.getElementById('footerLogo');
-    if (footerLogo) {
-        footerLogo.onerror = function() {
-            const parent = this.parentElement;
-            const fallback = document.createElement('div');
-            fallback.style.cssText = 'width:80px;height:80px;background:#FFD700;border-radius:50%;margin:0 auto 15px;display:flex;align-items:center;justify-content:center;font-size:2rem;color:#1a1a1a;font-weight:bold;';
-            fallback.textContent = 'JB';
-            this.style.display = 'none';
-            parent.insertBefore(fallback, this);
-        };
-    }
+    
     
     document.querySelectorAll('.popup-close, .popup-button').forEach(btn => { btn.addEventListener('click', function(e) { e.stopPropagation(); document.getElementById('popupPoster').style.display = 'none'; }); });
     document.getElementById('popupPoster').addEventListener('click', function(e) { if (e.target === this) { this.style.display = 'none'; } });
