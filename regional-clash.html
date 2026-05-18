@@ -740,7 +740,7 @@ align-items: center;
             <div class="popup-text-wrapper">
                 <i class="fab fa-whatsapp" style="font-size: 50px; color: #25D366; margin-bottom: 15px;"></i>
                 <h2 style="color: #000; margin-bottom: 10px;">Join Grup WhatsApp!</h2>
-                <p style="color: #333; margin-bottom: 20px;">Belum dapet team yuk langsung join grup dan dapatkan team sesuai regional mu</p>
+                <p style="color: #333; margin-bottom: 20px;">Dapatkan informasi terbaru seputar tournament</p>
                 <a href="https://chat.whatsapp.com/FyRe0WG7CGyBMXVw8pKLR1" target="_blank" class="popup-wa-button" id="actionBtn">
                     <i class="fab fa-whatsapp"></i> Gabung Grup WA
                 </a>
@@ -769,11 +769,11 @@ align-items: center;
             <div class="footer-links">
                 <h4>Navigasi</h4>
                 <ul>
-                    <li><a data-page="dashboard" data-page="dashboard">Dashboard</a></li>
-                    <li><a data-page="register" data-page="register">Pendaftaran</a></li>
-                    <li><a data-page="participants" data-page="participants">Peserta</a></li>
-                    <li><a data-page="score" data-page="score">Scoreboard</a></li>
-                    <li><a data-page="winners" data-page="winners">Pemenang</a></li>
+                    <li><a data-page="dashboard">Dashboard</a></li>
+                    <li><a data-page="register">Pendaftaran</a></li>
+                    <li><a data-page="participants">Peserta</a></li>
+                    <li><a data-page="score">Scoreboard</a></li>
+                    <li><a data-page="winners">Pemenang</a></li>
                 </ul>
             </div>
 
@@ -889,6 +889,19 @@ align-items: center;
     "Sumatera Utara": ["Medan", "Binjai", "Pematang Siantar", "Tebing Tinggi", "Tanjung Balai", "Sibolga", "Padang Sidempuan", "Gunungsitoli", "Kisaran", "Rantauprapat", "Sidikalang", "Balige", "Tarutung", "Berastagi", "Stabat", "Lubuk Pakam", "Perbaungan", "Sei Rampah", "Kabanjahe"]
 };
     
+    // DAFTAR LENGKAP PROVINSI
+    const allProvinces = [
+        "Aceh", "Bali", "Banten", "Bengkulu", "DI Yogyakarta", "DKI Jakarta", 
+        "Gorontalo", "Jambi", "Jawa Barat", "Jawa Tengah", "Jawa Timur", 
+        "Kalimantan Barat", "Kalimantan Selatan", "Kalimantan Tengah", 
+        "Kalimantan Timur", "Kalimantan Utara", "Kepulauan Bangka Belitung", 
+        "Kepulauan Riau", "Lampung", "Maluku", "Maluku Utara", 
+        "Nusa Tenggara Barat", "Nusa Tenggara Timur", "Papua", "Papua Barat", 
+        "Riau", "Sulawesi Barat", "Sulawesi Selatan", "Sulawesi Tengah", 
+        "Sulawesi Tenggara", "Sulawesi Utara", "Sumatera Barat", 
+        "Sumatera Selatan", "Sumatera Utara"
+    ];
+    
     function showLoading(show) { 
         const loadingEl = document.getElementById("loading");
         if (loadingEl) loadingEl.style.display = show ? "flex" : "none";
@@ -953,23 +966,37 @@ align-items: center;
         return total;
     }
     
+    // PERBAIKAN: updateCityOptions untuk WebView
     function updateCityOptions() {
         const provinceSelect = document.getElementById("provinsi");
         const citySelect = document.getElementById("kota");
-        const selectedProvince = provinceSelect ? provinceSelect.value : '';
-        if (citySelect) {
-            citySelect.innerHTML = '<option value="">-- Pilih Kabupaten/Kota --</option>';
-            if (selectedProvince && indonesiaCities[selectedProvince]) {
-                indonesiaCities[selectedProvince].forEach(city => {
-                    const option = document.createElement("option");
-                    option.value = city;
-                    option.textContent = city;
-                    citySelect.appendChild(option);
-                });
-                citySelect.disabled = false;
-            } else {
-                citySelect.disabled = true;
+        
+        if (!provinceSelect || !citySelect) return;
+        
+        const selectedProvince = provinceSelect.value;
+        
+        // Clear dengan cara yang aman untuk WebView
+        while (citySelect.options.length > 0) {
+            citySelect.remove(0);
+        }
+        
+        const defaultOption = document.createElement("option");
+        defaultOption.value = "";
+        defaultOption.textContent = "-- Pilih Kabupaten/Kota --";
+        citySelect.appendChild(defaultOption);
+        
+        if (selectedProvince && indonesiaCities[selectedProvince]) {
+            const cities = indonesiaCities[selectedProvince];
+            // Gunakan for loop biasa untuk kompatibilitas WebView
+            for (var i = 0; i < cities.length; i++) {
+                const option = document.createElement("option");
+                option.value = cities[i];
+                option.textContent = cities[i];
+                citySelect.appendChild(option);
             }
+            citySelect.disabled = false;
+        } else {
+            citySelect.disabled = true;
         }
     }
     
@@ -983,7 +1010,7 @@ align-items: center;
             <div class="score-card"><div class="score-card-header"><h2><i class="fas fa-trophy"></i> Klasemen Tim</h2><span class="badge-count">${scoreTeams.length} Tim</span></div>
             <div class="rank-list-score">${scoreTeams.length === 0 ? '<div class="empty-state"><i class="fas fa-users-slash"></i> Belum ada tim aktif</div>' : sortedTeams.map((team, idx) => `<div class="rank-item-score ${idx === 0 ? 'top1' : idx === 1 ? 'top2' : idx === 2 ? 'top3' : ''}"><div class="rank-number-score">${idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${idx+1}`}</div><div class="rank-team-score"><span class="slot-badge" style="background:var(--gray);">${escapeHtml(team.slot)}</span><strong>${escapeHtml(team.name)}</strong><span style="color:#8ba0c0; font-size:0.7rem;">${escapeHtml(team.perwakilan)}</span></div><div class="rank-score-value">${getTeamScore(team.id)} pts</div></div>`).join('')}</div></div>
             <div class="score-card"><div class="score-card-header"><h2><i class="fas fa-calendar-alt"></i> Hasil Pertandingan</h2><span class="badge-count">${scoreMatches.length} Match</span></div>
-            ${scoreMatches.length === 0 ? '<div class="empty-state"><i class="fas fa-folder-open"></i> Belum ada data match</div>' : `<div class="matches-list">${scoreMatches.map((match, mIdx) => { const sortedResults = [...match.results].sort((a,b) => a.rank - b.rank); return `<div class="match-item-score"><div class="match-header-score"><div class="match-name-score"><i class="fas fa-gamepad"></i> ${escapeHtml(match.matchName || `Match ${mIdx+1}`)}</div><div class="match-points-badge"><i class="fas fa-users"></i> ${match.results.length} Tim</div></div><div class="score-table-wrapper"><table class="score-table"><thead><tr><th style="width:70px">Rank</th><th>Tim</th><th style="width:70px">Slot</th><th style="width:70px">Kill</th><th style="width:80px">Skor</th></tr></thead><tbody>${sortedResults.map(result => { const team = scoreTeams.find(t => t.id === result.teamId); const matchScore = calcScore(result.rank, result.kills); return `<tr><td><span class="rank-badge">#${result.rank}</span></td><td><strong>${team ? escapeHtml(team.name) : '<span style="color:#888;">Unknown</span>'}</strong></td><td><span class="slot-badge" style="background:var(--gray);padding:3px 8px;">${team ? escapeHtml(team.slot) : '-'}</span></td><td><span class="kill-badge"> ${result.kills}</span></td><td><span class="point-chip-score">${matchScore} pts</span></td></tr>`; }).join('')}</tbody></table></div></div>`; }).join('')}</div>`}</div></div>`;
+            ${scoreMatches.length === 0 ? '<div class="empty-state"><i class="fas fa-folder-open"></i> Belum ada data match</div>' : `<div class="matches-list">${scoreMatches.map((match, mIdx) => { const sortedResults = [...match.results].sort((a,b) => a.rank - b.rank); return `<div class="match-item-score"><div class="match-header-score"><div class="match-name-score"><i class="fas fa-gamepad"></i> ${escapeHtml(match.matchName || `Match ${mIdx+1}`)}</div><div class="match-points-badge"><i class="fas fa-users"></i> ${match.results.length} Tim</div></div><div class="score-table-wrapper"><table class="score-table"><thead><tr><th style="width:70px">Rank</th><th>Tim</th><th style="width:70px">Slot</th><th style="width:70px">Kill</th><th style="width:80px">Skor</th></tr></thead><tbody>${sortedResults.map(result => { const team = scoreTeams.find(t => t.id === result.teamId); const matchScore = calcScore(result.rank, result.kills); return `<tr><td><span class="rank-badge">#${result.rank}</span></td><td><strong>${team ? escapeHtml(team.name) : '<span style="color:#888;">Unknown</span>'}</strong></td><td><span class="slot-badge" style="background:var(--gray);padding:3px 8px;">${team ? escapeHtml(team.slot) : '-'}</span></td><td><span class="kill-badge"> ${result.kills}</span></span></td><td><span class="point-chip-score">${matchScore} pts</span></td></tr>`; }).join('')}</tbody></table></div></div>`; }).join('')}</div>`}</div></div>`;
         document.getElementById("mainContent").innerHTML = html;
     }
     
@@ -1046,14 +1073,23 @@ align-items: center;
         startCountdown("countdown");
     }
     
+    // PERBAIKAN: renderRegisterForm dengan provinsi lengkap
     function renderRegisterForm(teams) {
-        const html = `<div class="card"><h2><i class="fas fa-pen-alt"></i> Form Pendaftaran Team</h2><form id="registerForm"><div class="form-group"><label>Nama Perwakilan *</label><input type="text" id="wakil" required></div><div class="form-group"><label>Nomor WhatsApp *</label><input type="tel" id="whatsapp" placeholder="08xxxxxxxxxx" required></div><div class="form-group"><label><i class="fas fa-map-marker-alt"></i> Provinsi *</label><select id="provinsi" class="form-select" required onchange="updateCityOptions()"><option value="">-- Pilih Provinsi --</option><option value="Aceh">Aceh</option><option value="Bali">Bali</option><option value="DKI Jakarta">DKI Jakarta</option><option value="Jawa Barat">Jawa Barat</option><option value="Jawa Tengah">Jawa Tengah</option><option value="Jawa Timur">Jawa Timur</option><option value="Sumatera Utara">Sumatera Utara</option><option value="Sumatera Barat">Sumatera Barat</option><option value="Sumatera Selatan">Sumatera Selatan</option><option value="Lampung">Lampung</option><option value="Kalimantan Timur">Kalimantan Timur</option><option value="Sulawesi Selatan">Sulawesi Selatan</option><option value="Papua">Papua</option></select></div><div class="form-group"><label><i class="fas fa-city"></i> Kabupaten/Kota *</label><select id="kota" class="form-select" required disabled><option value="">-- Pilih Kabupaten/Kota --</option></select><div id="locationWarning" class="location-warning"><i class="fas fa-exclamation-triangle"></i> Provinsi dan Kabupaten/Kota wajib diisi!</div><small>Pastikan lokasi asal team Anda sesuai dengan domisili</small></div><div class="form-group"><label>Nama Team *</label><input type="text" id="teamName" required></div><h3>Pemain Utama (4 orang)</h3>${[1,2,3,4].map(i => `<div class="form-row"><input type="text" id="nick${i}" placeholder="Nickname Player ${i}" required><input type="text" id="uid${i}" placeholder="UID Player ${i}" required></div>`).join('')}<h3>Pemain Cadangan</h3><div class="form-row"><input type="text" id="nickCad" placeholder="Nickname Cadangan"><input type="text" id="uidCad" placeholder="UID Cadangan"></div><div class="form-group"><label>Password Team (min 6 karakter) *</label><input type="password" id="password" minlength="6" required><small>Password untuk edit atau cancel team</small></div><button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Submit Registrasi</button><button type="button" class="btn btn-outline" id="resetForm"><i class="fas fa-undo"></i> Reset Form</button></form></div>`;
+        // Buat opsi provinsi dengan loop
+        let provinceOptions = '<option value="">-- Pilih Provinsi --</option>';
+        for (var i = 0; i < allProvinces.length; i++) {
+            provinceOptions += `<option value="${allProvinces[i]}">${allProvinces[i]}</option>`;
+        }
+        
+        const html = `<div class="card"><h2><i class="fas fa-pen-alt"></i> Form Pendaftaran Team</h2><form id="registerForm"><div class="form-group"><label>Nama Perwakilan *</label><input type="text" id="wakil" required></div><div class="form-group"><label>Nomor WhatsApp *</label><input type="tel" id="whatsapp" placeholder="08xxxxxxxxxx" required></div><div class="form-group"><label><i class="fas fa-map-marker-alt"></i> Provinsi *</label><select id="provinsi" class="form-select" required>${provinceOptions}</select></div><div class="form-group"><label><i class="fas fa-city"></i> Kabupaten/Kota *</label><select id="kota" class="form-select" required disabled><option value="">-- Pilih Provinsi Terlebih Dahulu --</option></select><div id="locationWarning" class="location-warning"><i class="fas fa-exclamation-triangle"></i> Provinsi dan Kabupaten/Kota wajib diisi!</div><small>Pastikan lokasi asal team Anda sesuai dengan domisili</small></div><div class="form-group"><label>Nama Team *</label><input type="text" id="teamName" required></div><h3>Pemain Utama (4 orang)</h3>${[1,2,3,4].map(i => `<div class="form-row"><input type="text" id="nick${i}" placeholder="Nickname Player ${i}" required><input type="text" id="uid${i}" placeholder="UID Player ${i}" required></div>`).join('')}<h3>Pemain Cadangan</h3><div class="form-row"><input type="text" id="nickCad" placeholder="Nickname Cadangan"><input type="text" id="uidCad" placeholder="UID Cadangan"></div><div class="form-group"><label>Password Team (min 6 karakter) *</label><input type="password" id="password" minlength="6" required><small>Password untuk edit atau cancel team</small></div><button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Submit Registrasi</button><button type="button" class="btn btn-outline" id="resetForm"><i class="fas fa-undo"></i> Reset Form</button></form></div>`;
         document.getElementById("mainContent").innerHTML = html;
         
         // Attach event listener untuk provinsi
         const provinsiSelect = document.getElementById("provinsi");
         if (provinsiSelect) {
-            provinsiSelect.addEventListener("change", updateCityOptions);
+            provinsiSelect.addEventListener("change", function() {
+                setTimeout(updateCityOptions, 50);
+            });
         }
         
         const form = document.getElementById("registerForm");
@@ -1151,7 +1187,13 @@ align-items: center;
             if (formEl) formEl.reset();
             const kotaSelect = document.getElementById("kota");
             if (kotaSelect) {
-                kotaSelect.innerHTML = '<option value="">-- Pilih Kabupaten/Kota --</option>';
+                while (kotaSelect.options.length > 0) {
+                    kotaSelect.remove(0);
+                }
+                const defaultOption = document.createElement("option");
+                defaultOption.value = "";
+                defaultOption.textContent = "-- Pilih Provinsi Terlebih Dahulu --";
+                kotaSelect.appendChild(defaultOption);
                 kotaSelect.disabled = true;
             }
         });
@@ -1161,7 +1203,7 @@ align-items: center;
         let currentTeams = teams.filter(t => t.status === "active").sort((a,b)=>SLOTS.indexOf(a.slot)-SLOTS.indexOf(b.slot));
         
         const renderTable = (data) => {
-            const html = `<div class="search-bar"><input type="text" id="searchTeam" placeholder="🔍 Cari Nama Team..."><input type="text" id="searchWakil" placeholder=" Cari Perwakilan..."><select id="filterSlot"><option value="all"> Semua Slot</option>${SLOTS.map(s=>`<option value="${s}">Slot ${s}</option>`).join('')}</select><button class="btn btn-outline" id="exportBtn"><i class="fas fa-download"></i> Export CSV</button></div>
+            const html = `<div class="search-bar"><input type="text" id="searchTeam" placeholder="🔍 Cari Nama Team..."><input type="text" id="searchWakil" placeholder="🔍 Cari Perwakilan..."><select id="filterSlot"><option value="all">📋 Semua Slot</option>${SLOTS.map(s=>`<option value="${s}">Slot ${s}</option>`).join('')}</select><button class="btn btn-outline" id="exportBtn"><i class="fas fa-download"></i> Export CSV</button></div>
             <div class="card"><div class="table-wrapper"><table><thead><tr><th>No</th><th>Slot</th><th>Nama Team</th><th>Perwakilan</th><th>Provinsi</th><th>Kota</th><th>Status</th><th>Aksi</th></tr></thead><tbody>${data.map((team, idx) => {
                 let winnerBadge = '';
                 if (winner?.winner1Name === team.teamName) winnerBadge = ' <span class="badge badge-winner1">🏆 JUARA 1</span>';
@@ -1169,7 +1211,7 @@ align-items: center;
                 else if (winner?.winner3Name === team.teamName) winnerBadge = ' <span class="badge badge-winner3">🥉 JUARA 3</span>';
                 return `<tr><td>${idx+1}</td><td><span class="slot-badge">${team.slot}</span></td><td><strong>${escapeHtml(team.teamName)}</strong>${winnerBadge}</td><td>${escapeHtml(team.perwakilan)}</td><td>${escapeHtml(team.provinsi || '-')}</td><td>${escapeHtml(team.kota || '-')}</td><td><span class="badge badge-active">Active</span></td>
                 <td><button class="action-btn" onclick="window.viewDetail('${team.id}')"><i class="fas fa-eye"></i></button><button class="action-btn" onclick="window.editTeam('${team.id}')"><i class="fas fa-edit"></i></button><button class="action-btn" onclick="window.cancelTeam('${team.id}')"><i class="fas fa-trash"></i></button><button class="action-btn" onclick="window.copyWhatsapp('${team.whatsapp}')"><i class="fab fa-whatsapp"></i></button></td></tr>`;
-            }).join('')}</tbody></table></div></div>`;
+            }).join('')}</tbody>}</table></div></div>`;
             document.getElementById("mainContent").innerHTML = html;
             document.getElementById("searchTeam")?.addEventListener("input", filterTeams);
             document.getElementById("searchWakil")?.addEventListener("input", filterTeams);
@@ -1270,7 +1312,7 @@ align-items: center;
     }
     
     function renderBannedTeams(bannedTeams) { 
-        document.getElementById("mainContent").innerHTML = `<div class="card"><h2><i class="fas fa-ban"></i> Daftar Team yang Di-BAN</h2><div class="table-wrapper"><table><thead><tr><th>Nama Team</th><th>Alasan BAN</th><th>Tanggal BAN</th></tr></thead><tbody>${bannedTeams.length ? bannedTeams.map(t=>`<tr><td><strong>${escapeHtml(t.teamName)}</strong></td><td>${escapeHtml(t.reason||'Melanggar aturan')}</td><td>${formatDate(t.bannedAt)}</td></tr>`).join('') : '<tr><td colspan="3" class="empty-state">Belum ada team yang di-BAN</td></tr>'}</tbody></table></div></div>`; 
+        document.getElementById("mainContent").innerHTML = `<div class="card"><h2><i class="fas fa-ban"></i> Daftar Team yang Di-BAN</h2><div class="table-wrapper"><table><thead><tr><th>Nama Team</th><th>Alasan BAN</th><th>Tanggal BAN</th></tr></thead><tbody>${bannedTeams.length ? bannedTeams.map(t=>`<tr><td><strong>${escapeHtml(t.teamName)}</strong></td><td>${escapeHtml(t.reason||'Melanggar aturan')}</td><td>${formatDate(t.bannedAt)}</td></tr>`).join('') : '<tr><td colspan="3" class="empty-state">Belum ada team yang di-BAN</td></tr>'}</tbody>}</table></div></div>`; 
     }
     
     function renderWinnerPage(winner) { 
@@ -1285,9 +1327,9 @@ align-items: center;
     
     function renderPrizePage() { 
         document.getElementById("mainContent").innerHTML = `<div class="card"><h2><i class="fas fa-gift"></i> Daftar Hadiah Tournament</h2>
-            <div class="prize-card"><h3><i class="fas fa-medal"></i> Juara 1</h3><p>🎁 1500 Gold + Sertifikat + Trophy</p></div>
+            <div class="prize-card"><h3><i class="fas fa-medal"></i> Juara 1</h3><p>🎁 1200 Gold + Sertifikat + Trophy</p></div>
             <div class="prize-card"><h3><i class="fas fa-medal"></i> Juara 2</h3><p>🎁 1000 Gold + Sertifikat</p></div>
-            <div class="prize-card"><h3><i class="fas fa-medal"></i> Juara 3</h3><p>🎁 500 Gold + Sertifikat</p></div>
+            <div class="prize-card"><h3><i class="fas fa-medal"></i> Juara 3</h3><p>🎁 800 Gold + Sertifikat</p></div>
             <hr><p style="text-align:center"><small>*Hadiah akan dikirim setelah tournament selesai</small></p></div>`; 
     }
     
@@ -1312,55 +1354,36 @@ align-items: center;
     init();
     
     const popup = document.getElementById('popupPoster');
-const closeBtn = document.getElementById('closeBtn');
-const actionBtn = document.getElementById('actionBtn');
-const skipBtn = document.getElementById('skipBtn');
+    const closeBtn = document.getElementById('closeBtn');
+    const actionBtn = document.getElementById('actionBtn');
+    const skipBtn = document.getElementById('skipBtn');
 
-function openPopup() { 
-    if (popup) popup.style.display = 'flex'; 
-}
-function closePopup() { 
-    if (popup) popup.style.display = 'none'; 
-}
-if (closeBtn) closeBtn.addEventListener('click', closePopup);
-if (skipBtn) skipBtn.addEventListener('click', closePopup);
-if (actionBtn) {
-    actionBtn.addEventListener('click', function(e) { 
-        e.preventDefault();
-        closePopup(); 
-        window.open('https://chat.whatsapp.com/你的邀请链接', '_blank');
-    });
-}
-if (popup) {
-    popup.addEventListener('click', function(e) { 
-        if (e.target === popup) closePopup(); 
-    });
-}
-// Tampilkan popup setelah 2 detik
-document.addEventListener('DOMContentLoaded', function() { 
-    setTimeout(() => { 
-        if (popup) openPopup(); 
-    }, 2000); 
-});
-    
-    const sponsorData = [
-    { name: "ScrimBaseID", logo: "https://placehold.co/100x50/FFD600/0A2E5C?text=ScrimBaseID", url: "https://scrimbaseid.netlify.app" },
-    { name: "Sabada Org", logo: "https://placehold.co/100x50/FFD600/0A2E5C?text=Sabada", url: "https://sabada-organizer.netlify.app" }
-];
-    const sponsorContainer = document.getElementById('sponsorContainer');
-    if (sponsorContainer) {
-        sponsorData.forEach(sponsor => {
-            const link = document.createElement('a'); link.href = sponsor.url; link.target = '_blank'; link.style.display = 'inline-block';
-            const img = document.createElement('img'); img.src = sponsor.logo; img.alt = sponsor.name; img.className = 'sponsor-img';
-            img.onerror = function() { this.src = `https://placehold.co/100x50/F5F5F5/999?text=${sponsor.name.replace(' ', '+')}`; };
-            link.appendChild(img); sponsorContainer.appendChild(link);
+    function openPopup() { 
+        if (popup) popup.style.display = 'flex'; 
+    }
+    function closePopup() { 
+        if (popup) popup.style.display = 'none'; 
+    }
+    if (closeBtn) closeBtn.addEventListener('click', closePopup);
+    if (skipBtn) skipBtn.addEventListener('click', closePopup);
+    if (actionBtn) {
+        actionBtn.addEventListener('click', function(e) { 
+            e.preventDefault();
+            closePopup(); 
+            window.open('https://chat.whatsapp.com/FyRe0WG7CGyBMXVw8pKLR1', '_blank');
+        });
+    }
+    if (popup) {
+        popup.addEventListener('click', function(e) { 
+            if (e.target === popup) closePopup(); 
         });
     }
     
-    
-    
-    document.querySelectorAll('.popup-close, .popup-button').forEach(btn => { btn.addEventListener('click', function(e) { e.stopPropagation(); document.getElementById('popupPoster').style.display = 'none'; }); });
-    document.getElementById('popupPoster').addEventListener('click', function(e) { if (e.target === this) { this.style.display = 'none'; } });
+    document.addEventListener('DOMContentLoaded', function() { 
+        setTimeout(() => { 
+            if (popup) openPopup(); 
+        }, 2000); 
+    });
     
     window.updateCityOptions = updateCityOptions;
 </script>
