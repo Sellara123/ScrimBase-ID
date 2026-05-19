@@ -327,6 +327,7 @@ const indonesiaCities = {
     function showLoading(show) { document.getElementById("loading").style.display = show ? "flex" : "none"; }
     function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]); }
     function encryptPassword(pwd) { return btoa(pwd); }
+    function decryptPassword(encrypted) { try { return atob(encrypted); } catch(e) { return ""; } }
     function formatDate(dateStr) { return dateStr ? new Date(dateStr).toLocaleString('id-ID') : "-"; }
     function calcScore(rank, kills) { return (scoreRankPoints[rank] || 0) + (kills * scoreKillPoint); }
     function getPlayerScore(playerId) { let total=0; scoreMatches.forEach(m=>{ const r=m.results.find(r=>r.playerId===playerId); if(r) total+=calcScore(r.rank, r.kills); }); return total; }
@@ -369,7 +370,7 @@ const indonesiaCities = {
             <div class="score-card"><div class="score-card-header"><h2><i class="fas fa-trophy"></i> Klasemen SOLO</h2><span class="badge-count">${scorePlayers.length} Player</span></div>
             <div class="rank-list-score">${scorePlayers.length===0?'<div class="empty-state">Belum ada player</div>':sortedPlayers.map((p,idx)=>`<div class="rank-item-score ${idx===0?'top1':idx===1?'top2':idx===2?'top3':''}"><div class="rank-number-score">${idx===0?'🥇':idx===1?'🥈':idx===2?'🥉':`#${idx+1}`}</div><div class="rank-team-score"><span class="slot-badge">${p.slot}</span><strong>${escapeHtml(p.name)}</strong><span style="font-size:0.7rem;">${escapeHtml(p.perwakilan)}</span></div><div class="rank-score-value">${getPlayerScore(p.id)} pts</div></div>`).join('')}</div></div>
             <div class="score-card"><div class="score-card-header"><h2><i class="fas fa-calendar-alt"></i> Hasil Match</h2><span class="badge-count">${scoreMatches.length} Match</span></div>
-            ${scoreMatches.length===0?'<div class="empty-state">Belum ada data match</div>':scoreMatches.map((match,idx)=>`<div class="match-item-score"><div class="match-header-score"><div class="match-name-score"><i class="fas fa-gamepad"></i> ${escapeHtml(match.matchName||`Match ${idx+1}`)}</div><div class="match-points-badge"><i class="fas fa-users"></i> ${match.results.length} Player</div></div><div class="score-table-wrapper"><table class="score-table"><thead><tr><th>Rank</th><th>Nama Player</th><th>Slot</th><th>Kill</th><th>Skor</th></tr></thead><tbody>${match.results.sort((a,b)=>a.rank-b.rank).map(res=>{ const p=scorePlayers.find(pl=>pl.id===res.playerId); return `<tr><td><span class="rank-badge">#${res.rank}</span></td><td><strong>${p?escapeHtml(p.name):'Unknown'}</strong></td><td><span class="slot-badge">${p?p.slot:'-'}</span></td><td><span class="kill-badge">${res.kills}</span></td><td><span class="point-chip-score">${calcScore(res.rank,res.kills)} pts</span></td></tr>`; }).join('')}</tbody></table></div></div>`).join('')}</div></div>`;
+            ${scoreMatches.length===0?'<div class="empty-state">Belum ada data match</div>':scoreMatches.map((match,idx)=>`<div class="match-item-score"><div class="match-header-score"><div class="match-name-score"><i class="fas fa-gamepad"></i> ${escapeHtml(match.matchName||`Match ${idx+1}`)}</div><div class="match-points-badge"><i class="fas fa-users"></i> ${match.results.length} Player</div></div><div class="score-table-wrapper"><table class="score-table"><thead><tr><th>Rank</th><th>Nama Player</th><th>Slot</th><th>Kill</th><th>Skor</th></tr></thead><tbody>${match.results.sort((a,b)=>a.rank-b.rank).map(res=>{ const p=scorePlayers.find(pl=>pl.id===res.playerId); return `<tr><td><span class="rank-badge">#${res.rank}</span></td><td><strong>${p?escapeHtml(p.name):'Unknown'}</strong></td><td><span class="slot-badge">${p?p.slot:'-'}</span></td><td><span class="kill-badge">${res.kills}</span></td><td><span class="point-chip-score">${calcScore(res.rank,res.kills)} pts</span></td></tr>`; }).join('')}</tbody>}</table></div></div>`).join('')}</div></div>`;
         document.getElementById("mainContent").innerHTML = html;
     }
     
@@ -389,7 +390,7 @@ const indonesiaCities = {
     async function renderRegisterForm() {
         let provinceOptions = '<option value="">-- Pilih Provinsi --</option>';
         for(let p of allProvinces) provinceOptions += `<option value="${p}">${p}</option>`;
-        const html = `<div class="card"><h2><i class="fas fa-user-plus"></i> Form Pendaftaran SOLO Player</h2><form id="registerForm"><div class="form-group"><label>Nama Lengkap *</label><input type="text" id="playerName" required></div><div class="form-group"><label>Perwakilan Daerah *</label><input type="text" id="wakil" placeholder="Contoh: Bandung, Jawa Barat" required></div><div class="form-group"><label>Nomor WhatsApp *</label><input type="tel" id="whatsapp" placeholder="08xxxxxxxxxx" required></div><div class="form-group"><label>Provinsi *</label><select id="provinsi" required>${provinceOptions}</select></div><div class="form-group"><label>Kabupaten/Kota *</label><select id="kota" required disabled><option value="">-- Pilih Provinsi --</option></select></div><div class="form-group"><label>UID Game *</label><input type="text" id="uid" placeholder="UID Blood Strike" required></div><div class="form-group"><label>Nickname In-Game *</label><input type="text" id="nickname" required></div><div class="form-group"><label>Password (min 6 karakter) *</label><input type="password" id="password" minlength="6" required><small>Password untuk edit data</small></div><button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Daftar Sekarang</button></form></div>`;
+        const html = `<div class="card"><h2><i class="fas fa-user-plus"></i> Form Pendaftaran SOLO Player</h2><form id="registerForm"><div class="form-group"><label>Nama Lengkap *</label><input type="text" id="playerName" required></div><div class="form-group"><label>Perwakilan Daerah *</label><input type="text" id="wakil" placeholder="Contoh: Bandung, Jawa Barat" required></div><div class="form-group"><label>Nomor WhatsApp *</label><input type="tel" id="whatsapp" placeholder="08xxxxxxxxxx" required></div><div class="form-group"><label>Provinsi *</label><select id="provinsi" required>${provinceOptions}</select></div><div class="form-group"><label>Kabupaten/Kota *</label><select id="kota" required disabled><option value="">-- Pilih Provinsi --</option></select></div><div class="form-group"><label>UID Game *</label><input type="text" id="uid" placeholder="UID Blood Strike" required></div><div class="form-group"><label>Nickname In-Game *</label><input type="text" id="nickname" required></div><div class="form-group"><label>Password (min 6 karakter) *</label><input type="password" id="password" minlength="6" required><small>Password untuk edit data atau cancel pendaftaran</small></div><button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Daftar Sekarang</button></form></div>`;
         document.getElementById("mainContent").innerHTML = html;
         
         const provSelect = document.getElementById("provinsi");
@@ -450,14 +451,135 @@ const indonesiaCities = {
         const playersSnap = await db.collection("players").where("status","==","active").get();
         let players = playersSnap.docs.map(doc=>({id:doc.id,...doc.data()})).sort((a,b)=>SLOTS.indexOf(a.slot)-SLOTS.indexOf(b.slot));
         const html = `<div class="search-bar"><input type="text" id="searchPlayer" placeholder="🔍 Cari Nama..."></div>
-        <div class="card"><div class="table-wrapper"><table><thead><tr><th>Slot</th><th>Nama Player</th><th>Perwakilan</th><th>Provinsi</th><th>Kota</th><th>UID</th><th>Nickname</th><th>Aksi</th></tr></thead><tbody id="playerList"></tbody></table></div></div>`;
+        <div class="card"><div class="table-wrapper"><table><thead><tr><th>Slot</th><th>Nama Player</th><th>Perwakilan</th><th>Provinsi</th><th>Kota</th><th>UID</th><th>Nickname</th><th>Aksi</th></tr></thead><tbody id="playerList"></tbody></tr></div></div>`;
         document.getElementById("mainContent").innerHTML = html;
         const renderTable = (data) => {
-            document.getElementById("playerList").innerHTML = data.map(p=>`<tr><td><span class="slot-badge">${p.slot}</span></td><td><strong>${escapeHtml(p.playerName)}</strong></td><td>${escapeHtml(p.perwakilan)}</td><td>${escapeHtml(p.provinsi)}</td><td>${escapeHtml(p.kota)}</td><td>${p.uid}</td><td>${escapeHtml(p.nickname)}</td><td><button class="action-btn" onclick="window.viewDetail('${p.id}')"><i class="fas fa-eye"></i></button></td></tr>`).join('');
+            document.getElementById("playerList").innerHTML = data.map(p=>`<tr><td><span class="slot-badge">${p.slot}</span></td><td><strong>${escapeHtml(p.playerName)}</strong></td><td>${escapeHtml(p.perwakilan)}</td><td>${escapeHtml(p.provinsi)}</td><td>${escapeHtml(p.kota)}</td><td>${p.uid}</td><td>${escapeHtml(p.nickname)}</td><td><button class="action-btn" onclick="window.editPlayer('${p.id}')"><i class="fas fa-edit"></i></button> <button class="action-btn" style="color:#DC2626;" onclick="window.cancelPlayer('${p.id}')"><i class="fas fa-times-circle"></i></button></td></tr>`).join('');
         };
         renderTable(players);
         document.getElementById("searchPlayer")?.addEventListener("input",(e)=>renderTable(players.filter(p=>p.playerName.toLowerCase().includes(e.target.value.toLowerCase()))));
-        window.viewDetail = async (id) => { const doc = await db.collection("players").doc(id).get(); const p=doc.data(); Swal.fire({ title: p.playerName, html: `<b>Slot:</b> ${p.slot}<br><b>Perwakilan:</b> ${p.perwakilan}<br><b>WhatsApp:</b> ${p.whatsapp}<br><b>UID:</b> ${p.uid}<br><b>Nickname:</b> ${p.nickname}<br><b>Tanggal Daftar:</b> ${formatDate(p.createdAt)}`, icon:"info", background:"#1A1F2E", color:"#fff" }); };
+        
+        window.editPlayer = async (id) => {
+            const doc = await db.collection("players").doc(id).get();
+            const p = doc.data();
+            const { value: password } = await Swal.fire({
+                title: 'Verifikasi Password',
+                input: 'password',
+                inputLabel: 'Masukkan password Anda',
+                inputPlaceholder: 'Password',
+                showCancelButton: true,
+                background: '#1A1F2E',
+                color: '#fff'
+            });
+            if(!password) return;
+            if(decryptPassword(p.password) !== password) {
+                showToast("error","Password salah!");
+                return;
+            }
+            
+            let provinceOptions = '<option value="">-- Pilih Provinsi --</option>';
+            for(let prov of allProvinces) provinceOptions += `<option value="${prov}" ${prov===p.provinsi?'selected':''}>${prov}</option>`;
+            
+            const { value: formValues } = await Swal.fire({
+                title: 'Edit Data Peserta',
+                html: `
+                    <div style="text-align:left">
+                        <div class="form-group"><label>Nama Lengkap</label><input id="edit-name" class="swal2-input" value="${escapeHtml(p.playerName)}" style="width:100%"></div>
+                        <div class="form-group"><label>Perwakilan Daerah</label><input id="edit-wakil" class="swal2-input" value="${escapeHtml(p.perwakilan)}" style="width:100%"></div>
+                        <div class="form-group"><label>Nomor WhatsApp</label><input id="edit-wa" class="swal2-input" value="${p.whatsapp}" style="width:100%"></div>
+                        <div class="form-group"><label>Provinsi</label><select id="edit-provinsi" style="width:100%;padding:10px;">${provinceOptions}</select></div>
+                        <div class="form-group"><label>Kabupaten/Kota</label><select id="edit-kota" style="width:100%;padding:10px;"></select></div>
+                        <div class="form-group"><label>UID Game</label><input id="edit-uid" class="swal2-input" value="${p.uid}" style="width:100%"></div>
+                        <div class="form-group"><label>Nickname In-Game</label><input id="edit-nickname" class="swal2-input" value="${escapeHtml(p.nickname)}" style="width:100%"></div>
+                    </div>
+                `,
+                focusConfirm: false,
+                preConfirm: () => {
+                    return {
+                        playerName: document.getElementById('edit-name').value,
+                        perwakilan: document.getElementById('edit-wakil').value,
+                        whatsapp: document.getElementById('edit-wa').value,
+                        provinsi: document.getElementById('edit-provinsi').value,
+                        kota: document.getElementById('edit-kota').value,
+                        uid: document.getElementById('edit-uid').value,
+                        nickname: document.getElementById('edit-nickname').value
+                    };
+                },
+                background: '#1A1F2E',
+                color: '#fff',
+                showCancelButton: true,
+                confirmButtonText: 'Simpan Perubahan'
+            });
+            
+            if(formValues) {
+                if(!formValues.playerName || !formValues.perwakilan || !formValues.whatsapp || !formValues.provinsi || !formValues.kota || !formValues.uid || !formValues.nickname) {
+                    showToast("error","Semua field harus diisi!");
+                    return;
+                }
+                if(!/^08[0-9]{8,13}$/.test(formValues.whatsapp)) {
+                    showToast("error","No WhatsApp tidak valid");
+                    return;
+                }
+                if(!/^\d+$/.test(formValues.uid)) {
+                    showToast("error","UID harus angka");
+                    return;
+                }
+                showLoading(true);
+                await db.collection("players").doc(id).update({
+                    playerName: formValues.playerName,
+                    perwakilan: formValues.perwakilan,
+                    whatsapp: formValues.whatsapp,
+                    provinsi: formValues.provinsi,
+                    kota: formValues.kota,
+                    uid: formValues.uid,
+                    nickname: formValues.nickname
+                });
+                showLoading(false);
+                showToast("success","Data berhasil diupdate!");
+                renderParticipants();
+            }
+        };
+        
+        window.cancelPlayer = async (id) => {
+            const doc = await db.collection("players").doc(id).get();
+            const p = doc.data();
+            const { value: password } = await Swal.fire({
+                title: 'Cancel Pendaftaran',
+                text: 'Masukkan password untuk membatalkan pendaftaran',
+                input: 'password',
+                inputLabel: 'Password',
+                inputPlaceholder: 'Password',
+                showCancelButton: true,
+                confirmButtonText: 'Cancel Pendaftaran',
+                confirmButtonColor: '#DC2626',
+                background: '#1A1F2E',
+                color: '#fff'
+            });
+            if(!password) return;
+            if(decryptPassword(p.password) !== password) {
+                showToast("error","Password salah!");
+                return;
+            }
+            
+            const result = await Swal.fire({
+                title: 'Konfirmasi Cancel',
+                text: `Yakin ingin membatalkan pendaftaran ${p.playerName}? Slot akan otomatis tersedia untuk pendaftar lain.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#DC2626',
+                confirmButtonText: 'Ya, Cancel!',
+                background: '#1A1F2E',
+                color: '#fff'
+            });
+            
+            if(result.isConfirmed) {
+                showLoading(true);
+                await db.collection("players").doc(id).delete();
+                showLoading(false);
+                showToast("success","Pendaftaran telah dibatalkan!");
+                renderParticipants();
+            }
+        };
     }
     
     async function renderBannedTeams() {
@@ -505,6 +627,10 @@ const indonesiaCities = {
         });
         if(window.innerWidth<=768) document.getElementById('navMenu')?.classList.remove('active');
         renderPage();
+    }
+    
+    function showToast(icon, title) {
+        Swal.fire({ icon, title, toast: true, position: 'top-end', showConfirmButton: false, timer: 3000, background: '#1A1F2E', color: '#fff' });
     }
     
     function init() {
