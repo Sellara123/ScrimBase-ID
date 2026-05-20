@@ -64,6 +64,9 @@
         .badge-active { background: linear-gradient(135deg, #10B981, #059669); color: white; }
         .badge-cancelled { background: linear-gradient(135deg, #EF4444, #DC2626); color: white; }
         .badge-banned { background: linear-gradient(135deg, #F59E0B, #D97706); color: white; }
+        .badge-pending { background: linear-gradient(135deg, #F59E0B, #D97706); color: white; }
+        .badge-approved { background: linear-gradient(135deg, #10B981, #059669); color: white; }
+        .badge-rejected { background: linear-gradient(135deg, #EF4444, #DC2626); color: white; }
         .action-btn { background: var(--gray-light); border: none; color: var(--yellow); cursor: pointer; margin: 0 4px; font-size: 0.9rem; padding: 8px 14px; border-radius: 10px; transition: all 0.2s; }
         .action-btn:hover { background: var(--yellow); color: var(--blue); transform: scale(1.05); }
         .search-bar { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; align-items: center; }
@@ -230,6 +233,13 @@
         const winnerDoc = await db.collection("settings").doc("winner").get();
         let winner = winnerDoc.exists ? winnerDoc.data() : null;
         
+        // Ambil data submission creator (EARPHONE)
+        const submissionsSnap = await db.collection("creatorSubmissions").orderBy("submittedAt", "desc").get();
+        const creatorSubmissions = submissionsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const pendingCount = creatorSubmissions.filter(s => s.status === "pending").length;
+        const approvedCount = creatorSubmissions.filter(s => s.status === "approved").length;
+        const rejectedCount = creatorSubmissions.filter(s => s.status === "rejected").length;
+        
         const activeTeams = teams.filter(t=>t.status==="active");
         const targetDateForInput = countdownTarget.toISOString().slice(0,16);
         
@@ -241,15 +251,77 @@
                 <div class="stat-card"><i class="fas fa-chair"></i><h2>${activeTeams.length}/${SLOTS.length}</h2><p>Slot Terisi</p></div>
             </div>
             
+            <!-- CARD DATA SUBMISSION EARPHONE -->
+            <div class="card">
+                <h2><i class="fas fa-headphones"></i> 🎧 EVENT KONTEN KREATOR - SUBMISSIONS EARPHONE</h2>
+                <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 1rem;">
+                    <div class="stat-card"><i class="fas fa-users"></i><h2>${creatorSubmissions.length}</h2><p>Total Peserta</p></div>
+                    <div class="stat-card"><i class="fas fa-clock"></i><h2 style="color: #F59E0B;">${pendingCount}</h2><p>Pending Review</p></div>
+                    <div class="stat-card"><i class="fas fa-check-circle"></i><h2 style="color: #10B981;">${approvedCount}</h2><p>Approved</p></div>
+                    <div class="stat-card"><i class="fas fa-times-circle"></i><h2 style="color: #EF4444;">${rejectedCount}</h2><p>Rejected</p></div>
+                </div>
+                <div class="search-bar">
+                    <input type="text" id="searchSubmission" placeholder="🔍 Cari nama atau username TikTok...">
+                    <select id="filterSubmissionStatus">
+                        <option value="all">Semua Status</option>
+                        <option value="pending">⏳ Pending</option>
+                        <option value="approved">✅ Approved</option>
+                        <option value="rejected">❌ Rejected</option>
+                    </select>
+                    <button class="btn btn-primary btn-sm" id="exportSubmissionsBtn"><i class="fas fa-download"></i> Export CSV</button>
+                </div>
+                <div class="table-wrapper">
+                    <table style="min-width: 900px;">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Nama Lengkap</th>
+                                <th>Nama Tim</th>
+                                <th>TikTok</th>
+                                <th>Link Video</th>
+                                <th>Email / WhatsApp</th>
+                                <th>Tanggal Submit</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="submissionsTableBody">
+                            ${creatorSubmissions.map((sub, idx) => `
+                            <tr data-status="${sub.status || 'pending'}">
+                                <td>${idx+1}</td>
+                                <td><strong>${escapeHtml(sub.fullName || '-')}</strong></td>
+                                <td>${escapeHtml(sub.teamName && sub.teamName !== '-' ? sub.teamName : '-')}</td>
+                                <td>${escapeHtml(sub.tiktokUsername || '-')}</td>
+                                <td><a href="${sub.videoUrl || '#'}" target="_blank" style="color: var(--yellow);"><i class="fas fa-external-link-alt"></i> Tonton</a></td>
+                                <td><small>${escapeHtml(sub.email || '-')}<br>${sub.whatsapp || '-'}</small></td>
+                                <td><small>${formatDate(sub.submittedAt)}</small></td>
+                                <td>
+                                    <span class="badge ${sub.status === 'pending' ? 'badge-pending' : (sub.status === 'approved' ? 'badge-approved' : 'badge-rejected')}">
+                                        ${sub.status === 'pending' ? '⏳ Pending' : (sub.status === 'approved' ? '✅ Approved' : '❌ Rejected')}
+                                    </span>
+                                </td>
+                                <td>
+                                    <button class="action-btn btn-sm" onclick="window.approveSubmission('${sub.id}')"><i class="fas fa-check-circle"></i></button>
+                                    <button class="action-btn btn-sm" onclick="window.rejectSubmission('${sub.id}')"><i class="fas fa-times-circle"></i></button>
+                                    <button class="action-btn btn-sm" onclick="window.copySubmissionWA('${sub.whatsapp || ''}')"><i class="fab fa-whatsapp"></i></button>
+                                </td>
+                            </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+                ${creatorSubmissions.length === 0 ? '<div class="empty-state"><i class="fas fa-inbox"></i><p>Belum ada partisipasi dari konten kreator</p></div>' : ''}
+            </div>
+            
             <div class="card">
                 <h2><i class="fas fa-tools"></i> Tools & Utilities</h2>
                 <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                    <button class="btn btn-outline btn-sm" onclick="window.exportToJSON()"><i class="fas fa-download"></i> Export JSON</button>
-                    <button class="btn btn-outline btn-sm" onclick="window.importFromJSON()"><i class="fas fa-upload"></i> Import JSON</button>
-                    <button class="btn btn-danger btn-sm" onclick="window.resetAllScoreData()"><i class="fas fa-trash-alt"></i> Reset All Score</button>
-                    <button class="btn btn-primary btn-sm" onclick="window.viewFullStats()"><i class="fas fa-chart-bar"></i> Full Stats</button>
-                    <button class="btn btn-success btn-sm" onclick="window.quickAddMatch()"><i class="fas fa-bolt"></i> Quick Add Match</button>
-                    <button class="btn btn-outline btn-sm" onclick="window.autoUpdateRankPoints()"><i class="fas fa-magic"></i> Auto Rank Points</button>
+                    <button class="btn btn-outline btn-sm" id="exportJsonBtn"><i class="fas fa-download"></i> Export JSON</button>
+                    <button class="btn btn-outline btn-sm" id="importJsonBtn"><i class="fas fa-upload"></i> Import JSON</button>
+                    <button class="btn btn-danger btn-sm" id="resetScoreBtn"><i class="fas fa-trash-alt"></i> Reset All Score</button>
+                    <button class="btn btn-primary btn-sm" id="fullStatsBtn"><i class="fas fa-chart-bar"></i> Full Stats</button>
+                    <button class="btn btn-success btn-sm" id="quickMatchBtn"><i class="fas fa-bolt"></i> Quick Add Match</button>
+                    <button class="btn btn-outline btn-sm" id="autoRankBtn"><i class="fas fa-magic"></i> Auto Rank Points</button>
                 </div>
             </div>
             
@@ -288,6 +360,43 @@
         `;
         
         document.getElementById("adminContent").innerHTML = html;
+        
+        // ========== SUBMISSIONS FILTER ==========
+        const searchSubmission = document.getElementById("searchSubmission");
+        const filterSubmissionStatus = document.getElementById("filterSubmissionStatus");
+        if (searchSubmission && filterSubmissionStatus) {
+            const filterSubmissions = () => {
+                const searchTerm = searchSubmission.value.toLowerCase();
+                const statusFilter = filterSubmissionStatus.value;
+                const rows = document.querySelectorAll("#submissionsTableBody tr");
+                rows.forEach(row => {
+                    const text = row.innerText.toLowerCase();
+                    const rowStatus = row.dataset.status;
+                    let match = text.includes(searchTerm);
+                    if (statusFilter !== "all") match = match && (rowStatus === statusFilter);
+                    row.style.display = match ? "" : "none";
+                });
+            };
+            searchSubmission.addEventListener("input", filterSubmissions);
+            filterSubmissionStatus.addEventListener("change", filterSubmissions);
+        }
+        
+        // Export Submissions CSV
+        const exportSubmissionsBtn = document.getElementById("exportSubmissionsBtn");
+        if (exportSubmissionsBtn) {
+            exportSubmissionsBtn.addEventListener("click", () => {
+                let csv = "No,Nama Lengkap,Nama Tim,Username TikTok,Link Video,Email,WhatsApp,Tanggal Submit,Status\n";
+                creatorSubmissions.forEach((sub, i) => {
+                    csv += `${i+1},"${sub.fullName || ''}","${sub.teamName !== '-' ? sub.teamName : ''}","${sub.tiktokUsername || ''}","${sub.videoUrl || ''}","${sub.email || ''}","${sub.whatsapp || ''}","${sub.submittedAt || ''}","${sub.status || 'pending'}"\n`;
+                });
+                const blob = new Blob([csv], { type: "text/csv" });
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = `submissions_kreator_${new Date().toISOString().slice(0,19)}.csv`;
+                link.click();
+                showToast("success", "Data submissions berhasil diexport!");
+            });
+        }
         
         // Countdown
         const updatePreview = () => { 
@@ -349,7 +458,7 @@
                     <button class="btn btn-danger btn-sm" onclick="window.deleteMatch(${idx})"><i class="fas fa-trash"></i> Hapus</button>
                 </div>
             </div>
-            <div class="table-wrapper"><table><thead><tr><th>Tim</th><th>Slot</th><th>Peringkat</th><th>Kill</th><th>Skor</th><th>Aksi</th></tr></thead><tbody id="matchBody-${idx}">${match.results.map((res, ri) => { const team = scoreTeams.find(t=>t.id===res.teamId); return `<tr><td>${team ? team.name : 'Unknown'}</td><td>${team ? team.slot : '-'}</td><td><input type="number" class="rank-input" data-m="${idx}" data-r="${ri}" value="${res.rank}"></td><td><input type="number" class="kill-input" data-m="${idx}" data-r="${ri}" value="${res.kills}"></td><td class="total-cell">${calcScore(res.rank, res.kills)}</td><td><button onclick="window.deleteResult(${idx},${ri})" class="action-btn btn-sm">Hapus</button></td></tr>`; }).join('')}</tbody>}</div>
+            <div class="table-wrapper"><tr><thead><tr><th>Tim</th><th>Slot</th><th>Peringkat</th><th>Kill</th><th>Skor</th><th>Aksi</th></tr></thead><tbody id="matchBody-${idx}">${match.results.map((res, ri) => { const team = scoreTeams.find(t=>t.id===res.teamId); return `<tr><td>${team ? team.name : 'Unknown'}</td><td>${team ? team.slot : '-'}</td><td><input type="number" class="rank-input" data-m="${idx}" data-r="${ri}" value="${res.rank}"></td><td><input type="number" class="kill-input" data-m="${idx}" data-r="${ri}" value="${res.kills}"></td><td class="total-cell">${calcScore(res.rank, res.kills)}</td><td><button onclick="window.deleteResult(${idx},${ri})" class="action-btn btn-sm">Hapus</button></td>`; }).join('')}</tbody>}</div>
             <button class="btn btn-outline btn-sm" onclick="window.addResultToMatch(${idx})" style="margin-top:10px;">+ Tambah Hasil Tim</button></div>`).join('');
             
             document.querySelectorAll('.rank-input').forEach(inp => inp.addEventListener('change', function() { let m=parseInt(this.dataset.m), r=parseInt(this.dataset.r); scoreMatches[m].results[r].rank = parseInt(this.value) || 1; saveScoreMatches(); renderAdminPanel(); }));
@@ -363,7 +472,7 @@
         // Render Team Table
         const renderTeamTable = (data) => {
             const tbody = document.getElementById("adminTeamList");
-            tbody.innerHTML = data.sort((a,b)=>SLOTS.indexOf(a.slot)-SLOTS.indexOf(b.slot)).map(team => `<tr>
+            if(tbody) tbody.innerHTML = data.sort((a,b)=>SLOTS.indexOf(a.slot)-SLOTS.indexOf(b.slot)).map(team => `<tr>
                 <td><span class="slot-badge">${team.slot||'-'}</span></td>
                 <td><strong>${escapeHtml(team.teamName)}</strong></td>
                 <td>${escapeHtml(team.perwakilan)}</td>
@@ -404,6 +513,14 @@
                 showToast("success","Tim ditambahkan"); renderAdminPanel();
             }
         });
+        
+        // Tool buttons
+        document.getElementById("exportJsonBtn")?.addEventListener("click", () => window.exportToJSON());
+        document.getElementById("importJsonBtn")?.addEventListener("click", () => window.importFromJSON());
+        document.getElementById("resetScoreBtn")?.addEventListener("click", () => window.resetAllScoreData());
+        document.getElementById("fullStatsBtn")?.addEventListener("click", () => window.viewFullStats());
+        document.getElementById("quickMatchBtn")?.addEventListener("click", () => window.quickAddMatch());
+        document.getElementById("autoRankBtn")?.addEventListener("click", () => window.autoUpdateRankPoints());
         
         showLoading(false);
     }
@@ -555,6 +672,55 @@
         sortedResults.forEach(res => { const team = scoreTeams.find(t => t.id === res.teamId); const teamName = team ? team.name : "Unknown"; const score = calcScore(res.rank, res.kills); text += `${res.rank}. ${teamName} | ${res.kills} kill | ${score} pts\n`; });
         navigator.clipboard.writeText(text);
         showToast("success", "Data match disalin ke clipboard!");
+    };
+    
+    // ========== FUNGSI SUBMISSIONS (EARPHONE) ==========
+    window.approveSubmission = async (submissionId) => {
+        const confirm = await Swal.fire({
+            title: "Setujui Partisipasi?",
+            text: "Peserta ini akan ditandai sebagai pemenang/peserta yang disetujui untuk earphone?",
+            icon: "question",
+            showCancelButton: true,
+            background: "#1A1F2E",
+            color: "#fff"
+        });
+        if (confirm.isConfirmed) {
+            await db.collection("creatorSubmissions").doc(submissionId).update({
+                status: "approved",
+                reviewedAt: new Date().toISOString(),
+                reviewedBy: "admin"
+            });
+            showToast("success", "Partisipasi disetujui!");
+            renderAdminPanel();
+        }
+    };
+    
+    window.rejectSubmission = async (submissionId) => {
+        const { value: reason } = await Swal.fire({
+            title: "Tolak Partisipasi",
+            input: "textarea",
+            inputPlaceholder: "Alasan penolakan (opsional)",
+            showCancelButton: true,
+            background: "#1A1F2E",
+            color: "#fff"
+        });
+        await db.collection("creatorSubmissions").doc(submissionId).update({
+            status: "rejected",
+            rejectionReason: reason || "Tidak memenuhi kriteria",
+            reviewedAt: new Date().toISOString(),
+            reviewedBy: "admin"
+        });
+        showToast("warning", "Partisipasi ditolak!");
+        renderAdminPanel();
+    };
+    
+    window.copySubmissionWA = (wa) => {
+        if(wa && wa !== '-') {
+            navigator.clipboard.writeText(wa);
+            showToast("success", "Nomor WhatsApp disalin!");
+        } else {
+            showToast("error", "Nomor WhatsApp tidak tersedia!");
+        }
     };
     
     function checkLogin() { 
