@@ -344,6 +344,126 @@
             .popup-container { width: 95%; }
             .prize-image { max-width: 120px; }
         }
+        /* Popup Carousel Styles */
+.popup-carousel .popup-content {
+    max-width: 550px;
+    width: 100%;
+    border-radius: 24px;
+    background: var(--jb-yellow);
+    padding: 0;
+    overflow: hidden;
+}
+
+.carousel-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.carousel-slides {
+    display: flex;
+    transition: transform 0.4s ease-in-out;
+}
+
+.carousel-slide {
+    min-width: 100%;
+    position: relative;
+}
+
+.carousel-slide .popup-poster-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-bottom: 2px solid var(--jb-yellow-dark);
+}
+
+.slide-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    color: white;
+    padding: 12px 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: center;
+    backdrop-filter: blur(4px);
+}
+
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.6);
+    color: white;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.carousel-btn:hover {
+    background: var(--jb-yellow);
+    color: #000;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.prev-btn {
+    left: 12px;
+}
+
+.next-btn {
+    right: 12px;
+}
+
+.carousel-dots {
+    position: absolute;
+    bottom: 50px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    z-index: 10;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.5);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.dot.active {
+    width: 24px;
+    border-radius: 4px;
+    background: var(--jb-yellow);
+}
+
+@media (max-width: 640px) {
+    .carousel-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 0.9rem;
+    }
+    .carousel-dots {
+        bottom: 45px;
+    }
+    .slide-caption {
+        font-size: 0.7rem;
+        padding: 8px 12px;
+    }
+}
     </style>
 </head>
 <body>
@@ -370,13 +490,37 @@
 <div id="mainContent" class="container"></div>
 <button class="scroll-top" id="scrollTopBtn"><i class="fas fa-arrow-up"></i></button>
 
-<!-- POPUP POSTER -->
+<!-- POPUP POSTER DENGAN 2 GAMBAR (CAROUSEL) -->
 <div id="popupPoster" class="popup-overlay">
-    <div class="popup-container">
+    <div class="popup-container popup-carousel">
         <div class="popup-content">
             <button class="popup-close" id="closeBtn">✕</button>
-            <img src="FAST TOURNAMENT_20260513_082002_0000.png" alt="JB Tokies Poster" class="popup-poster-img" id="posterImg">
-            <button class="popup-button" id="actionBtn">Lihat Jadwal →</button>
+            
+            <!-- Carousel Container -->
+            <div class="carousel-container">
+                <div class="carousel-slides" id="carouselSlides">
+                    <div class="carousel-slide">
+                        <img src="FAST TOURNAMENT_20260513_082002_0000.png" alt="Poster Tournament" class="popup-poster-img">
+                        <div class="slide-caption">🏆 Daftar Sekarang! Slot Terbatas</div>
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="https://imageshack.com/i/plaXjzWkj" alt="Most Kill Prize" class="popup-poster-img">
+                        <div class="slide-caption">🎁 Event Bulanan - Dapatkan Earphone Gratis</div>
+                    </div>
+                </div>
+                
+                <!-- Tombol Navigasi -->
+                <button class="carousel-btn prev-btn" id="prevBtn"><i class="fas fa-chevron-left"></i></button>
+                <button class="carousel-btn next-btn" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
+                
+                <!-- Indikator Dot -->
+                <div class="carousel-dots" id="carouselDots">
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
+            
+            <button class="popup-button" id="actionBtn">Lihat Jadwal & Daftar →</button>
         </div>
     </div>
 </div>
@@ -964,16 +1108,16 @@ function renderPrizePage() {
         <!-- Most Kill Mingguan dengan JERSEY -->
         <div class="prize-card" style="border: 2px solid var(--yellow);">
             <h3><i class="fas fa-skull-crossbones"></i> 🎁 MOST KILL MINGGU INI</h3>
-            <p>Pemain / Tim dengan total kill tertinggi dalam tournament minggu ini berhak mendapatkan <strong>Jersey Eksklusif JB Tokies!</strong></p>
+            <p>Pemain dengan total kill tertinggi dalam tournament minggu ini berhak mendapatkan <strong>Jersey Limited Edition Bloodstrike Indonesia!</strong></p>
             <div style="display: flex; justify-content: center; margin: 1rem 0;">
                 <img src="https://imageshack.com/i/plaXjzWkj" alt="Jersey Gaming" style="max-width: 250px; width: 100%; background: #fff; border-radius: 12px; padding: 10px;" onerror="this.src='https://placehold.co/250x200/FFD600/1A1F2E?text=Jersey+JB'">
             </div>
-            <p style="margin-top: 0.5rem;"><strong>🏆 Jersey Premium JB Tokies 🏆</strong><br>Gratis!</p>
+            <p style="margin-top: 0.5rem;"><strong>🏆 Jersey Limited Edition 🏆</strong><br>Gratis!</p>
         </div>
         
         <div class="card" style="margin-top: 1.5rem;">
-            <h2><i class="fas fa-calendar-week"></i> 🎁 WEEKLY MISSION EVENT (EVENT MINGGUAN)</h2>
-            <p>Turnamen ini diadakan setiap minggu! Selain memperebutkan juara utama di turnamen, kamu juga bisa mengikuti misi mingguan dengan hadiah menarik.</p>
+            <h2><i class="fas fa-calendar-week"></i> 🎁 MONTHLY MISSION EVENT (EVENT BULANAN)</h2>
+            <p>Turnamen ini diadakan setiap bulanan! Selain memperebutkan juara utama di turnamen, kamu juga bisa mengikuti misi bulanan dengan hadiah menarik.</p>
             
             <h3><i class="fab fa-tiktok"></i> Misi Konten Kreator JB Tokies</h3>
             <ul class="mission-list">
@@ -1148,10 +1292,13 @@ function renderPrizePage() {
             });
         }
         
-        // Show popup after 1 second
-        setTimeout(() => {
-            if (popup) popup.style.display = 'flex';
-        }, 1000);
+       // Show popup after 1 second with carousel
+setTimeout(() => {
+    if (popup) {
+        popup.style.display = 'flex';
+        initCarousel(); // Inisialisasi carousel setiap popup dibuka
+    }
+}, 1000);
         
         // Sponsor logos
         const sponsorContainer = document.getElementById('sponsorContainer');
@@ -1190,6 +1337,69 @@ function renderPrizePage() {
         navigateTo("dashboard");
     }
     init();
+    
+    // ========== CAROUSEL POPUP 2 GAMBAR ==========
+function initCarousel() {
+    const slides = document.getElementById('carouselSlides');
+    const dots = document.querySelectorAll('.dot');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    let currentIndex = 0;
+    const totalSlides = 2;
+    
+    function updateCarousel() {
+        if (slides) {
+            slides.style.transform = `translateX(-${currentIndex * 100}%)`;
+        }
+        // Update dots
+        dots.forEach((dot, index) => {
+            if (index === currentIndex) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+    }
+    
+    function nextSlide() {
+        currentIndex = (currentIndex + 1) % totalSlides;
+        updateCarousel();
+    }
+    
+    function prevSlide() {
+        currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+        updateCarousel();
+    }
+    
+    if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+    if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+    
+    // Click dots
+    dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+            currentIndex = index;
+            updateCarousel();
+        });
+    });
+    
+    // Optional: auto slide every 5 seconds
+    let autoInterval = setInterval(() => {
+        // Hanya auto slide jika popup masih terbuka
+        const popup = document.getElementById('popupPoster');
+        if (popup && popup.style.display === 'flex') {
+            nextSlide();
+        }
+    }, 5000);
+    
+    // Cleanup interval jika perlu (opsional)
+    window.addEventListener('beforeunload', () => {
+        if (autoInterval) clearInterval(autoInterval);
+    });
+}
+
+// Panggil initCarousel setelah popup initialization
+// Cari baris "setTimeout(() => { if (popup) popup.style.display = 'flex'; }, 1000);"
+// GANTI dengan kode di bawah ini:
 </script>
 
 <!-- LiveChat -->
