@@ -1,0 +1,2657 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="ScrimBaseID Official - Platform Rekrutmen Clan BloodStrike Terbesar di Indonesia">
+<meta name="theme-color" content="#0a0a0a">
+<title>ScrimBaseID Recruitment | Open Recruitment BloodStrike</title>
+
+<!-- PWA Manifest inline -->
+<link rel="manifest" href="data:application/json,{%22name%22:%22ScrimBaseID%22,%22short_name%22:%22ScrimBase%22,%22theme_color%22:%22%23dc2626%22,%22background_color%22:%22%230a0a0a%22,%22display%22:%22standalone%22}">
+
+<!-- Google Fonts: Futuristic gaming font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<!-- Supabase JS SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+/* ========================================
+   RESET & BASE
+   ======================================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --red: #dc2626;
+  --red-dark: #991b1b;
+  --red-bright: #ef4444;
+  --red-glow: rgba(220,38,38,0.3);
+  --white: #ffffff;
+  --white-80: rgba(255,255,255,0.8);
+  --white-60: rgba(255,255,255,0.6);
+  --white-20: rgba(255,255,255,0.2);
+  --white-10: rgba(255,255,255,0.1);
+  --white-05: rgba(255,255,255,0.05);
+  --black: #0a0a0a;
+  --black-90: #111111;
+  --black-80: #1a1a1a;
+  --black-70: #222222;
+  --glass: rgba(15,15,15,0.85);
+  --glass-border: rgba(255,255,255,0.08);
+  --font-head: 'Orbitron', monospace;
+  --font-body: 'Rajdhani', sans-serif;
+  --font-ui: 'Inter', sans-serif;
+  --nav-h: 64px;
+  --sidebar-w: 260px;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --transition: 0.2s ease;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--black);
+  color: var(--white);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none; }
+button { font-family: var(--font-body); cursor: pointer; border: none; }
+input, select, textarea { font-family: var(--font-ui); }
+img { display: block; max-width: 100%; }
+
+/* ========================================
+   SCROLLBAR
+   ======================================== */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--black-90); }
+::-webkit-scrollbar-thumb { background: var(--red-dark); border-radius: 2px; }
+
+/* ========================================
+   UTILITY CLASSES
+   ======================================== */
+.hidden { display: none !important; }
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.gap-4 { gap: 16px; }
+.text-red { color: var(--red-bright); }
+.text-muted { color: var(--white-60); }
+.text-sm { font-size: 13px; }
+.font-head { font-family: var(--font-head); }
+.w-full { width: 100%; }
+.mt-2 { margin-top: 8px; }
+.mt-4 { margin-top: 16px; }
+
+/* ========================================
+   BUTTONS
+   ======================================== */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 24px; border-radius: var(--radius);
+  font-family: var(--font-body); font-size: 15px; font-weight: 600;
+  letter-spacing: 0.5px; cursor: pointer; transition: var(--transition);
+  border: 1px solid transparent;
+}
+.btn-primary {
+  background: var(--red); color: var(--white);
+  box-shadow: 0 0 20px var(--red-glow);
+}
+.btn-primary:hover { background: var(--red-bright); box-shadow: 0 0 30px var(--red-glow); transform: translateY(-1px); }
+.btn-outline {
+  background: transparent; color: var(--white);
+  border-color: var(--white-20);
+}
+.btn-outline:hover { border-color: var(--red); color: var(--red-bright); background: var(--white-05); }
+.btn-ghost {
+  background: var(--white-05); color: var(--white-80);
+  border-color: var(--glass-border);
+}
+.btn-ghost:hover { background: var(--white-10); }
+.btn-sm { padding: 6px 16px; font-size: 13px; }
+.btn-danger { background: var(--red-dark); color: var(--white); }
+.btn-danger:hover { background: var(--red); }
+.btn-success { background: #16a34a; color: var(--white); }
+.btn-success:hover { background: #22c55e; }
+
+/* ========================================
+   FORM ELEMENTS
+   ======================================== */
+.form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+.form-label { font-size: 13px; color: var(--white-60); font-family: var(--font-ui); letter-spacing: 0.3px; }
+.form-input {
+  background: var(--black-80); border: 1px solid var(--glass-border);
+  color: var(--white); padding: 10px 14px; border-radius: var(--radius);
+  font-size: 14px; transition: var(--transition); width: 100%;
+}
+.form-input:focus { outline: none; border-color: var(--red); box-shadow: 0 0 0 3px var(--red-glow); }
+.form-input::placeholder { color: rgba(255,255,255,0.25); }
+.form-input.error { border-color: #ef4444; }
+.form-error { font-size: 12px; color: #ef4444; font-family: var(--font-ui); }
+.form-select {
+  background: var(--black-80); border: 1px solid var(--glass-border);
+  color: var(--white); padding: 10px 14px; border-radius: var(--radius);
+  font-size: 14px; width: 100%; cursor: pointer;
+}
+.form-select:focus { outline: none; border-color: var(--red); }
+textarea.form-input { resize: vertical; min-height: 80px; }
+
+/* ========================================
+   CARD
+   ======================================== */
+.card {
+  background: var(--black-80); border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg); padding: 20px;
+}
+.card-glass {
+  background: var(--glass); backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border); border-radius: var(--radius-lg);
+}
+
+/* ========================================
+   BADGE
+   ======================================== */
+.badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600;
+  font-family: var(--font-ui); letter-spacing: 0.3px;
+}
+.badge-red { background: rgba(220,38,38,0.2); color: #fca5a5; border: 1px solid rgba(220,38,38,0.4); }
+.badge-green { background: rgba(22,163,74,0.2); color: #86efac; border: 1px solid rgba(22,163,74,0.4); }
+.badge-gray { background: var(--white-10); color: var(--white-60); border: 1px solid var(--glass-border); }
+.badge-gold { background: rgba(234,179,8,0.2); color: #fde047; border: 1px solid rgba(234,179,8,0.4); }
+.badge-blue { background: rgba(37,99,235,0.2); color: #93c5fd; border: 1px solid rgba(37,99,235,0.4); }
+
+/* ========================================
+   LOADING / SKELETON
+   ======================================== */
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, var(--black-80) 25%, var(--black-70) 50%, var(--black-80) 75%);
+  background-size: 400px 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius);
+}
+.spinner {
+  width: 20px; height: 20px;
+  border: 2px solid var(--white-20);
+  border-top-color: var(--red);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+#global-loading {
+  position: fixed; inset: 0; background: var(--black); z-index: 9999;
+  display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 16px;
+}
+#global-loading .logo-text { font-family: var(--font-head); font-size: 24px; color: var(--red); letter-spacing: 3px; }
+#global-loading .sub { font-size: 13px; color: var(--white-60); font-family: var(--font-ui); }
+
+/* ========================================
+   TOAST NOTIFICATIONS
+   ======================================== */
+#toast-container {
+  position: fixed; top: 80px; right: 16px; z-index: 9000;
+  display: flex; flex-direction: column; gap: 8px; max-width: 360px;
+}
+.toast {
+  background: var(--black-80); border: 1px solid var(--glass-border);
+  border-radius: var(--radius); padding: 12px 16px;
+  display: flex; align-items: center; gap: 10px;
+  animation: slideIn 0.3s ease; font-family: var(--font-ui); font-size: 14px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+.toast.success { border-left: 3px solid #22c55e; }
+.toast.error { border-left: 3px solid var(--red); }
+.toast.info { border-left: 3px solid #3b82f6; }
+@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+/* ========================================
+   NAVBAR
+   ======================================== */
+#navbar {
+  position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h);
+  background: rgba(10,10,10,0.95); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border); z-index: 1000;
+  display: flex; align-items: center; padding: 0 24px;
+}
+.nav-brand { display: flex; align-items: center; gap: 10px; }
+.nav-brand .logo-icon {
+  width: 36px; height: 36px; background: var(--red);
+  border-radius: 6px; display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-head); font-size: 14px; font-weight: 900; color: var(--white);
+}
+.nav-brand .brand-text { font-family: var(--font-head); font-size: 14px; font-weight: 700; letter-spacing: 1px; }
+.nav-brand .brand-sub { font-size: 10px; color: var(--white-60); font-family: var(--font-ui); letter-spacing: 1px; }
+.nav-links { display: flex; align-items: center; gap: 4px; margin: 0 auto; }
+.nav-link {
+  padding: 6px 14px; border-radius: 6px; font-size: 14px; font-weight: 600;
+  color: var(--white-60); transition: var(--transition); cursor: pointer; font-family: var(--font-body);
+  letter-spacing: 0.3px; background: none; border: none;
+}
+.nav-link:hover, .nav-link.active { color: var(--white); background: var(--white-05); }
+.nav-link.active { color: var(--red-bright); }
+.nav-actions { display: flex; align-items: center; gap: 8px; }
+.nav-notif {
+  width: 36px; height: 36px; border-radius: 8px; background: var(--white-05);
+  border: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: center;
+  cursor: pointer; position: relative; transition: var(--transition);
+}
+.nav-notif:hover { background: var(--white-10); }
+.notif-dot {
+  position: absolute; top: 6px; right: 6px; width: 8px; height: 8px;
+  background: var(--red); border-radius: 50%; border: 2px solid var(--black);
+}
+.nav-avatar {
+  width: 36px; height: 36px; border-radius: 8px; background: var(--red-dark);
+  border: 1px solid var(--red-glow); display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700; cursor: pointer; font-family: var(--font-head);
+}
+.hamburger {
+  display: none; flex-direction: column; gap: 4px; cursor: pointer;
+  background: none; border: none; padding: 4px;
+}
+.hamburger span { width: 22px; height: 2px; background: var(--white); border-radius: 1px; transition: var(--transition); }
+
+/* ========================================
+   MOBILE NAV DRAWER
+   ======================================== */
+#mobile-nav {
+  position: fixed; top: var(--nav-h); left: 0; right: 0; bottom: 0;
+  background: var(--glass); backdrop-filter: blur(20px);
+  z-index: 900; padding: 20px; display: none; flex-direction: column; gap: 8px;
+}
+#mobile-nav.open { display: flex; }
+.mobile-nav-link {
+  padding: 12px 16px; border-radius: var(--radius); font-size: 16px; font-weight: 600;
+  color: var(--white-80); cursor: pointer; border: none; background: var(--white-05);
+  font-family: var(--font-body); text-align: left; letter-spacing: 0.3px;
+}
+
+/* ========================================
+   PAGES / SECTIONS
+   ======================================== */
+.page { display: none; min-height: 100vh; padding-top: var(--nav-h); }
+.page.active { display: block; }
+
+/* ========================================
+   HERO SECTION
+   ======================================== */
+#hero {
+  position: relative; min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 60% at 50% 0%, rgba(220,38,38,0.15) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 80% 60%, rgba(220,38,38,0.08) 0%, transparent 60%),
+    linear-gradient(180deg, var(--black) 0%, #0d0000 100%);
+}
+/* Grid pattern overlay */
+.hero-grid {
+  position: absolute; inset: 0; opacity: 0.06;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+/* Animated scan line */
+@keyframes scanline {
+  0% { top: -5%; opacity: 1; }
+  100% { top: 105%; opacity: 0; }
+}
+.hero-scanline {
+  position: absolute; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--red-glow), transparent);
+  animation: scanline 4s linear infinite;
+}
+.hero-content { position: relative; z-index: 1; text-align: center; padding: 20px; max-width: 900px; }
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--white-05); border: 1px solid rgba(220,38,38,0.3);
+  padding: 6px 16px; border-radius: 20px; margin-bottom: 24px;
+  font-size: 12px; font-family: var(--font-ui); letter-spacing: 2px;
+  color: var(--red-bright); text-transform: uppercase;
+}
+.hero-eyebrow::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--red); animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+.hero-title {
+  font-family: var(--font-head); font-size: clamp(28px, 6vw, 64px);
+  font-weight: 900; line-height: 1.1; letter-spacing: -1px; margin-bottom: 8px;
+  animation: fadeUp 0.8s ease both;
+}
+.hero-title .line1 { color: var(--white); }
+.hero-title .line2 { color: var(--red-bright); display: block; }
+.hero-subtitle {
+  font-size: 16px; color: var(--white-60); margin-bottom: 32px;
+  font-family: var(--font-ui); letter-spacing: 0.5px;
+  animation: fadeUp 0.8s ease 0.1s both;
+}
+.hero-subtitle span { color: var(--red-bright); }
+.hero-actions {
+  display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;
+  animation: fadeUp 0.8s ease 0.2s both; margin-bottom: 60px;
+}
+.hero-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; max-width: 600px; margin: 0 auto;
+  animation: fadeUp 0.8s ease 0.3s both;
+}
+.stat-item {
+  background: var(--white-05); border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg); padding: 16px 12px; text-align: center;
+}
+.stat-num { font-family: var(--font-head); font-size: 28px; font-weight: 700; color: var(--red-bright); }
+.stat-label { font-size: 12px; color: var(--white-60); font-family: var(--font-ui); margin-top: 2px; }
+/* Corner decorations */
+.hero-corner {
+  position: absolute; width: 60px; height: 60px; opacity: 0.3;
+}
+.hero-corner.tl { top: 80px; left: 20px; border-top: 2px solid var(--red); border-left: 2px solid var(--red); }
+.hero-corner.tr { top: 80px; right: 20px; border-top: 2px solid var(--red); border-right: 2px solid var(--red); }
+.hero-corner.bl { bottom: 20px; left: 20px; border-bottom: 2px solid var(--red); border-left: 2px solid var(--red); }
+.hero-corner.br { bottom: 20px; right: 20px; border-bottom: 2px solid var(--red); border-right: 2px solid var(--red); }
+
+/* ========================================
+   RECRUITMENT PAGE
+   ======================================== */
+#page-recruitment { padding: calc(var(--nav-h) + 24px) 24px 40px; }
+.page-header { margin-bottom: 28px; }
+.page-title { font-family: var(--font-head); font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+.page-subtitle { color: var(--white-60); font-size: 14px; font-family: var(--font-ui); }
+.search-bar {
+  display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;
+}
+.search-input-wrap { position: relative; flex: 1; min-width: 200px; }
+.search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--white-60); font-size: 16px; }
+.search-input {
+  width: 100%; background: var(--black-80); border: 1px solid var(--glass-border);
+  color: var(--white); padding: 10px 14px 10px 38px; border-radius: var(--radius);
+  font-size: 14px; font-family: var(--font-ui);
+}
+.search-input:focus { outline: none; border-color: var(--red); }
+.filter-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+.filter-btn {
+  padding: 6px 16px; border-radius: 20px; border: 1px solid var(--glass-border);
+  background: var(--white-05); color: var(--white-60); font-size: 13px;
+  cursor: pointer; transition: var(--transition); font-family: var(--font-ui);
+}
+.filter-btn:hover, .filter-btn.active { background: var(--red-dark); border-color: var(--red); color: var(--white); }
+.recruitment-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px;
+}
+/* Clan Card */
+.clan-card {
+  background: var(--black-80); border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg); overflow: hidden; transition: var(--transition);
+  cursor: pointer; position: relative;
+}
+.clan-card:hover { border-color: rgba(220,38,38,0.4); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(220,38,38,0.1); }
+.clan-card-header {
+  padding: 16px; display: flex; align-items: center; gap: 14px;
+  border-bottom: 1px solid var(--glass-border);
+}
+.clan-logo {
+  width: 52px; height: 52px; border-radius: var(--radius); background: var(--red-dark);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-head); font-size: 18px; font-weight: 900; color: var(--white);
+  overflow: hidden; flex-shrink: 0;
+}
+.clan-logo img { width: 100%; height: 100%; object-fit: cover; }
+.clan-info { flex: 1; min-width: 0; }
+.clan-name { font-family: var(--font-head); font-size: 16px; font-weight: 700; letter-spacing: 0.5px; }
+.clan-region { font-size: 12px; color: var(--white-60); font-family: var(--font-ui); margin-top: 2px; }
+.clan-card-body { padding: 14px 16px; }
+.clan-desc { font-size: 13px; color: var(--white-60); font-family: var(--font-ui); margin-bottom: 12px; line-height: 1.5; }
+.clan-requirements { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.req-chip {
+  background: var(--white-05); border: 1px solid var(--glass-border);
+  padding: 3px 10px; border-radius: 12px; font-size: 11px; color: var(--white-60); font-family: var(--font-ui);
+}
+.clan-card-footer {
+  padding: 12px 16px; border-top: 1px solid var(--glass-border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.clan-members { font-size: 12px; color: var(--white-60); font-family: var(--font-ui); }
+.verified-badge { display: flex; align-items: center; gap: 4px; font-size: 11px; color: #fde047; }
+
+/* ========================================
+   MODAL
+   ======================================== */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
+  z-index: 2000; display: flex; align-items: center; justify-content: center;
+  padding: 16px; opacity: 0; transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal {
+  background: var(--black-80); border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg); width: 100%; max-width: 480px;
+  max-height: 90vh; overflow-y: auto; transform: scale(0.95);
+  transition: transform 0.2s ease;
+}
+.modal-overlay.open .modal { transform: scale(1); }
+.modal-lg { max-width: 640px; }
+.modal-header {
+  padding: 20px 24px 16px; display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--glass-border); position: sticky; top: 0;
+  background: var(--black-80); z-index: 1;
+}
+.modal-title { font-family: var(--font-head); font-size: 18px; font-weight: 700; }
+.modal-close {
+  width: 32px; height: 32px; border-radius: 6px; background: var(--white-05);
+  border: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 18px; color: var(--white-60); transition: var(--transition);
+}
+.modal-close:hover { background: var(--white-10); color: var(--white); }
+.modal-body { padding: 20px 24px; }
+.modal-footer {
+  padding: 16px 24px; border-top: 1px solid var(--glass-border);
+  display: flex; gap: 10px; justify-content: flex-end;
+}
+
+/* ========================================
+   AUTH PAGES
+   ======================================== */
+#page-auth {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100vh; padding: 20px;
+  background: radial-gradient(ellipse 60% 60% at 50% 0%, rgba(220,38,38,0.1) 0%, transparent 70%);
+}
+.auth-box {
+  width: 100%; max-width: 420px;
+  background: var(--black-80); border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg); padding: 32px 28px;
+}
+.auth-logo { text-align: center; margin-bottom: 28px; }
+.auth-logo .brand { font-family: var(--font-head); font-size: 20px; font-weight: 900; color: var(--red-bright); letter-spacing: 2px; }
+.auth-logo .sub { font-size: 12px; color: var(--white-60); font-family: var(--font-ui); margin-top: 4px; }
+.auth-tabs { display: flex; gap: 4px; margin-bottom: 24px; background: var(--black); padding: 4px; border-radius: var(--radius); }
+.auth-tab {
+  flex: 1; padding: 8px; border-radius: 6px; font-size: 14px; font-weight: 600;
+  cursor: pointer; text-align: center; border: none; background: none; color: var(--white-60);
+  transition: var(--transition); font-family: var(--font-body);
+}
+.auth-tab.active { background: var(--red); color: var(--white); }
+
+/* ========================================
+   DASHBOARD
+   ======================================== */
+#page-dashboard { display: flex; padding-top: var(--nav-h); min-height: 100vh; }
+.sidebar {
+  width: var(--sidebar-w); background: var(--black-90); border-right: 1px solid var(--glass-border);
+  padding: 20px 12px; position: fixed; top: var(--nav-h); bottom: 0;
+  overflow-y: auto; z-index: 100;
+}
+.sidebar-section { margin-bottom: 24px; }
+.sidebar-label { font-size: 11px; color: var(--white-60); letter-spacing: 1.5px; text-transform: uppercase; font-family: var(--font-ui); padding: 0 8px; margin-bottom: 6px; }
+.sidebar-item {
+  display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: var(--radius);
+  cursor: pointer; transition: var(--transition); color: var(--white-60); margin-bottom: 2px;
+  border: none; background: none; width: 100%; text-align: left; font-family: var(--font-body); font-size: 14px; font-weight: 600;
+}
+.sidebar-item:hover { background: var(--white-05); color: var(--white); }
+.sidebar-item.active { background: rgba(220,38,38,0.15); color: var(--red-bright); border: 1px solid rgba(220,38,38,0.2); }
+.sidebar-icon { width: 20px; height: 20px; font-size: 18px; }
+.sidebar-badge {
+  margin-left: auto; background: var(--red); color: var(--white);
+  font-size: 11px; padding: 2px 7px; border-radius: 10px; font-family: var(--font-ui);
+}
+.dashboard-content { margin-left: var(--sidebar-w); flex: 1; padding: 28px 24px; }
+.dash-section { display: none; }
+.dash-section.active { display: block; }
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-bottom: 28px; }
+.stat-card {
+  background: var(--black-80); border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg); padding: 16px;
+}
+.stat-card-value { font-family: var(--font-head); font-size: 28px; font-weight: 700; color: var(--red-bright); }
+.stat-card-label { font-size: 12px; color: var(--white-60); font-family: var(--font-ui); margin-top: 4px; }
+.table-wrap { overflow-x: auto; }
+table.data-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+table.data-table th { padding: 10px 14px; text-align: left; font-size: 11px; color: var(--white-60); letter-spacing: 1px; text-transform: uppercase; border-bottom: 1px solid var(--glass-border); font-family: var(--font-ui); }
+table.data-table td { padding: 12px 14px; border-bottom: 1px solid rgba(255,255,255,0.04); font-family: var(--font-ui); font-size: 13px; }
+table.data-table tr:hover td { background: var(--white-05); }
+
+/* ========================================
+   LEADERBOARD PAGE
+   ======================================== */
+#page-leaderboard { padding: calc(var(--nav-h) + 24px) 24px 40px; }
+.leaderboard-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 24px; }
+.lb-card {
+  background: var(--black-80); border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg); overflow: hidden;
+}
+.lb-card-header {
+  background: linear-gradient(135deg, rgba(220,38,38,0.15), transparent);
+  padding: 16px; border-bottom: 1px solid var(--glass-border);
+  display: flex; align-items: center; gap: 10px;
+}
+.lb-card-title { font-family: var(--font-head); font-size: 14px; font-weight: 700; color: var(--red-bright); letter-spacing: 0.5px; }
+.lb-item {
+  display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.04); transition: var(--transition);
+}
+.lb-item:hover { background: var(--white-05); }
+.lb-rank { font-family: var(--font-head); font-size: 18px; font-weight: 700; width: 30px; flex-shrink: 0; }
+.lb-rank.gold { color: #fde047; }
+.lb-rank.silver { color: #d1d5db; }
+.lb-rank.bronze { color: #f97316; }
+.lb-info { flex: 1; min-width: 0; }
+.lb-name { font-weight: 600; font-size: 14px; font-family: var(--font-body); }
+.lb-score { font-size: 12px; color: var(--white-60); font-family: var(--font-ui); }
+.lb-value { font-family: var(--font-head); font-size: 16px; color: var(--red-bright); }
+
+/* ========================================
+   NOTIFICATION PANEL
+   ======================================== */
+#notif-panel {
+  position: fixed; top: var(--nav-h); right: 0; width: 320px; bottom: 0;
+  background: var(--black-90); border-left: 1px solid var(--glass-border);
+  z-index: 500; transform: translateX(100%); transition: transform 0.25s ease;
+  overflow-y: auto;
+}
+#notif-panel.open { transform: translateX(0); }
+.notif-panel-header {
+  padding: 16px 20px; border-bottom: 1px solid var(--glass-border);
+  font-family: var(--font-head); font-size: 16px; font-weight: 700;
+  display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0;
+  background: var(--black-90);
+}
+.notif-item {
+  padding: 14px 20px; border-bottom: 1px solid rgba(255,255,255,0.04);
+  cursor: pointer; transition: var(--transition);
+}
+.notif-item:hover { background: var(--white-05); }
+.notif-item.unread { border-left: 3px solid var(--red); }
+.notif-text { font-size: 13px; color: var(--white-80); font-family: var(--font-ui); line-height: 1.4; }
+.notif-time { font-size: 11px; color: var(--white-60); font-family: var(--font-ui); margin-top: 4px; }
+
+/* ========================================
+   APPLY MODAL EXTRAS
+   ======================================== */
+.upload-zone {
+  border: 1px dashed rgba(255,255,255,0.2); border-radius: var(--radius);
+  padding: 24px; text-align: center; cursor: pointer; transition: var(--transition);
+}
+.upload-zone:hover { border-color: var(--red); background: var(--white-05); }
+.upload-zone .upload-icon { font-size: 32px; margin-bottom: 8px; }
+.upload-zone .upload-label { font-size: 13px; color: var(--white-60); font-family: var(--font-ui); }
+
+/* ========================================
+   ADMIN PANEL EXTRAS
+   ======================================== */
+.admin-tabs { display: flex; gap: 4px; padding: 4px; background: var(--black); border-radius: var(--radius); margin-bottom: 20px; width: fit-content; }
+.admin-tab {
+  padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 600;
+  cursor: pointer; border: none; background: none; color: var(--white-60); transition: var(--transition); font-family: var(--font-body);
+}
+.admin-tab.active { background: var(--red); color: var(--white); }
+
+/* ========================================
+   SECTION DIVIDER
+   ======================================== */
+.section-title {
+  font-family: var(--font-head); font-size: 20px; font-weight: 700;
+  margin-bottom: 16px; display: flex; align-items: center; gap: 12px;
+}
+.section-title::after { content: ''; flex: 1; height: 1px; background: var(--glass-border); }
+
+/* ========================================
+   EMPTY STATE
+   ======================================== */
+.empty-state {
+  text-align: center; padding: 60px 20px; color: var(--white-60); font-family: var(--font-ui);
+}
+.empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.4; }
+.empty-state h3 { font-size: 16px; font-weight: 600; color: var(--white-80); margin-bottom: 6px; }
+.empty-state p { font-size: 13px; }
+
+/* ========================================
+   PAGINATION
+   ======================================== */
+.pagination { display: flex; align-items: center; gap: 6px; justify-content: center; margin-top: 24px; }
+.page-btn {
+  width: 36px; height: 36px; border-radius: 6px; border: 1px solid var(--glass-border);
+  background: var(--white-05); color: var(--white-60); cursor: pointer; font-size: 13px;
+  display: flex; align-items: center; justify-content: center; transition: var(--transition); font-family: var(--font-ui);
+}
+.page-btn:hover { background: var(--white-10); color: var(--white); }
+.page-btn.active { background: var(--red); border-color: var(--red); color: var(--white); }
+
+/* ========================================
+   CHAT PANEL
+   ======================================== */
+.chat-box {
+  background: var(--black-80); border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg); display: flex; flex-direction: column;
+  height: 400px;
+}
+.chat-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.chat-msg { max-width: 80%; padding: 8px 12px; border-radius: var(--radius); font-size: 13px; font-family: var(--font-ui); line-height: 1.4; }
+.chat-msg.mine { align-self: flex-end; background: rgba(220,38,38,0.2); border: 1px solid rgba(220,38,38,0.3); }
+.chat-msg.other { align-self: flex-start; background: var(--white-05); border: 1px solid var(--glass-border); }
+.chat-input-row { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--glass-border); }
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .hero-stats { grid-template-columns: repeat(3, 1fr); }
+  .hero-title { font-size: 28px; }
+  #page-dashboard { flex-direction: column; }
+  .sidebar { display: none; position: static; width: 100%; }
+  .dashboard-content { margin-left: 0; padding: 16px; }
+  .recruitment-grid { grid-template-columns: 1fr; }
+  .modal { margin: 0; max-height: 100vh; border-radius: var(--radius-lg) var(--radius-lg) 0 0; align-self: flex-end; }
+  .modal-overlay { align-items: flex-end; }
+  .leaderboard-grid { grid-template-columns: 1fr; }
+  #notif-panel { width: 100%; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .hero-stats { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .stat-num { font-size: 20px; }
+  #page-recruitment, #page-leaderboard { padding: calc(var(--nav-h) + 16px) 12px 40px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Global Loading Screen -->
+<div id="global-loading">
+  <div class="logo-text">SCRIMBASE<span style="color:white">ID</span></div>
+  <div class="spinner"></div>
+  <div class="sub">Loading...</div>
+</div>
+
+<!-- Toast Container -->
+<div id="toast-container"></div>
+
+<!-- ==================== NAVBAR ==================== -->
+<nav id="navbar">
+  <div class="nav-brand" onclick="navigate('home')" style="cursor:pointer">
+    <div class="logo-icon">SB</div>
+    <div>
+      <div class="brand-text">ScrimBaseID</div>
+      <div class="brand-sub">OFFICIAL</div>
+    </div>
+  </div>
+
+  <div class="nav-links">
+    <button class="nav-link active" id="nav-home" onclick="navigate('home')">Home</button>
+    <button class="nav-link" id="nav-recruitment" onclick="navigate('recruitment')">Recruitment</button>
+    <button class="nav-link" id="nav-leaderboard" onclick="navigate('leaderboard')">Leaderboard</button>
+    <button class="nav-link" id="nav-dashboard" onclick="navigate('dashboard')" style="display:none">Dashboard</button>
+  </div>
+
+  <div class="nav-actions">
+    <div class="nav-notif" id="notif-btn" onclick="toggleNotifPanel()" style="display:none">
+      <span>🔔</span>
+      <div class="notif-dot" id="notif-dot" style="display:none"></div>
+    </div>
+    <div id="nav-auth-btns" style="display:flex;gap:8px">
+      <button class="btn btn-outline btn-sm" onclick="navigate('auth')">Login</button>
+      <button class="btn btn-primary btn-sm" onclick="navigate('auth');showRegister()">Register</button>
+    </div>
+    <div id="nav-user-info" style="display:none;align-items:center;gap:8px" class="flex">
+      <div class="nav-avatar" id="user-avatar" onclick="navigate('dashboard')">?</div>
+      <button class="btn btn-ghost btn-sm" onclick="logout()">Logout</button>
+    </div>
+    <button class="hamburger" id="hamburger-btn" onclick="toggleMobileNav()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile Nav -->
+<div id="mobile-nav">
+  <button class="mobile-nav-link" onclick="navigate('home');closeMobileNav()">🏠 Home</button>
+  <button class="mobile-nav-link" onclick="navigate('recruitment');closeMobileNav()">⚔️ Recruitment</button>
+  <button class="mobile-nav-link" onclick="navigate('leaderboard');closeMobileNav()">🏆 Leaderboard</button>
+  <button class="mobile-nav-link" id="mobile-dashboard-btn" onclick="navigate('dashboard');closeMobileNav()" style="display:none">📊 Dashboard</button>
+  <div style="height:1px;background:var(--glass-border);margin:8px 0"></div>
+  <button class="mobile-nav-link" id="mobile-auth-btn" onclick="navigate('auth');closeMobileNav()">🔑 Login / Register</button>
+  <button class="mobile-nav-link" id="mobile-logout-btn" onclick="logout()" style="display:none;color:var(--red-bright)">🚪 Logout</button>
+</div>
+
+<!-- Notification Panel -->
+<div id="notif-panel">
+  <div class="notif-panel-header">
+    <span>Notifikasi</span>
+    <button class="modal-close" onclick="toggleNotifPanel()">✕</button>
+  </div>
+  <div id="notif-list">
+    <div class="empty-state">
+      <div class="empty-icon">🔔</div>
+      <h3>Belum ada notifikasi</h3>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PAGE: HOME ==================== -->
+<div class="page active" id="page-home">
+  <!-- Hero Section -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-scanline"></div>
+    <div class="hero-corner tl"></div>
+    <div class="hero-corner tr"></div>
+    <div class="hero-corner bl"></div>
+    <div class="hero-corner br"></div>
+
+    <div class="hero-content">
+      <div class="hero-eyebrow">Open Recruitment BloodStrike</div>
+      <h1 class="hero-title">
+        <span class="line1">RECRUITMENT</span>
+        <span class="line2">CLAN BLOODSTRIKE</span>
+      </h1>
+      <p class="hero-subtitle">Powered by <span>ScrimBaseID Official</span> — Platform rekrutmen clan esports terbesar di Indonesia</p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" onclick="navigate('recruitment')">⚔️ Cari Clan</button>
+        <button class="btn btn-outline" onclick="handleCreateRecruitment()">➕ Buat Recruitment</button>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-num" id="stat-clans">0</div>
+          <div class="stat-label">Total Clan</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num" id="stat-players">0</div>
+          <div class="stat-label">Total Player</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num" id="stat-active">0</div>
+          <div class="stat-label">Recruitment Aktif</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ==================== PAGE: RECRUITMENT ==================== -->
+<div class="page" id="page-recruitment">
+  <div class="page-header">
+    <h1 class="page-title">🎯 Open Recruitment</h1>
+    <p class="page-subtitle">Temukan clan BloodStrike yang cocok untukmu</p>
+  </div>
+  <div class="search-bar">
+    <div class="search-input-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" class="search-input" id="recruit-search" placeholder="Cari nama clan..." oninput="filterRecruitments()">
+    </div>
+    <select class="form-select" id="recruit-rank-filter" onchange="filterRecruitments()" style="width:auto;min-width:140px">
+      <option value="">Semua Rank</option>
+      <option>Bronze</option><option>Silver</option><option>Gold</option>
+      <option>Platinum</option><option>Diamond</option><option>Master</option><option>Grandmaster</option>
+    </select>
+    <select class="form-select" id="recruit-region-filter" onchange="filterRecruitments()" style="width:auto;min-width:140px">
+      <option value="">Semua Region</option>
+      <option>Asia</option><option>NA</option><option>EU</option><option>SEA</option>
+    </select>
+  </div>
+  <div class="filter-row">
+    <button class="filter-btn active" onclick="setStatusFilter('open',this)">🟢 Open</button>
+    <button class="filter-btn" onclick="setStatusFilter('all',this)">📋 Semua</button>
+    <button class="filter-btn" onclick="setStatusFilter('closed',this)">🔴 Closed</button>
+  </div>
+  <div class="recruitment-grid" id="recruitment-grid">
+    <!-- Cards will be rendered here -->
+    <div class="skeleton" style="height:220px;border-radius:12px"></div>
+    <div class="skeleton" style="height:220px;border-radius:12px"></div>
+    <div class="skeleton" style="height:220px;border-radius:12px"></div>
+  </div>
+  <div class="pagination" id="recruitment-pagination"></div>
+</div>
+
+<!-- ==================== PAGE: LEADERBOARD ==================== -->
+<div class="page" id="page-leaderboard">
+  <div class="page-header">
+    <h1 class="page-title">🏆 Leaderboard Clan</h1>
+    <p class="page-subtitle">Clan terbaik di platform ScrimBaseID</p>
+  </div>
+  <div class="leaderboard-grid">
+    <!-- Leaderboard: Most Active Recruitment -->
+    <div class="lb-card">
+      <div class="lb-card-header">
+        <span>🔥</span>
+        <span class="lb-card-title">Paling Aktif Recruitment</span>
+      </div>
+      <div id="lb-active" class="lb-list-wrap">
+        <div class="skeleton" style="height:48px;margin:8px 16px;border-radius:8px"></div>
+        <div class="skeleton" style="height:48px;margin:8px 16px;border-radius:8px"></div>
+        <div class="skeleton" style="height:48px;margin:8px 16px;border-radius:8px"></div>
+      </div>
+    </div>
+    <!-- Most Members -->
+    <div class="lb-card">
+      <div class="lb-card-header">
+        <span>👥</span>
+        <span class="lb-card-title">Member Terbanyak</span>
+      </div>
+      <div id="lb-members" class="lb-list-wrap">
+        <div class="skeleton" style="height:48px;margin:8px 16px;border-radius:8px"></div>
+        <div class="skeleton" style="height:48px;margin:8px 16px;border-radius:8px"></div>
+        <div class="skeleton" style="height:48px;margin:8px 16px;border-radius:8px"></div>
+      </div>
+    </div>
+    <!-- Most Wins -->
+    <div class="lb-card">
+      <div class="lb-card-header">
+        <span>⚔️</span>
+        <span class="lb-card-title">Win Terbanyak</span>
+      </div>
+      <div id="lb-wins" class="lb-list-wrap">
+        <div class="skeleton" style="height:48px;margin:8px 16px;border-radius:8px"></div>
+        <div class="skeleton" style="height:48px;margin:8px 16px;border-radius:8px"></div>
+        <div class="skeleton" style="height:48px;margin:8px 16px;border-radius:8px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PAGE: AUTH ==================== -->
+<div class="page" id="page-auth" style="display:none;min-height:100vh">
+  <div id="page-auth" style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px">
+    <div class="auth-box">
+      <div class="auth-logo">
+        <div class="brand">ScrimBaseID</div>
+        <div class="sub">OFFICIAL RECRUITMENT PLATFORM</div>
+      </div>
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Login</button>
+        <button class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Register</button>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <div id="login-form">
+        <div class="form-group">
+          <label class="form-label">EMAIL</label>
+          <input type="email" class="form-input" id="login-email" placeholder="email@example.com">
+          <div class="form-error" id="login-email-err"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">PASSWORD</label>
+          <input type="password" class="form-input" id="login-password" placeholder="Masukkan password">
+          <div class="form-error" id="login-pass-err"></div>
+        </div>
+        <button class="btn btn-primary w-full" id="login-btn" onclick="doLogin()" style="justify-content:center;margin-top:8px">
+          <span id="login-btn-text">🔑 Login</span>
+          <div class="spinner hidden" id="login-spinner"></div>
+        </button>
+        <p style="text-align:center;margin-top:12px;font-size:13px;color:var(--white-60);font-family:var(--font-ui)">
+          Belum punya akun? <button onclick="switchAuthTab('register')" style="background:none;border:none;color:var(--red-bright);cursor:pointer;font-family:var(--font-ui)">Register sekarang</button>
+        </p>
+      </div>
+
+      <!-- REGISTER FORM -->
+      <div id="register-form" class="hidden">
+        <div class="form-group">
+          <label class="form-label">USERNAME</label>
+          <input type="text" class="form-input" id="reg-username" placeholder="GamerPro123">
+          <div class="form-error" id="reg-username-err"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">UID BLOODSTRIKE</label>
+          <input type="text" class="form-input" id="reg-uid" placeholder="123456789">
+          <div class="form-error" id="reg-uid-err"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">EMAIL</label>
+          <input type="email" class="form-input" id="reg-email" placeholder="email@example.com">
+          <div class="form-error" id="reg-email-err"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">PASSWORD</label>
+          <input type="password" class="form-input" id="reg-password" placeholder="Min. 8 karakter">
+          <div class="form-error" id="reg-pass-err"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">ROLE</label>
+          <select class="form-select" id="reg-role">
+            <option value="player">Player</option>
+            <option value="leader">Leader Clan</option>
+          </select>
+        </div>
+        <button class="btn btn-primary w-full" id="register-btn" onclick="doRegister()" style="justify-content:center;margin-top:8px">
+          <span id="register-btn-text">📝 Daftar Sekarang</span>
+          <div class="spinner hidden" id="register-spinner"></div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PAGE: DASHBOARD ==================== -->
+<div class="page" id="page-dashboard">
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Menu</div>
+      <!-- Leader menu -->
+      <div id="sidebar-leader" class="hidden">
+        <button class="sidebar-item active" data-section="overview" onclick="showDashSection('overview',this)">
+          <span class="sidebar-icon">📊</span> Overview
+        </button>
+        <button class="sidebar-item" data-section="my-clan" onclick="showDashSection('my-clan',this)">
+          <span class="sidebar-icon">⚔️</span> Clan Saya
+        </button>
+        <button class="sidebar-item" data-section="recruitments" onclick="showDashSection('recruitments',this)">
+          <span class="sidebar-icon">📋</span> Recruitment
+        </button>
+        <button class="sidebar-item" data-section="applications" onclick="showDashSection('applications',this)">
+          <span class="sidebar-icon">👥</span> Pelamar
+          <span class="sidebar-badge" id="pending-count">0</span>
+        </button>
+        <button class="sidebar-item" data-section="chat" onclick="showDashSection('chat',this)">
+          <span class="sidebar-icon">💬</span> Chat
+        </button>
+      </div>
+      <!-- Player menu -->
+      <div id="sidebar-player" class="hidden">
+        <button class="sidebar-item active" data-section="p-overview" onclick="showDashSection('p-overview',this)">
+          <span class="sidebar-icon">🏠</span> Overview
+        </button>
+        <button class="sidebar-item" data-section="my-applications" onclick="showDashSection('my-applications',this)">
+          <span class="sidebar-icon">📋</span> Lamaran Saya
+        </button>
+        <button class="sidebar-item" data-section="chat" onclick="showDashSection('chat',this)">
+          <span class="sidebar-icon">💬</span> Chat
+        </button>
+      </div>
+      <!-- Admin menu -->
+      <div id="sidebar-admin" class="hidden">
+        <button class="sidebar-item active" data-section="admin-overview" onclick="showDashSection('admin-overview',this)">
+          <span class="sidebar-icon">📊</span> Statistik
+        </button>
+        <button class="sidebar-item" data-section="admin-users" onclick="showDashSection('admin-users',this)">
+          <span class="sidebar-icon">👤</span> Users
+        </button>
+        <button class="sidebar-item" data-section="admin-recruitments" onclick="showDashSection('admin-recruitments',this)">
+          <span class="sidebar-icon">📋</span> Recruitment
+        </button>
+        <button class="sidebar-item" data-section="admin-clans" onclick="showDashSection('admin-clans',this)">
+          <span class="sidebar-icon">🏰</span> Clan
+        </button>
+      </div>
+    </div>
+    <!-- User info at bottom -->
+    <div style="margin-top:auto;padding-top:20px;border-top:1px solid var(--glass-border)">
+      <div style="display:flex;align-items:center;gap:10px;padding:8px">
+        <div class="nav-avatar" id="sidebar-avatar" style="width:36px;height:36px;font-size:13px">?</div>
+        <div>
+          <div style="font-size:13px;font-weight:600;font-family:var(--font-body)" id="sidebar-username">User</div>
+          <div style="font-size:11px;color:var(--white-60);font-family:var(--font-ui)" id="sidebar-role">-</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard Content -->
+  <div class="dashboard-content">
+
+    <!-- LEADER: Overview -->
+    <div class="dash-section active" id="section-overview">
+      <h2 class="section-title">Dashboard Overview</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-card-value" id="d-total-recruit">0</div>
+          <div class="stat-card-label">Total Recruitment</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-value" id="d-total-apps">0</div>
+          <div class="stat-card-label">Total Pelamar</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-value" id="d-accepted">0</div>
+          <div class="stat-card-label">Diterima</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-value" id="d-pending">0</div>
+          <div class="stat-card-label">Pending</div>
+        </div>
+      </div>
+      <div class="card mt-4">
+        <h3 style="font-family:var(--font-head);font-size:16px;margin-bottom:12px">Aktivitas Terbaru</h3>
+        <div id="recent-activity" style="font-family:var(--font-ui);font-size:13px;color:var(--white-60)">Memuat...</div>
+      </div>
+    </div>
+
+    <!-- LEADER: Clan -->
+    <div class="dash-section" id="section-my-clan">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+        <h2 class="section-title" style="margin:0;flex:1">Clan Saya</h2>
+      </div>
+      <div id="clan-form-area">
+        <!-- Clan form rendered by JS -->
+      </div>
+    </div>
+
+    <!-- LEADER: Recruitments -->
+    <div class="dash-section" id="section-recruitments">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+        <h2 class="section-title" style="margin:0;flex:1">Recruitment Saya</h2>
+        <button class="btn btn-primary btn-sm" onclick="openCreateRecruitModal()">+ Buat Recruitment</button>
+      </div>
+      <div id="leader-recruit-list">Memuat...</div>
+    </div>
+
+    <!-- LEADER: Applications -->
+    <div class="dash-section" id="section-applications">
+      <h2 class="section-title">Pelamar</h2>
+      <div id="applications-list">Memuat...</div>
+    </div>
+
+    <!-- LEADER/PLAYER: Chat -->
+    <div class="dash-section" id="section-chat">
+      <h2 class="section-title">💬 Chat</h2>
+      <div class="chat-box">
+        <div class="chat-messages" id="chat-messages">
+          <div style="text-align:center;color:var(--white-60);font-size:13px;font-family:var(--font-ui);padding:20px">Pilih percakapan untuk mulai chat</div>
+        </div>
+        <div class="chat-input-row">
+          <input type="text" class="form-input" id="chat-input" placeholder="Ketik pesan..." style="flex:1" onkeypress="if(event.key==='Enter')sendChat()">
+          <button class="btn btn-primary btn-sm" onclick="sendChat()">Kirim</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PLAYER: Overview -->
+    <div class="dash-section" id="section-p-overview">
+      <h2 class="section-title">Dashboard Player</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-card-value" id="p-total-apps">0</div>
+          <div class="stat-card-label">Total Lamaran</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-value" id="p-accepted">0</div>
+          <div class="stat-card-label">Diterima</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-value" id="p-pending">0</div>
+          <div class="stat-card-label">Pending</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-value" id="p-rejected">0</div>
+          <div class="stat-card-label">Ditolak</div>
+        </div>
+      </div>
+      <div class="card mt-4" style="padding:16px">
+        <p style="font-family:var(--font-ui);font-size:14px;color:var(--white-60)">
+          👋 Selamat datang, <strong style="color:var(--white)" id="player-welcome-name">Player</strong>!
+          Temukan clan terbaik dan apply sekarang.
+        </p>
+        <button class="btn btn-primary btn-sm mt-2" onclick="navigate('recruitment')">Cari Clan ⚔️</button>
+      </div>
+    </div>
+
+    <!-- PLAYER: My Applications -->
+    <div class="dash-section" id="section-my-applications">
+      <h2 class="section-title">Lamaran Saya</h2>
+      <div id="my-applications-list">Memuat...</div>
+    </div>
+
+    <!-- ADMIN: Overview -->
+    <div class="dash-section" id="section-admin-overview">
+      <h2 class="section-title">Statistik Platform</h2>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-card-value" id="a-users">0</div><div class="stat-card-label">Total User</div></div>
+        <div class="stat-card"><div class="stat-card-value" id="a-clans">0</div><div class="stat-card-label">Total Clan</div></div>
+        <div class="stat-card"><div class="stat-card-value" id="a-recruits">0</div><div class="stat-card-label">Recruitment</div></div>
+        <div class="stat-card"><div class="stat-card-value" id="a-apps">0</div><div class="stat-card-label">Pelamar</div></div>
+      </div>
+    </div>
+
+    <!-- ADMIN: Users -->
+    <div class="dash-section" id="section-admin-users">
+      <h2 class="section-title">Manajemen User</h2>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Username</th><th>Email</th><th>Role</th><th>Status</th><th>Aksi</th></tr></thead>
+          <tbody id="admin-users-table"><tr><td colspan="5" style="text-align:center;color:var(--white-60);padding:20px">Memuat...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ADMIN: Recruitments -->
+    <div class="dash-section" id="section-admin-recruitments">
+      <h2 class="section-title">Semua Recruitment</h2>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Clan</th><th>Status</th><th>Pelamar</th><th>Dibuat</th><th>Aksi</th></tr></thead>
+          <tbody id="admin-recruit-table"><tr><td colspan="5" style="text-align:center;color:var(--white-60);padding:20px">Memuat...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ADMIN: Clans -->
+    <div class="dash-section" id="section-admin-clans">
+      <h2 class="section-title">Semua Clan</h2>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Nama</th><th>Leader</th><th>Member</th><th>Verified</th><th>Aksi</th></tr></thead>
+          <tbody id="admin-clans-table"><tr><td colspan="5" style="text-align:center;color:var(--white-60);padding:20px">Memuat...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ==================== MODALS ==================== -->
+
+<!-- Apply Modal -->
+<div class="modal-overlay" id="modal-apply">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3 class="modal-title">📝 Apply Recruitment</h3>
+      <button class="modal-close" onclick="closeModal('modal-apply')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="apply-clan-info" style="margin-bottom:16px;padding:12px;background:var(--white-05);border-radius:var(--radius)"></div>
+      <div class="form-group">
+        <label class="form-label">NICKNAME IN-GAME</label>
+        <input type="text" class="form-input" id="apply-nickname" placeholder="Nickname BloodStrike kamu">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group">
+          <label class="form-label">UID BLOODSTRIKE</label>
+          <div style="display:flex;gap:6px">
+            <input type="text" class="form-input" id="apply-uid" placeholder="123456789">
+            <button class="btn btn-ghost btn-sm" onclick="copyUID()" title="Copy UID">📋</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">RANK SAAT INI</label>
+          <select class="form-select" id="apply-rank">
+            <option>Bronze</option><option>Silver</option><option>Gold</option>
+            <option>Platinum</option><option>Diamond</option><option>Master</option><option>Grandmaster</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group">
+          <label class="form-label">K/D RATIO</label>
+          <input type="number" class="form-input" id="apply-kd" placeholder="2.5" step="0.1">
+        </div>
+        <div class="form-group">
+          <label class="form-label">ROLE BERMAIN</label>
+          <select class="form-select" id="apply-role">
+            <option>Assaulter</option><option>Sniper</option><option>Support</option>
+            <option>Rusher</option><option>All Rounder</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">SCREENSHOT STATISTIK (opsional)</label>
+        <div class="upload-zone" onclick="document.getElementById('apply-screenshot').click()">
+          <div class="upload-icon">📷</div>
+          <div class="upload-label">Klik untuk upload screenshot</div>
+          <div style="font-size:11px;color:var(--white-60);font-family:var(--font-ui);margin-top:4px">JPG, PNG max 5MB</div>
+          <input type="file" id="apply-screenshot" accept="image/*" style="display:none" onchange="handleScreenshotPreview(this)">
+        </div>
+        <div id="screenshot-preview" style="margin-top:8px;display:none">
+          <img id="screenshot-img" style="max-height:100px;border-radius:var(--radius)">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">PESAN SINGKAT</label>
+        <textarea class="form-input" id="apply-message" placeholder="Kenapa kamu ingin bergabung dengan clan ini?" rows="3"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-apply')">Batal</button>
+      <button class="btn btn-primary" id="apply-submit-btn" onclick="submitApplication()">
+        <span>Kirim Lamaran</span>
+        <div class="spinner hidden" id="apply-spinner"></div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Create/Edit Recruitment Modal -->
+<div class="modal-overlay" id="modal-recruitment">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3 class="modal-title" id="recruit-modal-title">➕ Buat Recruitment</h3>
+      <button class="modal-close" onclick="closeModal('modal-recruitment')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-recruit-id">
+      <div class="form-group">
+        <label class="form-label">JUDUL RECRUITMENT</label>
+        <input type="text" class="form-input" id="r-title" placeholder="Open Recruitment [Nama Clan] Season 5">
+      </div>
+      <div class="form-group">
+        <label class="form-label">DESKRIPSI</label>
+        <textarea class="form-input" id="r-desc" placeholder="Deskripsi clan dan kebutuhan member..." rows="3"></textarea>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group">
+          <label class="form-label">RANK MINIMAL</label>
+          <select class="form-select" id="r-rank">
+            <option>Bronze</option><option>Silver</option><option>Gold</option>
+            <option>Platinum</option><option>Diamond</option><option>Master</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">K/D MINIMAL</label>
+          <input type="number" class="form-input" id="r-kd" placeholder="1.5" step="0.1">
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group">
+          <label class="form-label">LEVEL MINIMAL</label>
+          <input type="number" class="form-input" id="r-level" placeholder="30">
+        </div>
+        <div class="form-group">
+          <label class="form-label">REGION</label>
+          <select class="form-select" id="r-region">
+            <option>Asia</option><option>SEA</option><option>NA</option><option>EU</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ROLE YANG DIBUTUHKAN</label>
+        <select class="form-select" id="r-role-need">
+          <option value="">Semua Role</option>
+          <option>Assaulter</option><option>Sniper</option><option>Support</option>
+          <option>Rusher</option><option>All Rounder</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">STATUS</label>
+        <select class="form-select" id="r-status">
+          <option value="open">Open</option>
+          <option value="closed">Closed</option>
+        </select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+        <div class="form-group">
+          <label class="form-label">WHATSAPP</label>
+          <input type="text" class="form-input" id="r-wa" placeholder="628123456789">
+        </div>
+        <div class="form-group">
+          <label class="form-label">DISCORD</label>
+          <input type="text" class="form-input" id="r-discord" placeholder="username#1234">
+        </div>
+        <div class="form-group">
+          <label class="form-label">TIKTOK</label>
+          <input type="text" class="form-input" id="r-tiktok" placeholder="@username">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-recruitment')">Batal</button>
+      <button class="btn btn-primary" onclick="saveRecruitment()">
+        <span id="save-recruit-text">Simpan</span>
+        <div class="spinner hidden" id="save-recruit-spinner"></div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- View Application Detail Modal -->
+<div class="modal-overlay" id="modal-app-detail">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">👤 Detail Pelamar</h3>
+      <button class="modal-close" onclick="closeModal('modal-app-detail')">✕</button>
+    </div>
+    <div class="modal-body" id="app-detail-body"></div>
+    <div class="modal-footer" id="app-detail-footer"></div>
+  </div>
+</div>
+
+<!-- Report Modal -->
+<div class="modal-overlay" id="modal-report">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">🚩 Laporkan</h3>
+      <button class="modal-close" onclick="closeModal('modal-report')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="report-target-id">
+      <div class="form-group">
+        <label class="form-label">ALASAN LAPORAN</label>
+        <select class="form-select" id="report-reason">
+          <option>Spam / Scam</option><option>Konten tidak pantas</option>
+          <option>Informasi palsu</option><option>Toxic / Harassment</option><option>Lainnya</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">KETERANGAN TAMBAHAN</label>
+        <textarea class="form-input" id="report-desc" placeholder="Ceritakan lebih detail..." rows="3"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-report')">Batal</button>
+      <button class="btn btn-danger" onclick="submitReport()">🚩 Kirim Laporan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== JAVASCRIPT ==================== -->
+<script>
+// ============================================================
+//  SUPABASE CONFIGURATION
+//  GANTI dengan URL dan ANON KEY Supabase project kamu!
+// ============================================================
+const SUPABASE_URL = 'https://jxqhbfdovouwcnzevill.supabase.co/rest/v1/';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp4cWhiZmRvdm91d2NuemV2aWxsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0Nzk1NzgsImV4cCI6MjA5NTA1NTU3OH0.AC77mJ_4dQq55z_tJjpd4jXrQMePi4Fc6K59AGNtjTY';
+
+const { createClient } = supabase;
+const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ============================================================
+//  APP STATE
+// ============================================================
+const App = {
+  user: null,          // Supabase auth user
+  profile: null,       // from users table
+  clan: null,          // current user's clan
+  currentPage: 'home',
+  statusFilter: 'open',
+  allRecruitments: [], // cached recruitments
+  currentRecruitId: null,
+  chatUserId: null,
+  realtimeSub: null,
+};
+
+// ============================================================
+//  INIT
+// ============================================================
+async function init() {
+  // Check session
+  const { data: { session } } = await db.auth.getSession();
+  if (session) {
+    App.user = session.user;
+    await loadProfile();
+  }
+  updateNavUI();
+
+  // Load initial data
+  await loadStats();
+
+  // Subscribe realtime stats
+  subscribeRealtimeStats();
+
+  hideLoading();
+
+  // Navigate to current page (support hash routing)
+  const hash = window.location.hash.replace('#','') || 'home';
+  navigate(hash, false);
+}
+
+function hideLoading() {
+  document.getElementById('global-loading').style.display = 'none';
+}
+
+// ============================================================
+//  NAVIGATION
+// ============================================================
+function navigate(page, pushState = true) {
+  // Hide all pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+
+  const map = {
+    'home': 'page-home',
+    'recruitment': 'page-recruitment',
+    'leaderboard': 'page-leaderboard',
+    'auth': null,        // special handling
+    'dashboard': 'page-dashboard',
+  };
+
+  // Update nav active state
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  const navEl = document.getElementById('nav-' + page);
+  if (navEl) navEl.classList.add('active');
+
+  App.currentPage = page;
+
+  if (page === 'auth') {
+    if (App.user) { navigate('dashboard'); return; }
+    // Show auth in-place (use existing page structure)
+    const authPage = document.getElementById('page-auth');
+    if (authPage) {
+      authPage.classList.add('active');
+      authPage.style.display = '';
+    }
+    if (pushState) history.pushState({}, '', '#auth');
+    return;
+  }
+
+  if (page === 'dashboard') {
+    if (!App.user) { navigate('auth'); return; }
+    document.getElementById('page-dashboard').classList.add('active');
+    loadDashboard();
+    if (pushState) history.pushState({}, '', '#dashboard');
+    return;
+  }
+
+  const pageId = map[page];
+  if (pageId) {
+    document.getElementById(pageId).classList.add('active');
+    if (page === 'recruitment') loadRecruitments();
+    if (page === 'leaderboard') loadLeaderboard();
+    if (pushState) history.pushState({}, '', '#' + page);
+  }
+}
+
+// ============================================================
+//  UI HELPERS
+// ============================================================
+function updateNavUI() {
+  const loggedIn = !!App.user;
+  const authBtns = document.getElementById('nav-auth-btns');
+  const userInfo = document.getElementById('nav-user-info');
+  const notifBtn = document.getElementById('notif-btn');
+  const dashBtn = document.getElementById('nav-dashboard');
+  const mobileDash = document.getElementById('mobile-dashboard-btn');
+  const mobileAuth = document.getElementById('mobile-auth-btn');
+  const mobileLogout = document.getElementById('mobile-logout-btn');
+
+  authBtns.style.display = loggedIn ? 'none' : 'flex';
+  userInfo.style.display = loggedIn ? 'flex' : 'none';
+  notifBtn.style.display = loggedIn ? 'flex' : 'none';
+  dashBtn.style.display = loggedIn ? '' : 'none';
+  mobileDash.style.display = loggedIn ? '' : 'none';
+  mobileAuth.style.display = loggedIn ? 'none' : '';
+  mobileLogout.style.display = loggedIn ? '' : 'none';
+
+  if (loggedIn && App.profile) {
+    const initial = (App.profile.username || 'U')[0].toUpperCase();
+    document.getElementById('user-avatar').textContent = initial;
+    document.getElementById('sidebar-avatar').textContent = initial;
+    document.getElementById('sidebar-username').textContent = App.profile.username;
+    document.getElementById('sidebar-role').textContent = App.profile.role?.toUpperCase() || 'PLAYER';
+    document.getElementById('player-welcome-name').textContent = App.profile.username;
+  }
+}
+
+function toast(msg, type = 'info') {
+  const c = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
+  t.innerHTML = `<span>${icon}</span><span>${msg}</span>`;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 4000);
+}
+
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function toggleMobileNav() {
+  document.getElementById('mobile-nav').classList.toggle('open');
+}
+
+function closeMobileNav() {
+  document.getElementById('mobile-nav').classList.remove('open');
+}
+
+function toggleNotifPanel() {
+  document.getElementById('notif-panel').classList.toggle('open');
+  if (document.getElementById('notif-panel').classList.contains('open')) loadNotifications();
+}
+
+function setStatusFilter(status, el) {
+  App.statusFilter = status;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  filterRecruitments();
+}
+
+function switchAuthTab(tab) {
+  document.getElementById('login-form').classList.toggle('hidden', tab !== 'login');
+  document.getElementById('register-form').classList.toggle('hidden', tab !== 'register');
+  document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+  document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+}
+
+function showRegister() { switchAuthTab('register'); }
+
+function showDashSection(section, el) {
+  document.querySelectorAll('.dash-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
+  const target = document.getElementById('section-' + section);
+  if (target) target.classList.add('active');
+  if (el) el.classList.add('active');
+  if (section === 'applications') loadApplications();
+  if (section === 'my-applications') loadMyApplications();
+  if (section === 'my-clan') loadClanForm();
+  if (section === 'recruitments') loadLeaderRecruitments();
+  if (section === 'admin-users') loadAdminUsers();
+  if (section === 'admin-recruitments') loadAdminRecruitments();
+  if (section === 'admin-clans') loadAdminClans();
+  if (section === 'admin-overview') loadAdminStats();
+}
+
+function handleCreateRecruitment() {
+  if (!App.user) { navigate('auth'); return; }
+  if (App.profile?.role === 'leader') { navigate('dashboard'); showDashSection('recruitments', null); openCreateRecruitModal(); }
+  else toast('Hanya Leader Clan yang bisa membuat recruitment', 'error');
+}
+
+// ============================================================
+//  STATS (HOME)
+// ============================================================
+async function loadStats() {
+  try {
+    const [{ count: clans }, { count: players }, { count: active }] = await Promise.all([
+      db.from('clans').select('*', { count: 'exact', head: true }),
+      db.from('users').select('*', { count: 'exact', head: true }),
+      db.from('recruitments').select('*', { count: 'exact', head: true }).eq('status', 'open'),
+    ]);
+    animateCount('stat-clans', clans || 0);
+    animateCount('stat-players', players || 0);
+    animateCount('stat-active', active || 0);
+  } catch(e) {
+    // Demo fallback
+    animateCount('stat-clans', 42);
+    animateCount('stat-players', 1337);
+    animateCount('stat-active', 18);
+  }
+}
+
+function animateCount(id, target) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  let current = 0;
+  const step = Math.max(1, Math.floor(target / 40));
+  const timer = setInterval(() => {
+    current = Math.min(current + step, target);
+    el.textContent = current.toLocaleString('id');
+    if (current >= target) clearInterval(timer);
+  }, 30);
+}
+
+function subscribeRealtimeStats() {
+  try {
+    db.channel('public:recruitments')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'recruitments' }, loadStats)
+      .subscribe();
+  } catch(e) {}
+}
+
+// ============================================================
+//  AUTH
+// ============================================================
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+
+  if (!email) { setErr('login-email-err', 'Email wajib diisi'); return; }
+  if (!password) { setErr('login-pass-err', 'Password wajib diisi'); return; }
+  clearErrs();
+
+  setLoading('login-btn-text', 'login-spinner', true);
+
+  const { data, error } = await db.auth.signInWithPassword({ email, password });
+
+  setLoading('login-btn-text', 'login-spinner', false);
+
+  if (error) { toast(error.message, 'error'); return; }
+
+  App.user = data.user;
+  await loadProfile();
+  updateNavUI();
+  toast('Login berhasil! Selamat datang 👋', 'success');
+  navigate('dashboard');
+}
+
+async function doRegister() {
+  const username = document.getElementById('reg-username').value.trim();
+  const uid = document.getElementById('reg-uid').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const password = document.getElementById('reg-password').value;
+  const role = document.getElementById('reg-role').value;
+
+  clearErrs();
+  let valid = true;
+  if (!username) { setErr('reg-username-err', 'Username wajib diisi'); valid = false; }
+  if (!uid) { setErr('reg-uid-err', 'UID wajib diisi'); valid = false; }
+  if (!email) { setErr('reg-email-err', 'Email wajib diisi'); valid = false; }
+  if (password.length < 8) { setErr('reg-pass-err', 'Password minimal 8 karakter'); valid = false; }
+  if (!valid) return;
+
+  setLoading('register-btn-text', 'register-spinner', true);
+
+  const { data, error } = await db.auth.signUp({
+    email, password,
+    options: { data: { username, uid_bloodstrike: uid, role } }
+  });
+
+  if (error) {
+    setLoading('register-btn-text', 'register-spinner', false);
+    toast(error.message, 'error');
+    return;
+  }
+
+  // Insert into users table
+  if (data.user) {
+    await db.from('users').insert({
+      id: data.user.id,
+      username,
+      uid_bloodstrike: uid,
+      email,
+      role,
+      is_banned: false,
+    });
+  }
+
+  setLoading('register-btn-text', 'register-spinner', false);
+  toast('Registrasi berhasil! Silakan login.', 'success');
+  switchAuthTab('login');
+}
+
+async function logout() {
+  await db.auth.signOut();
+  App.user = null;
+  App.profile = null;
+  App.clan = null;
+  updateNavUI();
+  navigate('home');
+  toast('Berhasil logout', 'info');
+}
+
+async function loadProfile() {
+  if (!App.user) return;
+  const { data } = await db.from('users').select('*').eq('id', App.user.id).single();
+  App.profile = data;
+  if (data?.role === 'leader') {
+    const { data: clan } = await db.from('clans').select('*').eq('leader_id', App.user.id).single();
+    App.clan = clan;
+  }
+}
+
+function setErr(id, msg) { const el = document.getElementById(id); if (el) el.textContent = msg; }
+function clearErrs() { document.querySelectorAll('.form-error').forEach(e => e.textContent = ''); }
+function setLoading(textId, spinnerId, loading) {
+  const t = document.getElementById(textId); const s = document.getElementById(spinnerId);
+  if (t) t.classList.toggle('hidden', loading);
+  if (s) s.classList.toggle('hidden', !loading);
+}
+
+// ============================================================
+//  RECRUITMENTS
+// ============================================================
+async function loadRecruitments() {
+  const grid = document.getElementById('recruitment-grid');
+  grid.innerHTML = Array(6).fill('<div class="skeleton" style="height:220px;border-radius:12px"></div>').join('');
+
+  let query = db.from('recruitments').select(`*, clans(*)`);
+  if (App.statusFilter !== 'all') query = query.eq('status', App.statusFilter);
+
+  const { data, error } = await query.order('created_at', { ascending: false });
+  App.allRecruitments = data || [];
+  renderRecruitments(App.allRecruitments);
+
+  // Realtime subscription
+  try {
+    db.channel('recruitments-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'recruitments' }, async () => {
+        const { data } = await db.from('recruitments').select(`*, clans(*)`);
+        App.allRecruitments = data || [];
+        filterRecruitments();
+      })
+      .subscribe();
+  } catch(e) {}
+}
+
+function filterRecruitments() {
+  const search = document.getElementById('recruit-search')?.value.toLowerCase() || '';
+  const rank = document.getElementById('recruit-rank-filter')?.value || '';
+  const region = document.getElementById('recruit-region-filter')?.value || '';
+  const status = App.statusFilter;
+
+  let filtered = App.allRecruitments.filter(r => {
+    const matchSearch = !search || r.clans?.name?.toLowerCase().includes(search) || r.title?.toLowerCase().includes(search);
+    const matchRank = !rank || r.rank_min === rank;
+    const matchRegion = !region || r.region === region;
+    const matchStatus = status === 'all' || r.status === status;
+    return matchSearch && matchRank && matchRegion && matchStatus;
+  });
+
+  renderRecruitments(filtered);
+}
+
+function renderRecruitments(data) {
+  const grid = document.getElementById('recruitment-grid');
+  if (!data || data.length === 0) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+      <div class="empty-icon">⚔️</div>
+      <h3>Belum ada recruitment</h3>
+      <p>Jadilah yang pertama membuka recruitment!</p>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = data.map(r => {
+    const clan = r.clans || {};
+    const initial = (clan.name || 'C')[0].toUpperCase();
+    const isOpen = r.status === 'open';
+
+    return `
+    <div class="clan-card" onclick="openApplyModal('${r.id}')">
+      <div class="clan-card-header">
+        <div class="clan-logo">
+          ${clan.logo_url ? `<img src="${escHtml(clan.logo_url)}" alt="${escHtml(clan.name)}">` : initial}
+        </div>
+        <div class="clan-info">
+          <div class="clan-name">${escHtml(clan.name || 'Unknown Clan')}</div>
+          <div class="clan-region">📍 ${escHtml(r.region || 'Asia')} ${clan.is_verified ? '• <span class="verified-badge">⭐ Verified</span>' : ''}</div>
+        </div>
+        <span class="badge ${isOpen ? 'badge-green' : 'badge-red'}">${isOpen ? '● Open' : '● Closed'}</span>
+      </div>
+      <div class="clan-card-body">
+        <p class="clan-desc">${escHtml(r.description || r.title || 'Bergabunglah bersama kami!')}</p>
+        <div class="clan-requirements">
+          ${r.rank_min ? `<span class="req-chip">🏆 Min ${escHtml(r.rank_min)}</span>` : ''}
+          ${r.kd_min ? `<span class="req-chip">⚔️ K/D ${r.kd_min}+</span>` : ''}
+          ${r.level_min ? `<span class="req-chip">📊 Lv.${r.level_min}+</span>` : ''}
+          ${r.role_needed ? `<span class="req-chip">🎯 ${escHtml(r.role_needed)}</span>` : ''}
+        </div>
+      </div>
+      <div class="clan-card-footer">
+        <span class="clan-members">👥 ${clan.member_count || 0} member</span>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();shareRecruitment('${r.id}')">📤</button>
+          <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openReportModal('${r.id}')">🚩</button>
+          ${isOpen ? `<button class="btn btn-primary btn-sm" onclick="event.stopPropagation();openApplyModal('${r.id}')">Apply</button>` : ''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function openApplyModal(recruitId) {
+  if (!App.user) {
+    toast('Login terlebih dahulu untuk apply!', 'error');
+    navigate('auth');
+    return;
+  }
+  App.currentRecruitId = recruitId;
+  const r = App.allRecruitments.find(x => x.id === recruitId);
+  if (!r) return;
+
+  const clan = r.clans || {};
+  document.getElementById('apply-clan-info').innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="clan-logo" style="width:40px;height:40px;font-size:14px">${(clan.name||'C')[0]}</div>
+      <div>
+        <div style="font-weight:700;font-family:var(--font-head)">${escHtml(clan.name||'')}</div>
+        <div style="font-size:12px;color:var(--white-60);font-family:var(--font-ui)">${escHtml(r.title||'')}</div>
+      </div>
+    </div>`;
+
+  // Pre-fill if profile
+  if (App.profile) {
+    document.getElementById('apply-uid').value = App.profile.uid_bloodstrike || '';
+    document.getElementById('apply-nickname').value = App.profile.username || '';
+  }
+
+  // Anti-spam: check if already applied
+  const { data: existing } = await db.from('applications')
+    .select('id').eq('recruitment_id', recruitId).eq('player_id', App.user.id);
+  if (existing && existing.length > 0) {
+    toast('Kamu sudah apply ke recruitment ini!', 'error');
+    return;
+  }
+
+  openModal('modal-apply');
+}
+
+async function submitApplication() {
+  if (!App.user || !App.currentRecruitId) return;
+
+  const nickname = document.getElementById('apply-nickname').value.trim();
+  const uid = document.getElementById('apply-uid').value.trim();
+  const rank = document.getElementById('apply-rank').value;
+  const kd = parseFloat(document.getElementById('apply-kd').value);
+  const role = document.getElementById('apply-role').value;
+  const message = document.getElementById('apply-message').value.trim();
+
+  if (!nickname || !uid) { toast('Nickname dan UID wajib diisi!', 'error'); return; }
+
+  setLoading('apply-submit-btn', 'apply-spinner', true);
+
+  let screenshotUrl = null;
+  const file = document.getElementById('apply-screenshot').files[0];
+  if (file) {
+    const { data: upload, error: uploadErr } = await db.storage
+      .from('screenshots')
+      .upload(`${App.user.id}/${Date.now()}_${file.name}`, file, { upsert: true });
+    if (!uploadErr && upload) {
+      const { data: urlData } = db.storage.from('screenshots').getPublicUrl(upload.path);
+      screenshotUrl = urlData.publicUrl;
+    }
+  }
+
+  const { error } = await db.from('applications').insert({
+    recruitment_id: App.currentRecruitId,
+    player_id: App.user.id,
+    nickname,
+    uid_bloodstrike: uid,
+    rank,
+    kd_ratio: kd || null,
+    role_play: role,
+    screenshot_url: screenshotUrl,
+    message,
+    status: 'pending',
+  });
+
+  setLoading('apply-submit-btn', 'apply-spinner', false);
+
+  if (error) { toast('Gagal mengirim lamaran: ' + error.message, 'error'); return; }
+
+  // Send notification to leader
+  const r = App.allRecruitments.find(x => x.id === App.currentRecruitId);
+  if (r?.clans?.leader_id) {
+    await db.from('notifications').insert({
+      user_id: r.clans.leader_id,
+      message: `${nickname} melamar ke recruitment "${r.title}"`,
+      type: 'application',
+      is_read: false,
+    });
+  }
+
+  toast('Lamaran berhasil dikirim! 🎉', 'success');
+  closeModal('modal-apply');
+}
+
+function shareRecruitment(id) {
+  const url = window.location.origin + window.location.pathname + '#recruitment-' + id;
+  if (navigator.share) {
+    navigator.share({ title: 'Open Recruitment BloodStrike', url });
+  } else {
+    navigator.clipboard?.writeText(url).then(() => toast('Link disalin!', 'success'));
+  }
+}
+
+function copyUID() {
+  const uid = document.getElementById('apply-uid').value;
+  if (uid) navigator.clipboard?.writeText(uid).then(() => toast('UID disalin!', 'success'));
+}
+
+function handleScreenshotPreview(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { toast('File terlalu besar (maks 5MB)', 'error'); input.value = ''; return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('screenshot-img').src = e.target.result;
+    document.getElementById('screenshot-preview').style.display = '';
+  };
+  reader.readAsDataURL(file);
+}
+
+// ============================================================
+//  DASHBOARD
+// ============================================================
+async function loadDashboard() {
+  if (!App.profile) await loadProfile();
+  const role = App.profile?.role;
+
+  // Show correct sidebar
+  document.getElementById('sidebar-leader').classList.toggle('hidden', role !== 'leader');
+  document.getElementById('sidebar-player').classList.toggle('hidden', role !== 'player');
+  document.getElementById('sidebar-admin').classList.toggle('hidden', role !== 'admin');
+
+  // Show first section
+  if (role === 'admin') {
+    showDashSection('admin-overview', null);
+    document.querySelector('[data-section="admin-overview"]')?.classList.add('active');
+    loadAdminStats();
+  } else if (role === 'leader') {
+    showDashSection('overview', null);
+    document.querySelector('[data-section="overview"]')?.classList.add('active');
+    loadLeaderOverview();
+  } else {
+    showDashSection('p-overview', null);
+    document.querySelector('[data-section="p-overview"]')?.classList.add('active');
+    loadPlayerOverview();
+  }
+}
+
+// LEADER
+async function loadLeaderOverview() {
+  const { data: recruits } = await db.from('recruitments').select('*, applications(count)').eq('leader_id', App.user.id);
+  const total = recruits?.length || 0;
+  const totalApps = recruits?.reduce((s, r) => s + (r.applications?.[0]?.count || 0), 0) || 0;
+  const { count: accepted } = await db.from('applications').select('*', { count: 'exact', head: true })
+    .in('recruitment_id', recruits?.map(r => r.id) || []).eq('status', 'accepted');
+  const { count: pending } = await db.from('applications').select('*', { count: 'exact', head: true })
+    .in('recruitment_id', recruits?.map(r => r.id) || []).eq('status', 'pending');
+
+  document.getElementById('d-total-recruit').textContent = total;
+  document.getElementById('d-total-apps').textContent = totalApps;
+  document.getElementById('d-accepted').textContent = accepted || 0;
+  document.getElementById('d-pending').textContent = pending || 0;
+  document.getElementById('pending-count').textContent = pending || 0;
+
+  document.getElementById('recent-activity').innerHTML = recruits?.slice(0,3).map(r =>
+    `<div style="padding:8px 0;border-bottom:1px solid var(--glass-border)">
+      📋 Recruitment "${escHtml(r.title)}" — Status: <span class="badge ${r.status === 'open' ? 'badge-green' : 'badge-red'}">${r.status}</span>
+    </div>`).join('') || '<p>Belum ada aktivitas</p>';
+}
+
+async function loadClanForm() {
+  const area = document.getElementById('clan-form-area');
+  const clan = App.clan;
+
+  area.innerHTML = `
+    <div class="card">
+      <h3 style="font-family:var(--font-head);font-size:16px;margin-bottom:16px">${clan ? 'Edit Clan' : 'Buat Clan'}</h3>
+      <div class="form-group">
+        <label class="form-label">NAMA CLAN</label>
+        <input type="text" class="form-input" id="clan-name" value="${escHtml(clan?.name||'')}" placeholder="Nama Clan BloodStrike">
+      </div>
+      <div class="form-group">
+        <label class="form-label">DESKRIPSI</label>
+        <textarea class="form-input" id="clan-desc" placeholder="Deskripsi clan...">${escHtml(clan?.description||'')}</textarea>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group">
+          <label class="form-label">TOTAL MEMBER</label>
+          <input type="number" class="form-input" id="clan-members" value="${clan?.member_count||''}" placeholder="30">
+        </div>
+        <div class="form-group">
+          <label class="form-label">TOTAL WIN</label>
+          <input type="number" class="form-input" id="clan-wins" value="${clan?.total_wins||''}" placeholder="100">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">LOGO CLAN</label>
+        <div class="upload-zone" onclick="document.getElementById('clan-logo-input').click()">
+          ${clan?.logo_url ? `<img src="${clan.logo_url}" style="max-height:60px;margin:0 auto">` : '<div class="upload-icon">🏰</div><div class="upload-label">Upload Logo Clan</div>'}
+          <input type="file" id="clan-logo-input" accept="image/*" style="display:none" onchange="handleLogoUpload(this)">
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="saveClan()">💾 Simpan Clan</button>
+    </div>`;
+}
+
+async function handleLogoUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 2 * 1024 * 1024) { toast('Logo maks 2MB', 'error'); return; }
+
+  const { data, error } = await db.storage.from('clan-logos').upload(
+    `${App.user.id}/logo_${Date.now()}`, file, { upsert: true }
+  );
+  if (error) { toast('Gagal upload logo', 'error'); return; }
+  const { data: urlData } = db.storage.from('clan-logos').getPublicUrl(data.path);
+  App._pendingLogoUrl = urlData.publicUrl;
+  toast('Logo berhasil diupload!', 'success');
+}
+
+async function saveClan() {
+  const name = document.getElementById('clan-name').value.trim();
+  const desc = document.getElementById('clan-desc').value.trim();
+  const members = parseInt(document.getElementById('clan-members').value) || 0;
+  const wins = parseInt(document.getElementById('clan-wins').value) || 0;
+
+  if (!name) { toast('Nama clan wajib diisi!', 'error'); return; }
+
+  const payload = {
+    name, description: desc, member_count: members, total_wins: wins,
+    leader_id: App.user.id,
+    ...(App._pendingLogoUrl ? { logo_url: App._pendingLogoUrl } : {}),
+  };
+
+  let error;
+  if (App.clan) {
+    ({ error } = await db.from('clans').update(payload).eq('id', App.clan.id));
+  } else {
+    const { data, error: e } = await db.from('clans').insert(payload).select().single();
+    error = e;
+    if (data) App.clan = data;
+  }
+
+  if (error) { toast('Gagal simpan clan: ' + error.message, 'error'); return; }
+  toast('Clan berhasil disimpan! 🏰', 'success');
+  await loadProfile();
+}
+
+async function loadLeaderRecruitments() {
+  const el = document.getElementById('leader-recruit-list');
+  el.innerHTML = '<div class="skeleton" style="height:60px;border-radius:8px;margin-bottom:8px"></div>'.repeat(3);
+
+  const { data } = await db.from('recruitments').select('*, applications(count)').eq('leader_id', App.user.id);
+  if (!data || data.length === 0) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div><h3>Belum ada recruitment</h3><button class="btn btn-primary btn-sm mt-2" onclick="openCreateRecruitModal()">Buat Pertama</button></div>`;
+    return;
+  }
+
+  el.innerHTML = `<div class="table-wrap"><table class="data-table">
+    <thead><tr><th>Judul</th><th>Status</th><th>Pelamar</th><th>Dibuat</th><th>Aksi</th></tr></thead>
+    <tbody>${data.map(r => `
+      <tr>
+        <td>${escHtml(r.title)}</td>
+        <td><span class="badge ${r.status==='open'?'badge-green':'badge-red'}">${r.status}</span></td>
+        <td>${r.applications?.[0]?.count || 0}</td>
+        <td style="color:var(--white-60)">${new Date(r.created_at).toLocaleDateString('id')}</td>
+        <td style="display:flex;gap:6px">
+          <button class="btn btn-ghost btn-sm" onclick="editRecruitment('${r.id}')">✏️</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteRecruitment('${r.id}')">🗑️</button>
+        </td>
+      </tr>`).join('')}
+    </tbody></table></div>`;
+}
+
+function openCreateRecruitModal() {
+  if (!App.clan) { toast('Buat clan terlebih dahulu!', 'error'); showDashSection('my-clan', null); return; }
+  document.getElementById('recruit-modal-title').textContent = '➕ Buat Recruitment';
+  document.getElementById('edit-recruit-id').value = '';
+  ['r-title','r-desc','r-kd','r-level','r-wa','r-discord','r-tiktok'].forEach(id => document.getElementById(id).value = '');
+  openModal('modal-recruitment');
+}
+
+async function editRecruitment(id) {
+  const { data } = await db.from('recruitments').select('*').eq('id', id).single();
+  if (!data) return;
+  document.getElementById('recruit-modal-title').textContent = '✏️ Edit Recruitment';
+  document.getElementById('edit-recruit-id').value = id;
+  document.getElementById('r-title').value = data.title || '';
+  document.getElementById('r-desc').value = data.description || '';
+  document.getElementById('r-rank').value = data.rank_min || 'Gold';
+  document.getElementById('r-kd').value = data.kd_min || '';
+  document.getElementById('r-level').value = data.level_min || '';
+  document.getElementById('r-region').value = data.region || 'Asia';
+  document.getElementById('r-role-need').value = data.role_needed || '';
+  document.getElementById('r-status').value = data.status || 'open';
+  document.getElementById('r-wa').value = data.contact_wa || '';
+  document.getElementById('r-discord').value = data.contact_discord || '';
+  document.getElementById('r-tiktok').value = data.contact_tiktok || '';
+  openModal('modal-recruitment');
+}
+
+async function saveRecruitment() {
+  const id = document.getElementById('edit-recruit-id').value;
+  const payload = {
+    title: document.getElementById('r-title').value.trim(),
+    description: document.getElementById('r-desc').value.trim(),
+    rank_min: document.getElementById('r-rank').value,
+    kd_min: parseFloat(document.getElementById('r-kd').value) || null,
+    level_min: parseInt(document.getElementById('r-level').value) || null,
+    region: document.getElementById('r-region').value,
+    role_needed: document.getElementById('r-role-need').value,
+    status: document.getElementById('r-status').value,
+    contact_wa: document.getElementById('r-wa').value.trim(),
+    contact_discord: document.getElementById('r-discord').value.trim(),
+    contact_tiktok: document.getElementById('r-tiktok').value.trim(),
+    leader_id: App.user.id,
+    clan_id: App.clan?.id,
+  };
+
+  if (!payload.title) { toast('Judul wajib diisi!', 'error'); return; }
+
+  setLoading('save-recruit-text', 'save-recruit-spinner', true);
+
+  let error;
+  if (id) {
+    ({ error } = await db.from('recruitments').update(payload).eq('id', id));
+  } else {
+    ({ error } = await db.from('recruitments').insert(payload));
+  }
+
+  setLoading('save-recruit-text', 'save-recruit-spinner', false);
+
+  if (error) { toast('Error: ' + error.message, 'error'); return; }
+  toast(id ? 'Recruitment diperbarui!' : 'Recruitment dibuat!', 'success');
+  closeModal('modal-recruitment');
+  loadLeaderRecruitments();
+}
+
+async function deleteRecruitment(id) {
+  if (!confirm('Hapus recruitment ini?')) return;
+  const { error } = await db.from('recruitments').delete().eq('id', id);
+  if (error) { toast('Gagal menghapus', 'error'); return; }
+  toast('Recruitment dihapus', 'success');
+  loadLeaderRecruitments();
+}
+
+async function loadApplications() {
+  const el = document.getElementById('applications-list');
+  el.innerHTML = '<div class="skeleton" style="height:60px;border-radius:8px;margin-bottom:8px"></div>'.repeat(3);
+
+  const { data: recruits } = await db.from('recruitments').select('id').eq('leader_id', App.user.id);
+  if (!recruits || recruits.length === 0) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">👥</div><h3>Belum ada pelamar</h3></div>'; return; }
+
+  const ids = recruits.map(r => r.id);
+  const { data: apps } = await db.from('applications').select('*, recruitments(title), users(username)').in('recruitment_id', ids).order('created_at', { ascending: false });
+
+  if (!apps || apps.length === 0) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">👥</div><h3>Belum ada pelamar</h3></div>'; return; }
+
+  el.innerHTML = `<div class="table-wrap"><table class="data-table">
+    <thead><tr><th>Nickname</th><th>Rank</th><th>K/D</th><th>Status</th><th>Aksi</th></tr></thead>
+    <tbody>${apps.map(a => `
+      <tr>
+        <td>${escHtml(a.nickname)} <span style="font-size:11px;color:var(--white-60)">(${escHtml(a.uid_bloodstrike||'')})</span></td>
+        <td><span class="badge badge-gray">${escHtml(a.rank||'')}</span></td>
+        <td>${a.kd_ratio||'-'}</td>
+        <td><span class="badge ${a.status==='accepted'?'badge-green':a.status==='rejected'?'badge-red':'badge-gold'}">${a.status}</span></td>
+        <td style="display:flex;gap:6px">
+          <button class="btn btn-ghost btn-sm" onclick="viewApplicationDetail('${a.id}')">👁️</button>
+          ${a.status === 'pending' ? `
+            <button class="btn btn-success btn-sm" onclick="updateAppStatus('${a.id}','accepted')">✅</button>
+            <button class="btn btn-danger btn-sm" onclick="updateAppStatus('${a.id}','rejected')">❌</button>` : ''}
+        </td>
+      </tr>`).join('')}
+    </tbody></table></div>`;
+}
+
+async function viewApplicationDetail(appId) {
+  const { data: a } = await db.from('applications').select('*, recruitments(title)').eq('id', appId).single();
+  if (!a) return;
+  document.getElementById('app-detail-body').innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:12px;font-family:var(--font-ui)">
+      <div class="flex gap-2"><strong>Nickname:</strong> ${escHtml(a.nickname)}</div>
+      <div class="flex gap-2"><strong>UID:</strong> ${escHtml(a.uid_bloodstrike||'')} <button class="btn btn-ghost btn-sm" onclick="navigator.clipboard.writeText('${a.uid_bloodstrike||''}').then(()=>toast('UID disalin!','success'))">📋</button></div>
+      <div class="flex gap-2"><strong>Rank:</strong> <span class="badge badge-gray">${escHtml(a.rank||'')}</span></div>
+      <div class="flex gap-2"><strong>K/D:</strong> ${a.kd_ratio||'-'}</div>
+      <div class="flex gap-2"><strong>Role:</strong> ${escHtml(a.role_play||'')}</div>
+      <div><strong>Pesan:</strong><p style="margin-top:6px;color:var(--white-60)">${escHtml(a.message||'-')}</p></div>
+      ${a.screenshot_url ? `<div><strong>Screenshot:</strong><img src="${a.screenshot_url}" style="max-width:100%;border-radius:var(--radius);margin-top:6px"></div>` : ''}
+      <div><strong>Status:</strong> <span class="badge ${a.status==='accepted'?'badge-green':a.status==='rejected'?'badge-red':'badge-gold'}">${a.status}</span></div>
+    </div>`;
+  document.getElementById('app-detail-footer').innerHTML = a.status === 'pending' ? `
+    <button class="btn btn-outline" onclick="closeModal('modal-app-detail')">Tutup</button>
+    <button class="btn btn-danger" onclick="updateAppStatus('${a.id}','rejected');closeModal('modal-app-detail')">❌ Tolak</button>
+    <button class="btn btn-success" onclick="updateAppStatus('${a.id}','accepted');closeModal('modal-app-detail')">✅ Terima</button>` :
+    `<button class="btn btn-outline" onclick="closeModal('modal-app-detail')">Tutup</button>`;
+  openModal('modal-app-detail');
+}
+
+async function updateAppStatus(appId, status) {
+  const { error } = await db.from('applications').update({ status }).eq('id', appId);
+  if (error) { toast('Gagal update status', 'error'); return; }
+  toast(status === 'accepted' ? '✅ Pelamar diterima!' : '❌ Pelamar ditolak', status === 'accepted' ? 'success' : 'info');
+
+  // Notify player
+  const { data: a } = await db.from('applications').select('player_id, recruitments(title)').eq('id', appId).single();
+  if (a?.player_id) {
+    await db.from('notifications').insert({
+      user_id: a.player_id,
+      message: `Lamaran kamu ke "${a.recruitments?.title}" ${status === 'accepted' ? 'DITERIMA! 🎉' : 'ditolak.'}`,
+      type: 'status_update', is_read: false,
+    });
+  }
+  loadApplications();
+}
+
+// PLAYER
+async function loadPlayerOverview() {
+  const { data: apps } = await db.from('applications').select('status').eq('player_id', App.user.id);
+  document.getElementById('p-total-apps').textContent = apps?.length || 0;
+  document.getElementById('p-accepted').textContent = apps?.filter(a => a.status === 'accepted').length || 0;
+  document.getElementById('p-pending').textContent = apps?.filter(a => a.status === 'pending').length || 0;
+  document.getElementById('p-rejected').textContent = apps?.filter(a => a.status === 'rejected').length || 0;
+}
+
+async function loadMyApplications() {
+  const el = document.getElementById('my-applications-list');
+  const { data: apps } = await db.from('applications').select('*, recruitments(title, clans(name))').eq('player_id', App.user.id).order('created_at', { ascending: false });
+
+  if (!apps || apps.length === 0) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><h3>Belum ada lamaran</h3><button class="btn btn-primary btn-sm mt-2" onclick="navigate(\'recruitment\')">Cari Clan</button></div>';
+    return;
+  }
+
+  el.innerHTML = `<div class="table-wrap"><table class="data-table">
+    <thead><tr><th>Clan</th><th>Recruitment</th><th>Status</th><th>Tanggal</th></tr></thead>
+    <tbody>${apps.map(a => `
+      <tr>
+        <td style="font-weight:600">${escHtml(a.recruitments?.clans?.name||'Unknown')}</td>
+        <td style="color:var(--white-60)">${escHtml(a.recruitments?.title||'')}</td>
+        <td><span class="badge ${a.status==='accepted'?'badge-green':a.status==='rejected'?'badge-red':'badge-gold'}">${a.status}</span></td>
+        <td style="color:var(--white-60)">${new Date(a.created_at).toLocaleDateString('id')}</td>
+      </tr>`).join('')}
+    </tbody></table></div>`;
+}
+
+// ADMIN
+async function loadAdminStats() {
+  const [{ count: u }, { count: c }, { count: r }, { count: a }] = await Promise.all([
+    db.from('users').select('*', { count: 'exact', head: true }),
+    db.from('clans').select('*', { count: 'exact', head: true }),
+    db.from('recruitments').select('*', { count: 'exact', head: true }),
+    db.from('applications').select('*', { count: 'exact', head: true }),
+  ]);
+  document.getElementById('a-users').textContent = u || 0;
+  document.getElementById('a-clans').textContent = c || 0;
+  document.getElementById('a-recruits').textContent = r || 0;
+  document.getElementById('a-apps').textContent = a || 0;
+}
+
+async function loadAdminUsers() {
+  const { data } = await db.from('users').select('*').order('created_at', { ascending: false });
+  const tbody = document.getElementById('admin-users-table');
+  tbody.innerHTML = data?.map(u => `
+    <tr>
+      <td>${escHtml(u.username)}</td>
+      <td style="color:var(--white-60)">${escHtml(u.email)}</td>
+      <td><span class="badge badge-blue">${u.role}</span></td>
+      <td><span class="badge ${u.is_banned ? 'badge-red' : 'badge-green'}">${u.is_banned ? 'Banned' : 'Active'}</span></td>
+      <td>
+        ${!u.is_banned ? `<button class="btn btn-danger btn-sm" onclick="banUser('${u.id}')">🔨 Ban</button>` : `<button class="btn btn-success btn-sm" onclick="unbanUser('${u.id}')">✅ Unban</button>`}
+      </td>
+    </tr>`).join('') || '<tr><td colspan="5" style="text-align:center">Tidak ada data</td></tr>';
+}
+
+async function banUser(id) {
+  if (!confirm('Ban user ini?')) return;
+  await db.from('users').update({ is_banned: true }).eq('id', id);
+  toast('User dibanned', 'success');
+  loadAdminUsers();
+}
+async function unbanUser(id) {
+  await db.from('users').update({ is_banned: false }).eq('id', id);
+  toast('User di-unban', 'success');
+  loadAdminUsers();
+}
+
+async function loadAdminRecruitments() {
+  const { data } = await db.from('recruitments').select('*, clans(name), applications(count)').order('created_at', { ascending: false });
+  const tbody = document.getElementById('admin-recruit-table');
+  tbody.innerHTML = data?.map(r => `
+    <tr>
+      <td>${escHtml(r.clans?.name||'')}: ${escHtml(r.title)}</td>
+      <td><span class="badge ${r.status==='open'?'badge-green':'badge-red'}">${r.status}</span></td>
+      <td>${r.applications?.[0]?.count||0}</td>
+      <td style="color:var(--white-60)">${new Date(r.created_at).toLocaleDateString('id')}</td>
+      <td><button class="btn btn-danger btn-sm" onclick="adminDeleteRecruitment('${r.id}')">🗑️ Hapus</button></td>
+    </tr>`).join('') || '<tr><td colspan="5" style="text-align:center">Tidak ada data</td></tr>';
+}
+
+async function adminDeleteRecruitment(id) {
+  if (!confirm('Hapus recruitment ini?')) return;
+  await db.from('recruitments').delete().eq('id', id);
+  toast('Recruitment dihapus', 'success');
+  loadAdminRecruitments();
+}
+
+async function loadAdminClans() {
+  const { data } = await db.from('clans').select('*, users!leader_id(username)').order('created_at', { ascending: false });
+  const tbody = document.getElementById('admin-clans-table');
+  tbody.innerHTML = data?.map(c => `
+    <tr>
+      <td style="font-weight:600">${escHtml(c.name)}</td>
+      <td style="color:var(--white-60)">${escHtml(c.users?.username||'')}</td>
+      <td>${c.member_count||0}</td>
+      <td><span class="badge ${c.is_verified?'badge-gold':'badge-gray'}">${c.is_verified?'✅ Verified':'Unverified'}</span></td>
+      <td>
+        ${!c.is_verified ? `<button class="btn btn-success btn-sm" onclick="verifyClan('${c.id}')">✅ Verify</button>` : `<button class="btn btn-ghost btn-sm" onclick="unverifyClan('${c.id}')">Remove</button>`}
+      </td>
+    </tr>`).join('') || '<tr><td colspan="5" style="text-align:center">Tidak ada data</td></tr>';
+}
+
+async function verifyClan(id) {
+  await db.from('clans').update({ is_verified: true }).eq('id', id);
+  toast('Clan diverifikasi! ⭐', 'success');
+  loadAdminClans();
+}
+async function unverifyClan(id) {
+  await db.from('clans').update({ is_verified: false }).eq('id', id);
+  toast('Verifikasi dihapus', 'info');
+  loadAdminClans();
+}
+
+// ============================================================
+//  LEADERBOARD
+// ============================================================
+async function loadLeaderboard() {
+  // Most active recruitments
+  const { data: activeData } = await db.from('clans').select('name, is_verified, recruitments(count)').order('created_at');
+  const sorted = (activeData || []).sort((a, b) => (b.recruitments?.[0]?.count||0) - (a.recruitments?.[0]?.count||0)).slice(0, 10);
+  renderLbList('lb-active', sorted, c => c.recruitments?.[0]?.count||0, 'Recruitment');
+
+  // Most members
+  const { data: memberData } = await db.from('clans').select('name, member_count, is_verified').order('member_count', { ascending: false }).limit(10);
+  renderLbList('lb-members', memberData||[], c => c.member_count||0, 'Member');
+
+  // Most wins
+  const { data: winData } = await db.from('clans').select('name, total_wins, is_verified').order('total_wins', { ascending: false }).limit(10);
+  renderLbList('lb-wins', winData||[], c => c.total_wins||0, 'Win');
+}
+
+function renderLbList(elId, data, valueFn, label) {
+  const el = document.getElementById(elId);
+  if (!data || data.length === 0) { el.innerHTML = '<div class="empty-state" style="padding:20px"><p>Belum ada data</p></div>'; return; }
+
+  const rankColors = ['gold','silver','bronze'];
+  el.innerHTML = data.map((item, i) => `
+    <div class="lb-item">
+      <span class="lb-rank ${rankColors[i]||''}">${i+1}</span>
+      <div class="lb-info">
+        <div class="lb-name">${escHtml(item.name)} ${item.is_verified ? '⭐' : ''}</div>
+        <div class="lb-score">${valueFn(item)} ${label}</div>
+      </div>
+      <span class="lb-value">${valueFn(item)}</span>
+    </div>`).join('');
+}
+
+// ============================================================
+//  NOTIFICATIONS
+// ============================================================
+async function loadNotifications() {
+  if (!App.user) return;
+  const { data } = await db.from('notifications').select('*').eq('user_id', App.user.id).order('created_at', { ascending: false }).limit(20);
+
+  const unread = data?.filter(n => !n.is_read).length || 0;
+  document.getElementById('notif-dot').style.display = unread > 0 ? '' : 'none';
+
+  document.getElementById('notif-list').innerHTML = data?.map(n => `
+    <div class="notif-item ${!n.is_read?'unread':''}" onclick="markNotifRead('${n.id}')">
+      <div class="notif-text">${escHtml(n.message)}</div>
+      <div class="notif-time">${formatTime(n.created_at)}</div>
+    </div>`).join('') || '<div class="empty-state"><div class="empty-icon">🔔</div><h3>Belum ada notifikasi</h3></div>';
+
+  // Mark all as read
+  if (unread > 0) {
+    db.from('notifications').update({ is_read: true }).eq('user_id', App.user.id).eq('is_read', false).then(() => {
+      document.getElementById('notif-dot').style.display = 'none';
+    });
+  }
+}
+
+async function markNotifRead(id) {
+  await db.from('notifications').update({ is_read: true }).eq('id', id);
+}
+
+// ============================================================
+//  CHAT
+// ============================================================
+async function sendChat() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if (!msg || !App.user) return;
+  input.value = '';
+
+  await db.from('chat_messages').insert({
+    sender_id: App.user.id,
+    receiver_id: App.chatUserId || App.user.id,
+    message: msg,
+  });
+
+  loadChatMessages();
+}
+
+async function loadChatMessages() {
+  const msgs = document.getElementById('chat-messages');
+  const { data } = await db.from('chat_messages')
+    .select('*')
+    .or(`sender_id.eq.${App.user.id},receiver_id.eq.${App.user.id}`)
+    .order('created_at').limit(50);
+
+  if (!data || data.length === 0) {
+    msgs.innerHTML = '<div style="text-align:center;color:var(--white-60);font-size:13px;font-family:var(--font-ui);padding:20px">Belum ada pesan</div>';
+    return;
+  }
+
+  msgs.innerHTML = data.map(m => `
+    <div class="chat-msg ${m.sender_id === App.user.id ? 'mine' : 'other'}">
+      <div>${escHtml(m.message)}</div>
+      <div style="font-size:10px;color:var(--white-60);margin-top:4px">${formatTime(m.created_at)}</div>
+    </div>`).join('');
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+// ============================================================
+//  REPORT
+// ============================================================
+function openReportModal(id) {
+  if (!App.user) { toast('Login terlebih dahulu', 'error'); return; }
+  document.getElementById('report-target-id').value = id;
+  openModal('modal-report');
+}
+
+async function submitReport() {
+  const targetId = document.getElementById('report-target-id').value;
+  const reason = document.getElementById('report-reason').value;
+  const desc = document.getElementById('report-desc').value;
+
+  await db.from('reports').insert({
+    reporter_id: App.user.id, target_id: targetId,
+    reason, description: desc, status: 'pending',
+  });
+
+  toast('Laporan berhasil dikirim!', 'success');
+  closeModal('modal-report');
+}
+
+// ============================================================
+//  UTILITIES
+// ============================================================
+function escHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function formatTime(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  const now = new Date();
+  const diff = now - d;
+  if (diff < 60000) return 'Baru saja';
+  if (diff < 3600000) return Math.floor(diff/60000) + ' menit lalu';
+  if (diff < 86400000) return Math.floor(diff/3600000) + ' jam lalu';
+  return d.toLocaleDateString('id');
+}
+
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', function(e) {
+    if (e.target === this) closeModal(this.id);
+  });
+});
+
+// Close mobile nav on outside click
+document.addEventListener('click', function(e) {
+  const nav = document.getElementById('mobile-nav');
+  const btn = document.getElementById('hamburger-btn');
+  if (nav.classList.contains('open') && !nav.contains(e.target) && !btn.contains(e.target)) {
+    closeMobileNav();
+  }
+});
+
+// Supabase auth listener
+db.auth.onAuthStateChange((event, session) => {
+  if (event === 'SIGNED_OUT') {
+    App.user = null;
+    App.profile = null;
+    updateNavUI();
+  }
+});
+
+// ============================================================
+//  START APP
+// ============================================================
+window.addEventListener('load', init);
+</script>
+
+<!--
+=================================================================
+  SUPABASE SQL SCHEMA
+  Jalankan di Supabase SQL Editor untuk setup database lengkap
+=================================================================
+
+-- USERS TABLE
+create table public.users (
+  id uuid primary key references auth.users(id) on delete cascade,
+  username text not null,
+  uid_bloodstrike text,
+  email text,
+  role text default 'player' check (role in ('player','leader','admin')),
+  is_banned boolean default false,
+  created_at timestamptz default now()
+);
+alter table users enable row level security;
+create policy "Users can read own" on users for select using (auth.uid() = id);
+create policy "Users can update own" on users for update using (auth.uid() = id);
+create policy "Anyone can see users" on users for select using (true);
+create policy "Service can insert" on users for insert with check (true);
+
+-- CLANS TABLE
+create table public.clans (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  description text,
+  leader_id uuid references users(id) on delete cascade,
+  logo_url text,
+  member_count int default 0,
+  total_wins int default 0,
+  is_verified boolean default false,
+  created_at timestamptz default now()
+);
+alter table clans enable row level security;
+create policy "Anyone can read clans" on clans for select using (true);
+create policy "Leaders can manage own clan" on clans for all using (auth.uid() = leader_id);
+create policy "Leaders can create clan" on clans for insert with check (auth.uid() = leader_id);
+
+-- RECRUITMENTS TABLE
+create table public.recruitments (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  description text,
+  clan_id uuid references clans(id) on delete cascade,
+  leader_id uuid references users(id) on delete cascade,
+  rank_min text,
+  kd_min decimal(4,2),
+  level_min int,
+  region text default 'Asia',
+  role_needed text,
+  status text default 'open' check (status in ('open','closed')),
+  contact_wa text,
+  contact_discord text,
+  contact_tiktok text,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+alter table recruitments enable row level security;
+create policy "Anyone can read open recruitments" on recruitments for select using (true);
+create policy "Leaders manage own recruitments" on recruitments for all using (auth.uid() = leader_id);
+create policy "Leaders can insert" on recruitments for insert with check (auth.uid() = leader_id);
+
+-- APPLICATIONS TABLE
+create table public.applications (
+  id uuid primary key default gen_random_uuid(),
+  recruitment_id uuid references recruitments(id) on delete cascade,
+  player_id uuid references users(id) on delete cascade,
+  nickname text,
+  uid_bloodstrike text,
+  rank text,
+  kd_ratio decimal(4,2),
+  role_play text,
+  screenshot_url text,
+  message text,
+  status text default 'pending' check (status in ('pending','accepted','rejected')),
+  created_at timestamptz default now(),
+  unique(recruitment_id, player_id)
+);
+alter table applications enable row level security;
+create policy "Players see own apps" on applications for select using (auth.uid() = player_id);
+create policy "Leaders see apps for their recruits" on applications for select using (
+  exists (select 1 from recruitments r where r.id = recruitment_id and r.leader_id = auth.uid())
+);
+create policy "Players insert own apps" on applications for insert with check (auth.uid() = player_id);
+create policy "Leaders update app status" on applications for update using (
+  exists (select 1 from recruitments r where r.id = recruitment_id and r.leader_id = auth.uid())
+);
+
+-- NOTIFICATIONS TABLE
+create table public.notifications (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references users(id) on delete cascade,
+  message text not null,
+  type text,
+  is_read boolean default false,
+  created_at timestamptz default now()
+);
+alter table notifications enable row level security;
+create policy "Users see own notifications" on notifications for select using (auth.uid() = user_id);
+create policy "Anyone can insert notification" on notifications for insert with check (true);
+create policy "Users update own notifications" on notifications for update using (auth.uid() = user_id);
+
+-- CHAT MESSAGES TABLE
+create table public.chat_messages (
+  id uuid primary key default gen_random_uuid(),
+  sender_id uuid references users(id) on delete cascade,
+  receiver_id uuid references users(id) on delete cascade,
+  message text not null,
+  created_at timestamptz default now()
+);
+alter table chat_messages enable row level security;
+create policy "Users see own chats" on chat_messages for select using (
+  auth.uid() = sender_id or auth.uid() = receiver_id
+);
+create policy "Users send messages" on chat_messages for insert with check (auth.uid() = sender_id);
+
+-- REPORTS TABLE
+create table public.reports (
+  id uuid primary key default gen_random_uuid(),
+  reporter_id uuid references users(id),
+  target_id uuid,
+  reason text,
+  description text,
+  status text default 'pending',
+  created_at timestamptz default now()
+);
+alter table reports enable row level security;
+create policy "Reporters see own reports" on reports for select using (auth.uid() = reporter_id);
+create policy "Anyone can report" on reports for insert with check (true);
+
+-- STORAGE BUCKETS (run in Supabase Dashboard > Storage)
+-- Create bucket: "clan-logos" (public)
+-- Create bucket: "screenshots" (public)
+
+-- ENABLE REALTIME
+alter publication supabase_realtime add table recruitments;
+alter publication supabase_realtime add table notifications;
+alter publication supabase_realtime add table applications;
+alter publication supabase_realtime add table chat_messages;
+
+=================================================================
+  SETUP GUIDE
+=================================================================
+1. Buat akun di https://supabase.com
+2. Buat project baru
+3. Go to SQL Editor, jalankan semua SQL di atas
+4. Go to Storage, buat bucket "clan-logos" dan "screenshots" (set public)
+5. Copy Project URL dan Anon Key dari Settings > API
+6. Ganti SUPABASE_URL dan SUPABASE_ANON_KEY di baris 543-544
+7. Deploy ke Netlify: drag & drop file HTML ke netlify.com/drop
+   Atau Vercel: npx vercel --prod (upload file HTML)
+
+=================================================================
+  ADMIN SETUP
+=================================================================
+Setelah register user admin:
+update public.users set role = 'admin' where email = 'admin@example.com';
+
+=================================================================
+-->
+</body>
+</html>
