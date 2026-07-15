@@ -5,1412 +5,778 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>FT JB Tokies | Tournament Squad</title>
     <link rel="icon" type="image/png" href="https://imageshack.com/i/po0tg7N3p">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        :root {
-            --yellow: #FFD600;
-            --yellow-dark: #E6B800;
-            --blue: #0A2E5C;
-            --blue-light: #1A3D6E;
-            --dark: #0A0E1A;
-            --gray: #1A1F2E;
-            --gray-light: #2A2F3E;
-            --white: #FFFFFF;
-            --text-light: #E0E4F0;
-            --card-bg: #1A1F2E;
-            --border: #2A2F3E;
-            --jb-yellow: #FFD700;
-            --jb-yellow-dark: #E6C200;
-            --jb-yellow-light: #FFE44D;
-            --dark-overlay: rgba(0, 0, 0, 0.85);
-            --footer-bg: #0A0E1A;
-            --footer-text: #E0E4F0;
-            --footer-text-muted: #8ba0c0;
-        }
-        body { background: var(--dark); color: var(--text-light); transition: background 0.3s, color 0.3s; }
-        body.light-mode { 
-            background: #F0F2F5; 
-            color: #1A1F2E; 
-            --footer-bg: #E8EAEF;
-            --footer-text: #1A1F2E;
-            --footer-text-muted: #666;
-        }
-        body.light-mode .card, body.light-mode .stat-card, body.light-mode .score-card,
-        body.light-mode .match-item-score, body.light-mode .rank-item-score,
-        body.light-mode .prize-card, body.light-mode .winner-card,
-        body.light-mode .point-item, body.light-mode .match-header-score { background: #FFFFFF; border-color: #E0E0E0; }
-        body.light-mode .score-table th { background: #F0F2F5; }
-        body.light-mode input, body.light-mode select, body.light-mode textarea { background: #F5F5F5; color: #1A1F2E; }
-        body.light-mode .footer { background: #E8EAEF; }
-        body.light-mode .social-link { background: rgba(0,0,0,0.05); color: #1A1F2E; }
-        body.light-mode .credit-badge { background: rgba(0,0,0,0.05); border-color: rgba(0,0,0,0.1); }
-        
-        .card { background: var(--gray); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid var(--gray-light); max-width: 1400px; margin-left: auto; margin-right: auto; }
-        .card h2 { color: var(--yellow); margin-bottom: 1rem; font-size: 1.3rem; border-bottom: 2px solid var(--yellow); display: inline-block; padding-bottom: 0.3rem; }
-        .card h3 { color: var(--yellow); margin: 1rem 0 0.5rem 0; font-size: 1rem; }
-        .form-group { margin-bottom: 1rem; }
-        .form-group label { display: block; margin-bottom: 0.3rem; font-weight: 500; color: var(--yellow); font-size: 0.85rem; }
-        input, select, textarea { width: 100%; padding: 12px 14px; background: var(--gray-light); border: 1px solid var(--blue-light); border-radius: 10px; color: white; font-size: 0.9rem; outline: none; transition: all 0.2s ease; }
-        input:focus, select:focus { border-color: var(--yellow); box-shadow: 0 0 0 3px rgba(255, 214, 0, 0.2); }
-        .form-row { display: flex; gap: 1rem; margin-bottom: 0.8rem; flex-wrap: wrap; }
-        .form-row input { flex: 1; min-width: 120px; }
-        small { display: block; margin-top: 0.3rem; font-size: 0.7rem; color: #888; }
-        .btn { padding: 12px 28px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; font-size: 0.9rem; margin-top: 0.5rem; margin-right: 0.8rem; display: inline-flex; align-items: center; gap: 8px; }
-        .btn-primary { background: var(--yellow); color: var(--blue); }
-        .btn-primary:hover { background: var(--yellow-dark); transform: translateY(-2px); }
-        .btn-outline { background: transparent; border: 2px solid var(--yellow); color: var(--yellow); }
-        .btn-outline:hover { background: var(--yellow); color: var(--blue); transform: translateY(-2px); }
-        .btn-danger { background: #DC2626; color: white; }
-        .btn-danger:hover { background: #B91C1C; transform: translateY(-2px); }
-        .btn-success { background: #10B981; color: white; }
-        .btn-success:hover { background: #059669; transform: translateY(-2px); }
-        @media (max-width: 640px) {
-            .card { padding: 1rem; }
-            .form-row { flex-direction: column; gap: 0.5rem; }
-            .btn { width: 100%; margin-right: 0; margin-bottom: 0.5rem; justify-content: center; }
-        }
-        .navbar { background: rgba(10, 14, 26, 0.95); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid var(--yellow); padding: 0.8rem 2rem; transition: background 0.3s; }
-        body.light-mode .navbar { background: rgba(255, 255, 255, 0.95); }
-        .nav-container { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-        .logo h1 { font-size: 1.5rem; font-weight: 800; color: var(--yellow); }
-        .logo p { font-size: 0.7rem; color: var(--text-light); letter-spacing: 1px; }
-        .nav-menu { display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; }
-        .nav-menu a { color: var(--text-light); text-decoration: none; font-weight: 500; cursor: pointer; padding: 0.5rem 0; transition: 0.2s; }
-        body.light-mode .nav-menu a { color: #1A1F2E; }
-        .nav-menu a:hover, .nav-menu a.active { color: var(--yellow); border-bottom: 2px solid var(--yellow); }
-        .hamburger { display: none; font-size: 1.8rem; cursor: pointer; color: var(--yellow); }
-        .dark-toggle { background: var(--gray); border: none; padding: 0.5rem 1rem; border-radius: 30px; color: var(--yellow); cursor: pointer; font-weight: 500; transition: 0.2s; }
-        .dark-toggle:hover { background: var(--gray-light); transform: scale(1.02); }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        body { background: #0a0e1a; }
+        .glass { background: rgba(26, 31, 46, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255, 214, 0, 0.1); }
+        .glass-light { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(8px); border: 1px solid rgba(255, 214, 0, 0.08); }
+        .text-gold { color: #FFD600; }
+        .bg-gold { background: #FFD600; }
+        .border-gold { border-color: #FFD600; }
+        .hover-glow:hover { box-shadow: 0 0 30px rgba(255, 214, 0, 0.15); }
+        .slot-badge { background: linear-gradient(135deg, #FFD600, #FFB800); color: #0A2E5C; padding: 4px 12px; border-radius: 20px; font-weight: 800; font-size: 0.7rem; min-width: 55px; display: inline-block; text-align: center; }
+        .badge-active { background: #10B981; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
+        .badge-banned { background: #F59E0B; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
+        .badge-cancelled { background: #EF4444; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
+        .badge-winner1 { background: #FFD600; color: #0A2E5C; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; }
+        .badge-winner2 { background: #C0C0C0; color: #0A2E5C; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; }
+        .badge-winner3 { background: #cd7f32; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; }
+        .stat-card { background: linear-gradient(135deg, #1A1F2E, #141824); border-radius: 16px; padding: 1.5rem; text-align: center; border-left: 4px solid #FFD600; transition: all 0.3s ease; }
+        .stat-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(255, 214, 0, 0.1); }
+        .stat-card i { font-size: 2rem; color: #FFD600; margin-bottom: 0.5rem; }
+        .stat-card h2 { font-size: 2rem; color: white; font-weight: 800; }
+        .stat-card p { color: #8ba0c0; font-size: 0.85rem; }
+        .rank-item { background: #1A1F2E; border-radius: 12px; padding: 1rem 1.25rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; transition: all 0.3s; border-left: 4px solid transparent; }
+        .rank-item:hover { transform: translateX(4px); background: #22273a; }
+        .rank-item.top1 { border-left-color: #FFD600; background: linear-gradient(135deg, #2a1f0a, #1A1F2E); }
+        .rank-item.top2 { border-left-color: #C0C0C0; background: linear-gradient(135deg, #1a1f2a, #1A1F2E); }
+        .rank-item.top3 { border-left-color: #cd7f32; background: linear-gradient(135deg, #2a1a1a, #1A1F2E); }
+        .rank-number { font-weight: 800; font-size: 1.1rem; min-width: 50px; }
+        .top1 .rank-number { color: #FFD600; }
+        .top2 .rank-number { color: #C0C0C0; }
+        .top3 .rank-number { color: #cd7f32; }
+        .rank-score { font-weight: 800; color: #FFD600; margin-left: auto; font-size: 1.1rem; }
+        .match-card { background: #1A1F2E; border-radius: 14px; overflow: hidden; border: 1px solid #2A2F3E; margin-bottom: 1rem; }
+        .match-header { background: rgba(10, 46, 92, 0.4); padding: 0.875rem 1.25rem; border-bottom: 1px solid #2A2F3E; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+        .match-name { font-weight: 700; color: #FFD600; }
+        .btn-action { background: #2A2F3E; border: none; color: #FFD600; cursor: pointer; padding: 6px 12px; border-radius: 8px; transition: all 0.2s; font-size: 0.8rem; }
+        .btn-action:hover { background: #FFD600; color: #0A2E5C; transform: scale(1.05); }
+        .btn-primary { background: linear-gradient(135deg, #FFD600, #FFB800); color: #0A2E5C; padding: 10px 24px; border-radius: 10px; font-weight: 700; border: none; cursor: pointer; transition: all 0.3s; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(255, 214, 0, 0.3); }
+        .btn-outline { background: transparent; border: 2px solid #FFD600; color: #FFD600; padding: 10px 24px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+        .btn-outline:hover { background: #FFD600; color: #0A2E5C; transform: translateY(-2px); }
+        .btn-danger { background: linear-gradient(135deg, #EF4444, #DC2626); color: white; padding: 10px 24px; border-radius: 10px; font-weight: 600; border: none; cursor: pointer; transition: all 0.3s; }
+        .btn-danger:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(239, 68, 68, 0.3); }
+        .btn-success { background: linear-gradient(135deg, #10B981, #059669); color: white; padding: 10px 24px; border-radius: 10px; font-weight: 600; border: none; cursor: pointer; transition: all 0.3s; }
+        .btn-success:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(16, 185, 129, 0.3); }
+        .btn-sm { padding: 6px 14px; font-size: 0.75rem; }
+        .btn-xs { padding: 4px 10px; font-size: 0.65rem; }
+        .input-dark { background: #2A2F3E; border: 1px solid #3A3F4E; color: white; padding: 10px 14px; border-radius: 10px; width: 100%; outline: none; transition: all 0.2s; }
+        .input-dark:focus { border-color: #FFD600; box-shadow: 0 0 0 3px rgba(255, 214, 0, 0.15); }
+        .input-dark::placeholder { color: #6a6f7e; }
+        select.input-dark { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23FFD600' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; background-size: 20px; }
+        .scroll-top { position: fixed; bottom: 30px; right: 30px; background: #FFD600; color: #0A2E5C; width: 45px; height: 45px; border-radius: 50%; display: none; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; z-index: 999; border: none; font-size: 1.2rem; }
+        .scroll-top:hover { transform: scale(1.1); box-shadow: 0 5px 20px rgba(255, 214, 0, 0.3); }
+        .loading { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+        .spinner { width: 50px; height: 50px; border: 4px solid #2A2F3E; border-top-color: #FFD600; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .empty-state { text-align: center; padding: 40px 20px; color: #6a6f7e; }
+        .empty-state i { font-size: 3rem; color: #FFD600; opacity: 0.3; margin-bottom: 1rem; display: block; }
+        .table-wrap { overflow-x: auto; border-radius: 12px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid #2A2F3E; vertical-align: middle; }
+        th { color: #FFD600; font-weight: 600; background: #141824; white-space: nowrap; }
+        tr:hover td { background: rgba(255, 214, 0, 0.03); }
+        .popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; display: none; justify-content: center; align-items: center; animation: fadeIn 0.3s ease; }
+        .popup-content { background: #1A1F2E; border-radius: 20px; max-width: 500px; width: 90%; overflow: hidden; border: 2px solid #FFD600; }
+        .popup-close { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.7); border: none; color: white; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .popup-close:hover { background: #FFD600; color: #0A2E5C; transform: scale(1.1); }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .slide-up { animation: slideUp 0.4s ease; }
+        .nav-link { color: #a0a5b5; text-decoration: none; font-weight: 500; padding: 0.5rem 0; transition: all 0.2s; border-bottom: 2px solid transparent; cursor: pointer; }
+        .nav-link:hover, .nav-link.active { color: #FFD600; border-bottom-color: #FFD600; }
+        .hamburger { display: none; font-size: 1.8rem; cursor: pointer; color: #FFD600; }
         @media (max-width: 768px) {
             .hamburger { display: block; }
-            .nav-menu { position: fixed; left: -100%; top: 70px; flex-direction: column; background: var(--gray); width: 100%; text-align: center; transition: 0.3s; padding: 2rem 0; gap: 1rem; z-index: 999; }
-            body.light-mode .nav-menu { background: #FFFFFF; }
+            .nav-menu { position: fixed; left: -100%; top: 70px; flex-direction: column; background: #1A1F2E; width: 100%; text-align: center; transition: 0.3s; padding: 2rem 0; gap: 1rem; z-index: 999; border-bottom: 2px solid #FFD600; }
             .nav-menu.active { left: 0; }
-            .navbar { padding: 0.8rem 1rem; }
-        }
-        .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
-        .stat-card { background: var(--gray); border-radius: 16px; padding: 1.5rem; text-align: center; border-left: 4px solid var(--yellow); transition: transform 0.2s; }
-        .stat-card:hover { transform: translateY(-5px); }
-        .stat-card i { font-size: 2rem; color: var(--yellow); margin-bottom: 0.5rem; }
-        .stat-card h2 { font-size: 2rem; color: white; }
-        body.light-mode .stat-card h2 { color: #1A1F2E; }
-        .table-wrapper { overflow-x: auto; border-radius: 12px; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-        th, td { padding: 14px 12px; text-align: left; border-bottom: 1px solid var(--gray-light); vertical-align: middle; }
-        th { color: var(--yellow); font-weight: 600; background: var(--gray-light); white-space: nowrap; }
-        .slot-badge { display: inline-block; background: linear-gradient(135deg, var(--yellow), #FFB800); color: var(--blue); padding: 5px 12px; border-radius: 20px; font-weight: 800; font-size: 0.75rem; min-width: 55px; text-align: center; }
-        .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; white-space: nowrap; }
-        .badge-active { background: #10B981; color: white; }
-        .badge-cancelled { background: #EF4444; color: white; }
-        .badge-banned { background: #F59E0B; color: white; }
-        .badge-winner1 { background: #FFD600; color: #1A1F2E; }
-        .badge-winner2 { background: #C0C0C0; color: #1A1F2E; }
-        .badge-winner3 { background: #cd7f32; color: #1A1F2E; }
-        .action-btn { background: var(--gray-light); border: none; color: var(--yellow); cursor: pointer; margin: 0 3px; font-size: 0.85rem; padding: 8px 12px; border-radius: 8px; transition: all 0.2s; }
-        .action-btn:hover { background: var(--yellow); color: var(--blue); transform: scale(1.05); }
-        .search-bar { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; align-items: center; }
-        .search-bar input, .search-bar select { padding: 12px 16px; background: var(--gray-light); border: 1px solid var(--blue-light); border-radius: 10px; color: white; font-size: 0.85rem; flex: 1; min-width: 150px; }
-        .hero { text-align: center; padding: 3rem 1rem; background: linear-gradient(135deg, var(--blue), var(--dark)); border-radius: 20px; margin-bottom: 2rem; }
-        .hero h1 { font-size: 2.5rem; color: var(--yellow); }
-        .hero-buttons { margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
-        .loading { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 9999; }
-        .spinner { width: 50px; height: 50px; border: 4px solid var(--gray-light); border-top-color: var(--yellow); border-radius: 50%; animation: spin 0.8s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .scroll-top { position: fixed; bottom: 30px; right: 30px; background: var(--yellow); color: var(--blue); width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; display: none; transition: 0.2s; z-index: 999; }
-        .scroll-top:hover { transform: scale(1.1); }
-        .prize-card { background: var(--gray-light); border-radius: 16px; padding: 1.5rem; text-align: center; margin-bottom: 1rem; transition: transform 0.2s; }
-        .prize-card:hover { transform: translateY(-3px); }
-        .prize-image { width: 100%; max-width: 180px; height: auto; margin: 1rem auto 0.5rem; display: block; border-radius: 12px; background: #fff; padding: 10px; }
-        .mission-list { text-align: left; margin: 1rem 0; padding-left: 1.5rem; }
-        .mission-list li { margin-bottom: 0.6rem; color: var(--text-light); }
-        .winner-card { text-align: center; padding: 2rem; background: linear-gradient(135deg, #FFD60020, #0A2E5C20); border-radius: 20px; }
-        .empty-state { text-align: center; padding: 40px; color: #888; }
-        
-        /* Score Styles */
-        .score-container { display: flex; flex-direction: column; gap: 1.5rem; }
-        .score-card { background: var(--gray); border-radius: 16px; padding: 1.5rem; border: 1px solid var(--gray-light); }
-        .score-card-header { border-bottom: 2px solid var(--yellow); padding-bottom: 0.75rem; margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
-        .score-card-header h2 { margin: 0; border: none; padding: 0; font-size: 1.2rem; }
-        .score-card-header .badge-count { background: var(--yellow); color: var(--blue); padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
-        .rank-list-score { display: flex; flex-direction: column; gap: 0.75rem; }
-        .rank-item-score { background: var(--gray-light); border-radius: 12px; padding: 0.875rem 1rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; transition: all 0.2s; }
-        .rank-item-score.top1 { background: linear-gradient(135deg, #2a1f0a, var(--gray-light)); border-left: 4px solid #FFD600; }
-        .rank-item-score.top2 { background: linear-gradient(135deg, #1a1f2a, var(--gray-light)); border-left: 4px solid #C0C0C0; }
-        .rank-item-score.top3 { background: linear-gradient(135deg, #2a1a1a, var(--gray-light)); border-left: 4px solid #cd7f32; }
-        .rank-number-score { font-weight: 800; font-size: 1.1rem; min-width: 55px; }
-        .top1 .rank-number-score { color: #FFD600; }
-        .top2 .rank-number-score { color: #C0C0C0; }
-        .top3 .rank-number-score { color: #cd7f32; }
-        .rank-team-score { flex: 2; font-weight: 600; display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
-        .rank-score-value { font-weight: 800; color: #FFD600; margin-left: auto; font-size: 1.1rem; }
-        .match-item-score { background: var(--gray-light); border-radius: 14px; margin-bottom: 1.25rem; overflow: hidden; border: 1px solid var(--border); }
-        .match-header-score { background: rgba(10, 46, 92, 0.5); padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
-        .match-name-score { font-weight: 700; color: var(--yellow); font-size: 1rem; }
-        .match-points-badge { background: var(--yellow); color: var(--blue); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; }
-        .score-table-wrapper { overflow-x: auto; padding: 0; }
-        .score-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-        .score-table th { background: var(--dark); padding: 12px 10px; text-align: left; color: var(--yellow); font-weight: 600; }
-        .score-table td { padding: 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-        .rank-badge { display: inline-block; background: var(--yellow); color: var(--blue); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 800; text-align: center; min-width: 45px; }
-        .kill-badge { background: #DC2626; padding: 4px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: 600; display: inline-block; color: white; }
-        .point-chip-score { background: var(--yellow); color: var(--blue); font-weight: 700; padding: 4px 10px; border-radius: 20px; display: inline-block; font-size: 0.75rem; }
-        .points-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
-        .point-item { background: var(--gray-light); border-radius: 30px; padding: 6px 14px; font-size: 0.75rem; font-weight: 600; }
-        .point-item span:first-child { color: #8ba0c0; margin-right: 8px; }
-        .point-item span:last-child { color: var(--yellow); font-weight: 800; }
-        
-        /* Popup Styles */
-        .popup-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--dark-overlay);
-            z-index: 9999;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            animation: popupFadeIn 0.3s ease;
-        }
-        .popup-container {
-            max-width: 500px;
-            width: 90%;
-            animation: popupScale 0.3s ease;
-        }
-        .popup-content {
-            background: var(--jb-yellow);
-            border-radius: 20px;
-            overflow: hidden;
-            text-align: center;
-            position: relative;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            border: 2px solid var(--jb-yellow-light);
-        }
-        .popup-poster-img {
-            width: 100%;
-            height: auto;
-            display: block;
-            border-bottom: 3px solid var(--jb-yellow-dark);
-        }
-        .popup-close {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: rgba(0, 0, 0, 0.7);
-            border: none;
-            color: white;
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1.2rem;
-            z-index: 10;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-        .popup-close:hover {
-            background: var(--jb-yellow-dark);
-            color: #000;
-            transform: scale(1.1);
-        }
-        .popup-button {
-            width: 100%;
-            padding: 14px;
-            background: var(--jb-yellow-dark);
-            color: #000;
-            border: none;
-            font-weight: 800;
-            cursor: pointer;
-            font-size: 1.1rem;
-            transition: all 0.2s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .popup-button:hover {
-            background: var(--jb-yellow-light);
-            transform: scale(1.02);
-        }
-        
-        /* Footer Styles */
-        .footer {
-            background: var(--footer-bg);
-            color: var(--footer-text);
-            padding: 50px 20px 30px;
-            margin-top: auto;
-            transition: background 0.3s, color 0.3s;
-        }
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px;
-            align-items: start;
-        }
-        .footer-logo { text-align: center; }
-        .logo-img {
-            width: 80px;
-            height: 80px;
-            object-fit: contain;
-            margin-bottom: 15px;
-            filter: brightness(0) invert(1);
-        }
-        body.light-mode .logo-img { filter: brightness(0) invert(0); }
-        .footer-logo h3 { font-size: 1.8rem; color: var(--jb-yellow); margin-bottom: 10px; }
-        .footer-logo p { color: var(--footer-text-muted); font-size: 0.9rem; }
-        .footer-social { text-align: center; }
-        .footer-social h4 { font-size: 1.3rem; margin-bottom: 20px; color: var(--jb-yellow); }
-        .social-icons { display: flex; flex-direction: column; gap: 12px; }
-        .social-link {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            padding: 10px 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 50px;
-            text-decoration: none;
-            color: var(--footer-text);
-            transition: all 0.3s ease;
-            font-size: 1rem;
-        }
-        .social-link i { font-size: 1.5rem; width: 24px; }
-        .social-link:hover { transform: translateX(5px); background: rgba(255, 215, 0, 0.2); }
-        .social-link.instagram:hover { color: #E4405F; }
-        .social-link.tiktok:hover { color: #00f2ea; }
-        .social-link.youtube:hover { color: #FF0000; }
-        .footer-sponsors { text-align: center; }
-        .footer-sponsors h4 { font-size: 1.3rem; margin-bottom: 20px; color: var(--jb-yellow); }
-        .sponsor-logos { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
-        .sponsor-img {
-            max-width: 100px;
-            max-height: 50px;
-            object-fit: contain;
-            background: white;
-            padding: 8px 12px;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            filter: grayscale(0.3);
-        }
-        .sponsor-img:hover {
-            transform: scale(1.05);
-            filter: grayscale(0);
-            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
-        }
-        .footer-credit { text-align: center; }
-        .credit-badge {
-            background: rgba(255, 215, 0, 0.1);
-            padding: 15px 20px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            margin-bottom: 20px;
-        }
-        .credit-icon { font-size: 1.5rem; display: inline-block; margin-right: 8px; }
-        .credit-badge span { color: var(--footer-text-muted); }
-        .credit-badge strong { color: var(--jb-yellow); font-size: 1.2rem; margin-left: 5px; }
-        .copyright { color: var(--footer-text-muted); font-size: 0.8rem; }
-        
-        @keyframes popupFadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        @keyframes popupScale {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-        @media (max-width: 768px) {
-            .container { padding: 1rem; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-            .stat-card { padding: 1rem; }
             .stat-card h2 { font-size: 1.5rem; }
-            .hero h1 { font-size: 1.8rem; }
+            .rank-item { flex-direction: column; align-items: flex-start; }
+            .rank-score { margin-left: 0; align-self: flex-end; }
+            .match-header { flex-direction: column; align-items: flex-start; }
             table { min-width: 650px; }
-            th, td { padding: 10px 8px; font-size: 0.75rem; }
-            .rank-item-score { flex-direction: column; align-items: flex-start; }
-            .rank-score-value { margin-left: 0; align-self: flex-end; }
-            .match-header-score { flex-direction: column; align-items: flex-start; }
-            .score-table th, .score-table td { padding: 8px 6px; font-size: 0.7rem; }
-            .footer-container { grid-template-columns: 1fr; gap: 30px; }
-            .popup-container { width: 95%; }
-            .prize-image { max-width: 120px; }
+            th, td { padding: 8px 6px; font-size: 0.7rem; }
         }
-        /* Popup Carousel Styles */
-.popup-carousel .popup-content {
-    max-width: 550px;
-    width: 100%;
-    border-radius: 24px;
-    background: var(--jb-yellow);
-    padding: 0;
-    overflow: hidden;
-}
-
-.carousel-container {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-}
-
-.carousel-slides {
-    display: flex;
-    transition: transform 0.4s ease-in-out;
-}
-
-.carousel-slide {
-    min-width: 100%;
-    position: relative;
-}
-
-.carousel-slide .popup-poster-img {
-    width: 100%;
-    height: auto;
-    display: block;
-    border-bottom: 2px solid var(--jb-yellow-dark);
-}
-
-.slide-caption {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(transparent, rgba(0,0,0,0.8));
-    color: white;
-    padding: 12px 16px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    text-align: center;
-    backdrop-filter: blur(4px);
-}
-
-.carousel-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(0,0,0,0.6);
-    color: white;
-    border: none;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 1.2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-    z-index: 10;
-}
-
-.carousel-btn:hover {
-    background: var(--jb-yellow);
-    color: #000;
-    transform: translateY(-50%) scale(1.1);
-}
-
-.prev-btn {
-    left: 12px;
-}
-
-.next-btn {
-    right: 12px;
-}
-
-.carousel-dots {
-    position: absolute;
-    bottom: 50px;
-    left: 0;
-    right: 0;
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    z-index: 10;
-}
-
-.dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.5);
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.dot.active {
-    width: 24px;
-    border-radius: 4px;
-    background: var(--jb-yellow);
-}
-
-@media (max-width: 640px) {
-    .carousel-btn {
-        width: 30px;
-        height: 30px;
-        font-size: 0.9rem;
-    }
-    .carousel-dots {
-        bottom: 45px;
-    }
-    .slide-caption {
-        font-size: 0.7rem;
-        padding: 8px 12px;
-    }
-}
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 0.75rem !important; }
+            .stat-card { padding: 1rem; }
+            .stat-card h2 { font-size: 1.2rem; }
+        }
     </style>
 </head>
 <body>
 
-<div id="loading" class="loading" style="display: flex;"><div class="spinner"></div></div>
+<div id="loading" class="loading"><div class="spinner"></div></div>
 
-<nav class="navbar">
-    <div class="nav-container">
-        <div class="logo"><h1>FAST TOURNAMENT SQUAD</h1><p>By JB Tokies</p></div>
-        <div class="hamburger" id="hamburger"><i class="fas fa-bars"></i></div>
-        <div class="nav-menu" id="navMenu">
-            <a data-page="dashboard" class="active">Dashboard</a>
-            <a data-page="register">Register</a>
-            <a data-page="participants">Peserta</a>
-            <a data-page="banned">Banned Team</a>
-            <a data-page="winners">Winner</a>
-            <a data-page="prize">Hadiah</a>
-            <a data-page="score">Score</a>
-            <button class="dark-toggle" id="darkModeBtn"><i class="fas fa-moon"></i> Mode</button>
+<!-- NAVBAR -->
+<nav class="fixed top-0 left-0 right-0 z-50 glass" style="border-bottom: 2px solid #FFD600;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-trophy text-gold text-2xl"></i>
+                <div>
+                    <h1 class="text-gold font-extrabold text-lg leading-tight">FT JB TOKIES</h1>
+                    <p class="text-gray-400 text-[10px] tracking-widest">TOURNAMENT SQUAD</p>
+                </div>
+            </div>
+            <div class="hamburger" id="hamburger"><i class="fas fa-bars"></i></div>
+            <div class="nav-menu flex items-center gap-6" id="navMenu">
+                <a class="nav-link active" data-page="dashboard">Dashboard</a>
+                <a class="nav-link" data-page="register">Register</a>
+                <a class="nav-link" data-page="teams">Teams</a>
+                <a class="nav-link" data-page="score">Score</a>
+                <a class="nav-link" data-page="banned">Banned</a>
+                <a class="nav-link" data-page="winners">Winners</a>
+                <button onclick="toggleDarkMode()" class="text-gold hover:text-white transition">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
         </div>
     </div>
 </nav>
 
-<div id="mainContent" class="container"></div>
+<!-- MAIN CONTENT -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12" id="mainContent"></main>
+
+<!-- SCROLL TOP -->
 <button class="scroll-top" id="scrollTopBtn"><i class="fas fa-arrow-up"></i></button>
 
-<!-- POPUP POSTER DENGAN 2 GAMBAR (CAROUSEL) -->
+<!-- POPUP -->
 <div id="popupPoster" class="popup-overlay">
-    <div class="popup-container popup-carousel">
-        <div class="popup-content">
-            <button class="popup-close" id="closeBtn">✕</button>
-            
-            <!-- Carousel Container -->
-            <div class="carousel-container">
-                <div class="carousel-slides" id="carouselSlides">
-                    <div class="carousel-slide">
-                        <img src="1_20260520_193436_0000.png" alt="Poster Tournament" class="popup-poster-img">
-                        <div class="slide-caption">🏆 Daftar Sekarang! Slot Terbatas</div>
-                    </div>
-                    <div class="carousel-slide">
-                        <img src="2_20260520_193436_0001.png" alt="Most Kill Prize" class="popup-poster-img">
-                        <div class="slide-caption">🎁 Event Bulanan - Dapatkan Earphone Gratis</div>
-                    </div>
-                </div>
-                
-                <!-- Tombol Navigasi -->
-                <button class="carousel-btn prev-btn" id="prevBtn"><i class="fas fa-chevron-left"></i></button>
-                <button class="carousel-btn next-btn" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
-                
-                <!-- Indikator Dot -->
-                <div class="carousel-dots" id="carouselDots">
-                    <span class="dot active"></span>
-                    <span class="dot"></span>
-                </div>
-            </div>
-            
-            <button class="popup-button" id="actionBtn">Lihat Jadwal & Daftar →</button>
+    <div class="popup-content relative">
+        <button class="popup-close" id="closeBtn"><i class="fas fa-times"></i></button>
+        <div class="p-6 text-center">
+            <i class="fas fa-trophy text-gold text-5xl mb-4"></i>
+            <h2 class="text-2xl font-bold text-gold mb-2">FAST TOURNAMENT SQUAD</h2>
+            <p class="text-gray-300 mb-2">By JB Tokies</p>
+            <p class="text-gray-400 text-sm mb-4">Daftar sekarang! Slot terbatas.</p>
+            <button onclick="closePopup(); navigateTo('register')" class="btn-primary w-full">Daftar Sekarang →</button>
         </div>
     </div>
 </div>
 
 <!-- FOOTER -->
-<footer class="footer">
-    <div class="footer-container">
-        <div class="footer-logo">
-            <img src="https://imageshack.com/i/po0tg7N3p" alt="JB Tokies Logo" class="logo-img" id="footerLogo">
-            <h3>JB Tokies</h3>
-            <p>Tempat JB Bloodstrike No #1 Di Indonesia</p>
-        </div>
-        <div class="footer-social">
-            <h4>Follow Kami</h4>
-            <div class="social-icons">
-                <a href="https://www.instagram.com/jbtokies?igsh=cHJpMmgwZ3BjbmF6" target="_blank" class="social-link instagram">
-                    <i class="fab fa-instagram"></i>
-                    <span>Instagram</span>
-                </a>
-                <a href="https://tiktok.com/@mamastokies" target="_blank" class="social-link tiktok">
-                    <i class="fab fa-tiktok"></i>
-                    <span>TikTok</span>
-                </a>
-                <a href="https://youtube.com/@jbtokies" target="_blank" class="social-link youtube">
-                    <i class="fab fa-youtube"></i>
-                    <span>YouTube</span>
-                </a>
+<footer class="glass border-t border-gold/10 mt-12">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="text-center md:text-left">
+                <i class="fas fa-trophy text-gold text-3xl mb-2"></i>
+                <h3 class="text-gold font-bold text-lg">JB Tokies</h3>
+                <p class="text-gray-400 text-sm">Tempat JB Bloodstrike No #1 Di Indonesia</p>
             </div>
-        </div>
-        <div class="footer-sponsors">
-            <h4>Our Partners</h4>
-            <div class="sponsor-logos" id="sponsorContainer"></div>
-        </div>
-        <div class="footer-credit">
-            <div class="credit-badge">
-                <span class="credit-icon">⚡</span>
-                <span>Powered by</span>
-                <strong>ScrimBaseID</strong>
+            <div class="text-center">
+                <h4 class="text-gold font-semibold mb-3">Follow Kami</h4>
+                <div class="flex flex-col gap-2 items-center">
+                    <a href="https://www.instagram.com/jbtokies" target="_blank" class="text-gray-400 hover:text-gold transition flex items-center gap-2">
+                        <i class="fab fa-instagram text-xl"></i> Instagram
+                    </a>
+                    <a href="https://tiktok.com/@mamastokies" target="_blank" class="text-gray-400 hover:text-gold transition flex items-center gap-2">
+                        <i class="fab fa-tiktok text-xl"></i> TikTok
+                    </a>
+                    <a href="https://youtube.com/@jbtokies" target="_blank" class="text-gray-400 hover:text-gold transition flex items-center gap-2">
+                        <i class="fab fa-youtube text-xl"></i> YouTube
+                    </a>
+                </div>
             </div>
-            <p class="copyright">&copy; 2026 JB Tokies. All rights reserved.</p>
+            <div class="text-center">
+                <h4 class="text-gold font-semibold mb-3">Partners</h4>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <span class="text-gray-400 text-sm bg-white/5 px-3 py-1 rounded">ScrimBaseID</span>
+                    <span class="text-gray-400 text-sm bg-white/5 px-3 py-1 rounded">Sabada Org</span>
+                </div>
+            </div>
+            <div class="text-center">
+                <div class="bg-gold/10 border border-gold/20 rounded-lg p-4">
+                    <span class="text-gold text-2xl font-bold">⚡</span>
+                    <p class="text-gray-400 text-sm">Powered by <span class="text-gold font-semibold">ScrimBaseID</span></p>
+                </div>
+                <p class="text-gray-500 text-xs mt-3">&copy; 2026 JB Tokies. All rights reserved.</p>
+            </div>
         </div>
     </div>
 </footer>
 
 <script>
-    // ========== FIREBASE CONFIG ==========
+    // ========== FIREBASE ==========
     const firebaseConfig = {
-        apiKey: "AIzaSyA4dBWsJF8ExOpjCXiFrwRj9KJ9EptIh7g",
-        authDomain: "ft-jb-tokies.firebaseapp.com",
-        projectId: "ft-jb-tokies",
-        storageBucket: "ft-jb-tokies.firebasestorage.app",
-        messagingSenderId: "883138314132",
-        appId: "1:883138314132:web:14b8b27beb05baf13a9981"
+        apiKey: "AIzaSyCX4_ZCmDU1OiU5GtWkjIorQOBPumIiJeg",
+        authDomain: "jb-yokies.firebaseapp.com",
+        projectId: "jb-yokies",
+        storageBucket: "jb-yokies.firebasestorage.app",
+        messagingSenderId: "857656537295",
+        appId: "1:857656537295:web:a6827fb3787d79875387ba"
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
-    
-    // ========== GLOBAL VARIABLES ==========
+
+    // ========== VARIABLES ==========
     let currentPage = "dashboard";
-    let countdownInterval = null;
+    const SLOTS = ["A1","B2","C3","D4","E5","F6","G7","H8","I9","J10","K11","L12","M13","N14","O15","P16","Q17","R18","S19","T20","U21","V22","W23","X24","Y25"];
     let scoreTeams = [];
     let scoreMatches = [];
-    let scoreRankPoints = { 1: 30, 2: 20, 3: 15, 4: 12, 5: 10, 6: 8, 7: 6, 8: 4, 9: 2, 10: 1 };
+    let scoreRankPoints = { 1:30, 2:20, 3:15, 4:12, 5:10, 6:8, 7:6, 8:4, 9:2, 10:1 };
     let scoreKillPoint = 1;
-    
-    const SLOTS = ["A1","B2","C3","D4","E5","F6","G7","H8","I9","J10","K11","L12","M13","N14","O15","P16","Q17","R18","S19","T20","U21","V22","W23","X24","Y25"];
     let countdownTarget = new Date();
     countdownTarget.setDate(countdownTarget.getDate() + 7);
-    countdownTarget.setHours(20, 0, 0, 0);
-    
-    // ========== HELPER FUNCTIONS ==========
-    function showLoading(show) { 
-        const loadingEl = document.getElementById("loading");
-        if (loadingEl) loadingEl.style.display = show ? "flex" : "none";
-    }
-    
-    function showToast(type, message) {
-        Swal.fire({ 
-            title: type === "success" ? "Berhasil!" : "Error", 
-            text: message, 
-            icon: type, 
-            timer: 2000, 
-            showConfirmButton: false, 
-            background: "#1A1F2E", 
-            color: "#fff" 
-        });
-    }
-    
-    function escapeHtml(text) { 
-        if (!text) return ''; 
-        return text.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'); 
-    }
-    
+
+    // ========== HELPERS ==========
+    function showLoading(show) { document.getElementById("loading").style.display = show ? "flex" : "none"; }
+    function toast(type, msg) { Swal.fire({ title: type === "success" ? "Berhasil!" : "Error", text: msg, icon: type, timer: 2000, showConfirmButton: false, background: "#1A1F2E", color: "#fff" }); }
+    function escapeHtml(t) { if (!t) return ''; return t.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'); }
     function encryptPassword(pwd) { return btoa(pwd); }
-    
-    function formatDate(dateStr) { 
-        if (!dateStr) return "-";
-        try {
-            return new Date(dateStr).toLocaleString('id-ID');
-        } catch(e) {
-            return "-";
-        }
-    }
-    
-    async function getAvailableSlot(teams) {
-        const takenSlots = teams.filter(t => t.status === "active").map(t => t.slot);
-        for (let slot of SLOTS) if (!takenSlots.includes(slot)) return slot;
-        return null;
-    }
-    
-    async function loadCountdownSetting() {
-        try {
-            const settingDoc = await db.collection("settings").doc("tournament").get();
-            if (settingDoc.exists && settingDoc.data().countdownDate) countdownTarget = new Date(settingDoc.data().countdownDate);
-        } catch(e) { console.log("Error load countdown:", e); }
-    }
-    
-    function startCountdown(elementId) {
-        if (countdownInterval) clearInterval(countdownInterval);
-        function updateCountdown() {
-            const el = document.getElementById(elementId);
-            if (!el) return;
-            const diff = countdownTarget - new Date();
-            if (diff <= 0) { 
-                el.innerText = "TOURNAMENT LIVE!"; 
-                return; 
-            }
-            const days = Math.floor(diff / 86400000), 
-                  hours = Math.floor((diff % 86400000) / 3600000), 
-                  minutes = Math.floor((diff % 3600000) / 60000), 
-                  seconds = Math.floor((diff % 60000) / 1000);
-            el.innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-        }
-        updateCountdown();
-        countdownInterval = setInterval(updateCountdown, 1000);
-    }
-    
-    // ========== SCORE FUNCTIONS (Firestore) ==========
+    function formatDate(d) { return d ? new Date(d).toLocaleString('id-ID') : '-'; }
+    function calcScore(rank, kills) { return (scoreRankPoints[rank] || 0) + (kills * scoreKillPoint); }
+    function getTeamScore(teamId) { let total = 0; scoreMatches.forEach(m => { const r = m.results.find(r => r.teamId === teamId); if (r) total += calcScore(r.rank, r.kills); }); return total; }
+
+    // ========== FIRESTORE SCORE ==========
     async function loadScoreData() {
         try {
-            const teamsSnapshot = await db.collection("teams").where("status", "==", "active").get();
-            scoreTeams = teamsSnapshot.docs.map(doc => ({ id: doc.id, name: doc.data().teamName, slot: doc.data().slot || '-', perwakilan: doc.data().perwakilan || '-' }));
-            
-            const scoreSettingsDoc = await db.collection("scoreSettings").doc("main").get();
-            if (scoreSettingsDoc.exists) {
-                const data = scoreSettingsDoc.data();
-                scoreRankPoints = data.rankPoints || { 1: 30, 2: 20, 3: 15, 4: 12, 5: 10, 6: 8, 7: 6, 8: 4, 9: 2, 10: 1 };
+            const teamsSnap = await db.collection("teams").where("status", "==", "active").get();
+            scoreTeams = teamsSnap.docs.map(d => ({ id: d.id, name: d.data().teamName, slot: d.data().slot || '-', perwakilan: d.data().perwakilan || '-' }));
+            const settingsDoc = await db.collection("scoreSettings").doc("main").get();
+            if (settingsDoc.exists) {
+                const data = settingsDoc.data();
+                scoreRankPoints = data.rankPoints || { 1:30, 2:20, 3:15, 4:12, 5:10, 6:8, 7:6, 8:4, 9:2, 10:1 };
                 scoreKillPoint = data.killPoint || 1;
             }
-            
-            const matchesSnapshot = await db.collection("scoreMatches").orderBy("matchId", "asc").get();
-            scoreMatches = matchesSnapshot.docs.map(doc => ({ 
-                id: doc.id,
-                matchId: doc.data().matchId,
-                matchName: doc.data().matchName,
-                results: doc.data().results || []
-            }));
-        } catch(e) { 
-            console.log("Error load score:", e);
+            const matchesSnap = await db.collection("scoreMatches").orderBy("matchId", "asc").get();
+            scoreMatches = matchesSnap.docs.map(d => ({ id: d.id, matchId: d.data().matchId, matchName: d.data().matchName, results: d.data().results || [] }));
+        } catch(e) { console.log("Score load error:", e); }
+    }
+
+    async function saveScoreMatches() {
+        for (const match of scoreMatches) {
+            if (match.id) await db.collection("scoreMatches").doc(match.id).update({ matchName: match.matchName, results: match.results, updatedAt: new Date().toISOString() });
+            else { const doc = await db.collection("scoreMatches").add({ matchId: match.matchId, matchName: match.matchName, results: match.results, createdAt: new Date().toISOString() }); match.id = doc.id; }
         }
     }
-    
-    function calcScore(rank, kills) { 
-        return (scoreRankPoints[rank] || 0) + (kills * scoreKillPoint); 
-    }
-    
-    function getTeamScore(teamId) {
-        let total = 0;
-        scoreMatches.forEach(match => { 
-            const result = match.results.find(r => r.teamId === teamId); 
-            if (result) total += calcScore(result.rank, result.kills); 
-        });
-        return total;
-    }
-    
-    async function renderScoreViewer() {
-        await loadScoreData();
-        const sortedTeams = [...scoreTeams].sort((a, b) => getTeamScore(b.id) - getTeamScore(a.id));
-        const html = `
-            <div class="score-container">
-                <div class="score-card">
-                    <div class="score-card-header">
-                        <h2><i class="fas fa-calculator"></i> Sistem Penilaian</h2>
-                        <span class="badge-count"> ${scoreKillPoint} Poin/Kill</span>
-                    </div>
-                    <div class="stats-grid" style="grid-template-columns: repeat(3,1fr); margin-bottom:1rem;">
-                        <div class="stat-card"><i class="fas fa-trophy"></i><h2>${Object.keys(scoreRankPoints).length}</h2><p>Level Peringkat</p></div>
-                        <div class="stat-card"><i class="fas fa-skull"></i><h2>${scoreKillPoint}</h2><p>Poin per Kill</p></div>
-                        <div class="stat-card"><i class="fas fa-chart-line"></i><h2>${scoreMatches.length}</h2><p>Total Match</p></div>
-                    </div>
-                    <div class="points-grid">
-                        ${Object.entries(scoreRankPoints).sort((a,b)=>a[0]-b[0]).map(([rank, points]) => 
-                            `<div class="point-item"><span>Peringkat ${rank}</span><span> → ${points} pts</span></div>`
-                        ).join('')}
-                    </div>
-                </div>
-                <div class="score-card">
-                    <div class="score-card-header">
-                        <h2><i class="fas fa-trophy"></i> Klasemen Tim</h2>
-                        <span class="badge-count">${scoreTeams.length} Tim</span>
-                    </div>
-                    <div class="rank-list-score">
-                        ${scoreTeams.length === 0 ? 
-                            '<div class="empty-state"><i class="fas fa-users-slash"></i> Belum ada tim aktif</div>' : 
-                            sortedTeams.map((team, idx) => `
-                                <div class="rank-item-score ${idx === 0 ? 'top1' : idx === 1 ? 'top2' : idx === 2 ? 'top3' : ''}">
-                                    <div class="rank-number-score">${idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${idx+1}`}</div>
-                                    <div class="rank-team-score">
-                                        <span class="slot-badge" style="background:var(--gray);">${escapeHtml(team.slot)}</span>
-                                        <strong>${escapeHtml(team.name)}</strong>
-                                        <span style="color:#8ba0c0; font-size:0.7rem;">${escapeHtml(team.perwakilan)}</span>
-                                    </div>
-                                    <div class="rank-score-value">${getTeamScore(team.id)} pts</div>
-                                </div>
-                            `).join('')
-                        }
-                    </div>
-                </div>
-                <div class="score-card">
-                    <div class="score-card-header">
-                        <h2><i class="fas fa-calendar-alt"></i> Hasil Pertandingan</h2>
-                        <span class="badge-count">${scoreMatches.length} Match</span>
-                    </div>
-                    ${scoreMatches.length === 0 ? 
-                        '<div class="empty-state"><i class="fas fa-folder-open"></i> Belum ada data match</div>' : 
-                        `<div class="matches-list">
-                            ${scoreMatches.map((match, mIdx) => {
-                                const sortedResults = [...match.results].sort((a,b) => a.rank - b.rank);
-                                return `
-                                    <div class="match-item-score">
-                                        <div class="match-header-score">
-                                            <div class="match-name-score"><i class="fas fa-gamepad"></i> ${escapeHtml(match.matchName || `Match ${mIdx+1}`)}</div>
-                                            <div class="match-points-badge"><i class="fas fa-users"></i> ${match.results.length} Tim</div>
-                                        </div>
-                                        <div class="score-table-wrapper">
-                                            <table class="score-table">
-                                                <thead>
-                                                    <tr><th style="width:70px">Rank</th><th>Tim</th><th style="width:70px">Slot</th><th style="width:70px">Kill</th><th style="width:80px">Skor</th></tr>
-                                                </thead>
-                                                <tbody>
-                                                    ${sortedResults.map(result => {
-                                                        const team = scoreTeams.find(t => t.id === result.teamId);
-                                                        const matchScore = calcScore(result.rank, result.kills);
-                                                        return `
-                                                            <tr>
-                                                                <td><span class="rank-badge">#${result.rank}</span></td>
-                                                                <td><strong>${team ? escapeHtml(team.name) : '<span style="color:#888;">Unknown</span>'}</strong></td>
-                                                                <td><span class="slot-badge" style="background:var(--gray);padding:3px 8px;">${team ? escapeHtml(team.slot) : '-'}</span></td>
-                                                                <td><span class="kill-badge"> ${result.kills}</span></td>
-                                                                <td><span class="point-chip-score">${matchScore} pts</span></td>
-                                                            </tr>
-                                                        `;
-                                                    }).join('')}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                `;
-                            }).join('')}
-                        </div>`
-                    }
-                </div>
-            </div>
-        `;
-        document.getElementById("mainContent").innerHTML = html;
-    }
-    
+
+    async function saveScoreRankPoints() { await db.collection("scoreSettings").doc("main").set({ rankPoints: scoreRankPoints, updatedAt: new Date().toISOString() }, { merge: true }); }
+    async function saveScoreKillPoint() { await db.collection("scoreSettings").doc("main").set({ killPoint: scoreKillPoint, updatedAt: new Date().toISOString() }, { merge: true }); }
+
     // ========== NAVIGATION ==========
-    function navigateTo(page) { 
-        currentPage = page; 
-        document.querySelectorAll('.nav-menu a').forEach(link => { 
-            if (link.getAttribute('data-page') === page) link.classList.add('active'); 
-            else link.classList.remove('active'); 
-        }); 
-        if (window.innerWidth <= 768) {
-            const menu = document.getElementById('navMenu');
-            if (menu) menu.classList.remove('active');
-        }
-        renderPage(); 
+    function navigateTo(page) {
+        currentPage = page;
+        document.querySelectorAll('.nav-link').forEach(link => { link.classList.toggle('active', link.dataset.page === page); });
+        document.getElementById('navMenu')?.classList.remove('active');
+        renderPage();
     }
-    
-    // ========== RENDER PAGE ==========
+
+    // ========== RENDER ==========
     async function renderPage() {
-        showLoading(true); 
-        await loadCountdownSetting();
+        showLoading(true);
         await loadScoreData();
-        
         try {
-            const teamsSnapshot = await db.collection("teams").orderBy("createdAt", "desc").get();
-            const teams = teamsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            const bannedSnapshot = await db.collection("bannedTeams").get();
-            const bannedTeams = bannedSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            const teamsSnap = await db.collection("teams").get();
+            const teams = teamsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+            const bannedSnap = await db.collection("bannedTeams").get();
+            const bannedTeams = bannedSnap.docs.map(d => ({ id: d.id, ...d.data() }));
             const winnerDoc = await db.collection("settings").doc("winner").get();
             let winner = winnerDoc.exists ? winnerDoc.data() : null;
-            if (winner) {
-                if (winner.winner1Id) { 
-                    const w1 = await db.collection("teams").doc(winner.winner1Id).get(); 
-                    if (w1.exists) { winner.winner1Name = w1.data().teamName; winner.winner1Wakil = w1.data().perwakilan; } 
-                }
-                if (winner.winner2Id) { 
-                    const w2 = await db.collection("teams").doc(winner.winner2Id).get(); 
-                    if (w2.exists) { winner.winner2Name = w2.data().teamName; winner.winner2Wakil = w2.data().perwakilan; } 
-                }
-                if (winner.winner3Id) { 
-                    const w3 = await db.collection("teams").doc(winner.winner3Id).get(); 
-                    if (w3.exists) { winner.winner3Name = w3.data().teamName; winner.winner3Wakil = w3.data().perwakilan; } 
-                }
-            }
-            
+
+            let html = '';
             switch(currentPage) {
-                case "dashboard": renderDashboard(teams); break;
-                case "register": renderRegisterForm(teams); break;
-                case "participants": renderParticipants(teams, winner); break;
-                case "banned": renderBannedTeams(bannedTeams); break;
-                case "winners": renderWinnerPage(winner); break;
-                case "prize": renderPrizePage(); break;
-                case "score": await renderScoreViewer(); break;
+                case 'dashboard': html = renderDashboard(teams); break;
+                case 'register': html = renderRegister(teams); break;
+                case 'teams': html = await renderTeams(teams, winner); break;
+                case 'score': html = await renderScore(); break;
+                case 'banned': html = renderBanned(bannedTeams); break;
+                case 'winners': html = renderWinners(winner); break;
+                default: html = renderDashboard(teams);
             }
-        } catch(e) {
-            console.error("Render page error:", e);
-            document.getElementById("mainContent").innerHTML = '<div class="card"><div class="empty-state">Error loading data. Silahkan refresh halaman.</div></div>';
-        }
+            document.getElementById('mainContent').innerHTML = html;
+            attachEvents(teams);
+        } catch(e) { console.error(e); document.getElementById('mainContent').innerHTML = '<div class="text-center py-12 text-gray-400">Error loading data</div>'; }
         showLoading(false);
     }
-    
+
     // ========== DASHBOARD ==========
     function renderDashboard(teams) {
-        const activeTeams = teams.filter(t => t.status === "active");
-        const html = `<div class="hero"><h1>FAST TOURNAMENT SQUAD</h1><p>By JB Tokies | Kompetisi Squad Online Tercepat</p><div class="hero-buttons"><button class="btn btn-primary" id="heroRegister"><i class="fas fa-pen-alt"></i> Register Now</button><button class="btn btn-outline" id="heroParticipants"><i class="fas fa-users"></i> View Participants</button><button class="btn btn-outline" id="heroScore"><i class="fas fa-chart-line"></i> Score</button></div></div>
-        <div class="stats-grid"><div class="stat-card"><i class="fas fa-users"></i><h2>${activeTeams.length}</h2><p>Total Team</p></div><div class="stat-card"><i class="fas fa-chair"></i><h2>${activeTeams.length}/${SLOTS.length}</h2><p>Slot Terisi</p></div><div class="stat-card"><i class="fas fa-ticket-alt"></i><h2>${SLOTS.length - activeTeams.length}</h2><p>Slot Tersisa</p></div><div class="stat-card"><i class="fas fa-user-friends"></i><h2>${activeTeams.reduce((s,t)=>s+(t.players?.length||0),0)}</h2><p>Total Player</p></div></div>
-        <div class="card"><h3><i class="fas fa-hourglass-half"></i> Countdown Tournament</h3><h2 id="countdown" style="color:var(--yellow);font-size:2rem;">--:--:--</h2><p>Siapkan squad terbaikmu! Slot terbatas.</p></div>`;
-        document.getElementById("mainContent").innerHTML = html;
-        document.getElementById("heroRegister")?.addEventListener("click", () => navigateTo("register"));
-        document.getElementById("heroParticipants")?.addEventListener("click", () => navigateTo("participants"));
-        document.getElementById("heroScore")?.addEventListener("click", () => navigateTo("score"));
-        startCountdown("countdown");
+        const active = teams.filter(t => t.status === 'active');
+        const totalPlayers = active.reduce((s,t) => s + (t.players?.length || 0), 0);
+        return `
+        <div class="bg-gradient-to-r from-[#0A2E5C] to-[#0A0E1A] rounded-2xl p-8 mb-8 text-center">
+            <h1 class="text-3xl md:text-5xl font-extrabold text-gold">FAST TOURNAMENT SQUAD</h1>
+            <p class="text-gray-300 text-lg mt-2">By JB Tokies | Kompetisi Squad Online Tercepat</p>
+            <div class="flex flex-wrap justify-center gap-4 mt-6">
+                <button onclick="navigateTo('register')" class="btn-primary"><i class="fas fa-pen-alt mr-2"></i> Register</button>
+                <button onclick="navigateTo('teams')" class="btn-outline"><i class="fas fa-users mr-2"></i> Teams</button>
+                <button onclick="navigateTo('score')" class="btn-outline"><i class="fas fa-chart-line mr-2"></i> Score</button>
+            </div>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div class="stat-card"><i class="fas fa-users"></i><h2>${active.length}</h2><p>Total Team</p></div>
+            <div class="stat-card"><i class="fas fa-chair"></i><h2>${active.length}/${SLOTS.length}</h2><p>Slot Terisi</p></div>
+            <div class="stat-card"><i class="fas fa-ticket-alt"></i><h2>${SLOTS.length - active.length}</h2><p>Slot Tersisa</p></div>
+            <div class="stat-card"><i class="fas fa-user-friends"></i><h2>${totalPlayers}</h2><p>Total Player</p></div>
+        </div>
+        <div class="glass rounded-2xl p-6 text-center">
+            <h3 class="text-gold font-semibold text-lg"><i class="fas fa-hourglass-half mr-2"></i>Countdown Tournament</h3>
+            <p id="countdown" class="text-4xl md:text-6xl font-bold text-gold mt-2">--:--:--</p>
+            <p class="text-gray-400 text-sm mt-2">Siapkan squad terbaikmu! Slot terbatas.</p>
+        </div>`;
     }
-    
-    // ========== REGISTER FORM ==========
-    function renderRegisterForm(teams) {
-        const html = `<div class="card"><h2><i class="fas fa-pen-alt"></i> Form Pendaftaran Team</h2><form id="registerForm"><div class="form-group"><label>Nama Perwakilan *</label><input type="text" id="wakil" required></div><div class="form-group"><label>Nomor WhatsApp *</label><input type="tel" id="whatsapp" placeholder="08xxxxxxxxxx" required></div><div class="form-group"><label>Nama Team *</label><input type="text" id="teamName" required></div><h3>Pemain Utama (4 orang)</h3>${[1,2,3,4].map(i => `<div class="form-row"><input type="text" id="nick${i}" placeholder="Nickname Player ${i}" required><input type="text" id="uid${i}" placeholder="UID Player ${i}" required></div>`).join('')}<h3>Pemain Cadangan</h3><div class="form-row"><input type="text" id="nickCad" placeholder="Nickname Cadangan"><input type="text" id="uidCad" placeholder="UID Cadangan"></div><div class="form-group"><label>Password Team (min 6 karakter) *</label><input type="password" id="password" minlength="6" required><small>Password untuk edit atau cancel team</small></div><button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Submit Registrasi</button><button type="button" class="btn btn-outline" id="resetForm"><i class="fas fa-undo"></i> Reset Form</button></form></div>`;
-        document.getElementById("mainContent").innerHTML = html;
-        
-        const form = document.getElementById("registerForm");
-        if (form) {
-            form.addEventListener("submit", async (e) => {
-                e.preventDefault();
-                const wakil = document.getElementById("wakil").value.trim(), 
-                      whatsapp = document.getElementById("whatsapp").value.trim(), 
-                      teamName = document.getElementById("teamName").value.trim(), 
-                      password = document.getElementById("password").value;
-                if (!/^08[0-9]{8,13}$/.test(whatsapp)) { showToast("error", "Nomor WhatsApp tidak valid"); return; }
-                if (password.length < 6) { showToast("error", "Password minimal 6 karakter"); return; }
-                
-                const bannedCheck = await db.collection("bannedTeams").where("teamName", "==", teamName).get();
-                if (!bannedCheck.empty) { showToast("error", "Team ini telah di-BAN!"); return; }
-                
-                const players = [];
-                for (let i = 1; i <= 4; i++) { 
-                    const nick = document.getElementById(`nick${i}`).value.trim(), 
-                          uid = document.getElementById(`uid${i}`).value.trim(); 
-                    if (!nick || !uid) { showToast("error", `Data Player ${i} tidak lengkap`); return; } 
-                    if (!/^\d+$/.test(uid)) { showToast("error", `UID Player ${i} harus angka`); return; } 
-                    players.push({ nick, uid }); 
-                }
-                const nickCad = document.getElementById("nickCad").value.trim(), 
-                      uidCad = document.getElementById("uidCad").value.trim();
-                if (nickCad && uidCad) { 
-                    if (!/^\d+$/.test(uidCad)) { showToast("error", "UID Cadangan harus angka"); return; } 
-                    players.push({ nick: nickCad, uid: uidCad }); 
-                }
-                if (new Set(players.map(p=>p.nick.toLowerCase())).size !== players.length) { showToast("error", "Nickname tidak boleh sama"); return; }
-                
-                const existing = await db.collection("teams").where("teamName", "==", teamName).get();
-                if (!existing.empty) { showToast("error", "Nama Team sudah terdaftar!"); return; }
-                
-                const allTeams = (await db.collection("teams").get()).docs.map(d=>({id:d.id,...d.data()})).filter(t=>t.status==="active");
-                const slot = await getAvailableSlot(allTeams);
-                if (!slot) { showToast("error", "Slot sudah penuh!"); return; }
-                
-                showLoading(true);
-                await db.collection("teams").add({ 
-                    perwakilan: wakil, whatsapp, teamName, players, 
-                    password: encryptPassword(password), slot, status: "active", 
-                    createdAt: new Date().toISOString() 
-                });
-                await db.collection("logs").add({ teamName, action: "Registrasi baru", time: new Date().toISOString() });
-                showLoading(false);
-                showToast("success", `Pendaftaran berhasil! Slot: ${slot}`);
-                navigateTo("participants");
-            });
-        }
-        document.getElementById("resetForm")?.addEventListener("click", () => {
-            const formEl = document.getElementById("registerForm");
-            if (formEl) formEl.reset();
-        });
-    }
-    
-    // ========== PARTICIPANTS PAGE ==========
-    async function renderParticipants(teams, winner) {
-        let currentTeams = teams.filter(t => t.status === "active").sort((a,b)=>SLOTS.indexOf(a.slot)-SLOTS.indexOf(b.slot));
-        
-        const renderTable = (data) => {
-            // GANTI kode html di dalam fungsi renderTable (renderParticipants) dengan kode dibawah ini
-// Cari baris: const html = `<div class="search-bar">... 
-// Lalu ganti sampai sebelum: document.getElementById("mainContent").innerHTML = html;
 
-const html = `
-<div class="search-bar">
-    <input type="text" id="searchTeam" placeholder=" Cari Nama Team...">
-    <input type="text" id="searchWakil" placeholder=" Cari Perwakilan...">
-    <select id="filterSlot">
-        <option value="all"> Semua Slot</option>
-        ${SLOTS.map(s=>`<option value="${s}">Slot ${s}</option>`).join('')}
-    </select>
-    <button class="btn btn-outline" id="exportBtn"><i class="fas fa-download"></i> Export CSV</button>
-</div>
-<div class="card" style="overflow-x: auto;">
-    <table style="min-width: 700px; width: 100%;">
-        <thead>
-            <tr>
-                <th style="width: 50px;">No</th>
-                <th style="width: 80px;">Slot</th>
-                <th>Nama Team</th>
-                <th style="min-width: 150px;">Perwakilan</th>
-                <th style="width: 100px;">Status</th>
-                <th style="width: 180px;">Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            ${data.map((team, idx) => {
-                let winnerBadge = '';
-                if (winner?.winner1Name === team.teamName) winnerBadge = ' <span class="badge badge-winner1">🏆 JUARA 1</span>';
-                else if (winner?.winner2Name === team.teamName) winnerBadge = ' <span class="badge badge-winner2">🥈 JUARA 2</span>';
-                else if (winner?.winner3Name === team.teamName) winnerBadge = ' <span class="badge badge-winner3">🥉 JUARA 3</span>';
+    // ========== REGISTER ==========
+    function renderRegister(teams) {
+        return `
+        <div class="glass rounded-2xl p-6 md:p-8 max-w-3xl mx-auto">
+            <h2 class="text-2xl font-bold text-gold mb-6"><i class="fas fa-pen-alt mr-2"></i>Form Pendaftaran</h2>
+            <form id="registerForm">
+                <div class="space-y-4">
+                    <div><label class="text-gold text-sm font-medium block mb-1">Nama Perwakilan *</label><input id="rwakil" class="input-dark" required></div>
+                    <div><label class="text-gold text-sm font-medium block mb-1">WhatsApp *</label><input id="rwa" class="input-dark" placeholder="08xxxxxxxxxx" required></div>
+                    <div><label class="text-gold text-sm font-medium block mb-1">Nama Team *</label><input id="rteam" class="input-dark" required></div>
+                    <div><label class="text-gold text-sm font-medium block mb-1">Password (min 6 karakter) *</label><input id="rpass" type="password" class="input-dark" minlength="6" required></div>
+                    <h3 class="text-gold font-semibold mt-4">Pemain Utama (4 orang)</h3>
+                    ${[1,2,3,4].map(i => `
+                        <div class="grid grid-cols-2 gap-3">
+                            <input id="rnick${i}" class="input-dark" placeholder="Nickname ${i}" required>
+                            <input id="ruid${i}" class="input-dark" placeholder="UID ${i}" required>
+                        </div>
+                    `).join('')}
+                    <h3 class="text-gold font-semibold mt-4">Cadangan (Opsional)</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <input id="rnick5" class="input-dark" placeholder="Nickname Cadangan">
+                        <input id="ruid5" class="input-dark" placeholder="UID Cadangan">
+                    </div>
+                    <button type="submit" class="btn-primary w-full mt-4"><i class="fas fa-save mr-2"></i>Submit Registrasi</button>
+                </div>
+            </form>
+        </div>`;
+    }
+
+    // ========== TEAMS ==========
+    async function renderTeams(teams, winner) {
+        const active = teams.filter(t => t.status === 'active').sort((a,b) => SLOTS.indexOf(a.slot) - SLOTS.indexOf(b.slot));
+        const getWinnerBadge = (name) => {
+            if (winner?.winner1Name === name) return ' <span class="badge-winner1">JUARA 1</span>';
+            if (winner?.winner2Name === name) return ' <span class="badge-winner2">JUARA 2</span>';
+            if (winner?.winner3Name === name) return ' <span class="badge-winner3">JUARA 3</span>';
+            return '';
+        };
+        return `
+        <div class="flex flex-wrap gap-4 items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold text-gold"><i class="fas fa-users mr-2"></i>Daftar Tim</h2>
+            <button onclick="navigateTo('register')" class="btn-primary btn-sm"><i class="fas fa-plus mr-1"></i>Tambah Tim</button>
+        </div>
+        <div class="flex flex-wrap gap-3 mb-4">
+            <input id="searchTeam" class="input-dark flex-1 min-w-[150px]" placeholder="Cari Nama Team...">
+            <input id="searchWakil" class="input-dark flex-1 min-w-[150px]" placeholder="Cari Perwakilan...">
+            <select id="filterSlot" class="input-dark w-auto min-w-[120px]">
+                <option value="all">Semua Slot</option>
+                ${SLOTS.map(s => `<option value="${s}">Slot ${s}</option>`).join('')}
+            </select>
+            <button onclick="exportTeams()" class="btn-outline btn-sm"><i class="fas fa-download mr-1"></i>Export</button>
+        </div>
+        <div class="table-wrap glass rounded-xl">
+            <table>
+                <thead><tr><th>No</th><th>Slot</th><th>Nama Team</th><th>Perwakilan</th><th>Player</th><th>Status</th><th>Aksi</th></tr></thead>
+                <tbody id="teamList">
+                    ${active.map((t,i) => `
+                        <tr>
+                            <td>${i+1}</td>
+                            <td><span class="slot-badge">${t.slot}</span></td>
+                            <td><strong>${escapeHtml(t.teamName)}</strong>${getWinnerBadge(t.teamName)}</td>
+                            <td>${escapeHtml(t.perwakilan)}</td>
+                            <td>${t.players ? t.players.map(p => `${escapeHtml(p.nick)}`).join(', ') : '-'}</td>
+                            <td><span class="badge-active">Active</span></td>
+                            <td>
+                                <button onclick="viewTeam('${t.id}')" class="btn-action btn-xs"><i class="fas fa-eye"></i></button>
+                                <button onclick="editTeam('${t.id}')" class="btn-action btn-xs"><i class="fas fa-edit"></i></button>
+                                <button onclick="cancelTeam('${t.id}')" class="btn-action btn-xs"><i class="fas fa-trash"></i></button>
+                                <button onclick="copyWA('${t.whatsapp}')" class="btn-action btn-xs"><i class="fab fa-whatsapp"></i></button>
+                            </td>
+                        </tr>
+                    `).join('')}
+                    ${active.length === 0 ? '<tr><td colspan="7" class="empty-state"><i class="fas fa-inbox"></i>Belum ada tim terdaftar</td></tr>' : ''}
+                </tbody>
+            </table>
+        </div>`;
+    }
+
+    // ========== SCORE ==========
+    async function renderScore() {
+        await loadScoreData();
+        const sorted = [...scoreTeams].sort((a,b) => getTeamScore(b.id) - getTeamScore(a.id));
+        const totalMatches = scoreMatches.length;
+        const totalResults = scoreMatches.reduce((s,m) => s + m.results.length, 0);
+        const totalKills = scoreMatches.reduce((s,m) => s + m.results.reduce((a,r) => a + (r.kills||0), 0), 0);
+
+        return `
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="glass rounded-2xl p-6">
+                <h3 class="text-gold font-bold text-lg mb-4"><i class="fas fa-calculator mr-2"></i>Sistem Penilaian</h3>
+                <div class="flex justify-between text-sm text-gray-400"><span>Poin per Kill</span><span class="text-gold font-bold">${scoreKillPoint}</span></div>
+                <div class="mt-3 flex flex-wrap gap-2">
+                    ${Object.entries(scoreRankPoints).sort((a,b)=>a[0]-b[0]).map(([rank, pts]) => `
+                        <span class="bg-[#2A2F3E] px-3 py-1 rounded-full text-xs"><span class="text-gray-400">#${rank}</span> <span class="text-gold font-bold">${pts}</span></span>
+                    `).join('')}
+                </div>
+                <div class="mt-4 pt-4 border-t border-[#2A2F3E] text-sm text-gray-400">
+                    <div class="flex justify-between"><span>Total Match</span><span class="text-white font-bold">${totalMatches}</span></div>
+                    <div class="flex justify-between"><span>Total Hasil</span><span class="text-white font-bold">${totalResults}</span></div>
+                    <div class="flex justify-between"><span>Total Kill</span><span class="text-white font-bold">${totalKills}</span></div>
+                </div>
+            </div>
+            <div class="lg:col-span-2 glass rounded-2xl p-6">
+                <h3 class="text-gold font-bold text-lg mb-4"><i class="fas fa-trophy mr-2"></i>Klasemen</h3>
+                <div class="space-y-2 max-h-[500px] overflow-y-auto pr-2">
+                    ${sorted.map((t,i) => `
+                        <div class="rank-item ${i===0?'top1':i===1?'top2':i===2?'top3':''}">
+                            <div class="rank-number">${i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`}</div>
+                            <div><span class="slot-badge" style="background:#2A2F3E;color:#fff;">${t.slot}</span> <strong>${escapeHtml(t.name)}</strong></div>
+                            <div class="rank-score">${getTeamScore(t.id)} pts</div>
+                        </div>
+                    `).join('')}
+                    ${sorted.length === 0 ? '<div class="empty-state"><i class="fas fa-users-slash"></i>Belum ada tim</div>' : ''}
+                </div>
+            </div>
+        </div>
+        <div class="mt-6 glass rounded-2xl p-6">
+            <h3 class="text-gold font-bold text-lg mb-4"><i class="fas fa-calendar-alt mr-2"></i>Hasil Pertandingan</h3>
+            ${scoreMatches.length === 0 ? '<div class="empty-state"><i class="fas fa-folder-open"></i>Belum ada match</div>' :
+            scoreMatches.map((match, idx) => {
+                const sortedResults = [...match.results].sort((a,b) => a.rank - b.rank);
                 return `
-                <tr>
-                    <td style="text-align: center;">${idx+1}</td>
-                    <td><span class="slot-badge" style="display: inline-block; min-width: 55px;">${team.slot}</span></td>
-                    <td><strong>${escapeHtml(team.teamName)}</strong>${winnerBadge}</td>
-                    <td>${escapeHtml(team.perwakilan)}</td>
-                    <td><span class="badge badge-active">Active</span></td>
-                    <td>
-                        <button class="action-btn" onclick="window.viewDetail('${team.id}')"><i class="fas fa-eye"></i></button>
-                        <button class="action-btn" onclick="window.editTeam('${team.id}')"><i class="fas fa-edit"></i></button>
-                        <button class="action-btn" onclick="window.cancelTeam('${team.id}')"><i class="fas fa-trash"></i></button>
-                        <button class="action-btn" onclick="window.copyWhatsapp('${team.whatsapp}')"><i class="fab fa-whatsapp"></i></button>
-                    </td>
-                </tr>`;
+                <div class="match-card">
+                    <div class="match-header">
+                        <span class="match-name"><i class="fas fa-gamepad mr-2"></i>${escapeHtml(match.matchName)}</span>
+                        <span class="text-gray-400 text-xs">${match.results.length} tim</span>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Rank</th><th>Tim</th><th>Slot</th><th>Kill</th><th>Skor</th></tr></thead>
+                            <tbody>
+                                ${sortedResults.map(r => {
+                                    const team = scoreTeams.find(t => t.id === r.teamId);
+                                    return `
+                                    <tr>
+                                        <td><span class="bg-gold text-[#0A2E5C] px-2 py-0.5 rounded-full text-xs font-bold">#${r.rank}</span></td>
+                                        <td><strong>${team ? escapeHtml(team.name) : 'Unknown'}</strong></td>
+                                        <td><span class="slot-badge" style="background:#2A2F3E;color:#fff;font-size:0.6rem;padding:2px 8px;">${team ? team.slot : '-'}</span></td>
+                                        <td><span class="bg-red-600 text-white px-2 py-0.5 rounded text-xs font-bold">${r.kills}</span></td>
+                                        <td><span class="text-gold font-bold">${calcScore(r.rank, r.kills)} pts</span></td>
+                                    </tr>`;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>`;
             }).join('')}
-        </tbody>
-    </table>
-</div>`;
-            document.getElementById("mainContent").innerHTML = html;
-            document.getElementById("searchTeam")?.addEventListener("input", filterTeams);
-            document.getElementById("searchWakil")?.addEventListener("input", filterTeams);
-            document.getElementById("filterSlot")?.addEventListener("change", filterTeams);
-            document.getElementById("exportBtn")?.addEventListener("click", () => exportCSV(data));
-        };
-        
-        const filterTeams = () => { 
-            const searchTeam = document.getElementById("searchTeam")?.value.toLowerCase()||"", 
-                  searchWakil = document.getElementById("searchWakil")?.value.toLowerCase()||"", 
-                  filterSlot = document.getElementById("filterSlot")?.value||"all"; 
-            renderTable(currentTeams.filter(t=>t.teamName.toLowerCase().includes(searchTeam)&&t.perwakilan.toLowerCase().includes(searchWakil)&&(filterSlot==="all"||t.slot===filterSlot))); 
-        };
-        renderTable(currentTeams);
-        
-        window.viewDetail = async (id) => { 
-            const doc = await db.collection("teams").doc(id).get();
-            const t = doc.data(); 
-            if (!t) return;
-            Swal.fire({ 
-                title: t.teamName, 
-                html: `<b>Perwakilan:</b> ${escapeHtml(t.perwakilan)}<br><b>WhatsApp:</b> ${t.whatsapp}<br><b>Slot:</b> ${t.slot}<br><b>Pemain:</b><br>${t.players.map(p=>`${escapeHtml(p.nick)} (UID: ${p.uid})`).join("<br>")}<br><b>Tanggal Daftar:</b> ${formatDate(t.createdAt)}`, 
-                icon: "info", 
-                background: "#1A1F2E", 
-                color: "#fff" 
-            }); 
-        };
-        
-        window.editTeam = async (id) => { 
-            const doc = await db.collection("teams").doc(id).get(); 
-            const team = doc.data(); 
-            if (!team) return;
-            const { value: pwd } = await Swal.fire({ title: "Verifikasi Password", input: "password", background: "#1A1F2E", color: "#fff" }); 
-            if (!pwd || encryptPassword(pwd) !== team.password) { showToast("error", "Password salah!"); return; } 
-            const playersHtml = team.players.slice(0,4).map((p,i)=>`<div class="form-row"><input id="editNick${i+1}" value="${escapeHtml(p.nick)}"><input id="editUid${i+1}" value="${p.uid}"></div>`).join(''); 
-            const cadangan = team.players[4] || { nick: "", uid: "" }; 
-            const { value: formData } = await Swal.fire({ 
-                title: `Edit Team: ${team.teamName}`, 
-                html: `<div class="form-group"><label>Nama Team</label><input id="editTeamName" value="${escapeHtml(team.teamName)}"></div><div class="form-group"><label>Perwakilan</label><input id="editWakil" value="${escapeHtml(team.perwakilan)}"></div><div class="form-group"><label>WhatsApp</label><input id="editWhatsapp" value="${team.whatsapp}"></div><h3>Pemain Utama</h3>${playersHtml}<h3>Cadangan</h3><div class="form-row"><input id="editNickCad" value="${escapeHtml(cadangan.nick)}"><input id="editUidCad" value="${cadangan.uid}"></div>`, 
-                width: "600px", 
-                preConfirm: () => { 
-                    const newPlayers = []; 
-                    for (let i=1;i<=4;i++) { 
-                        const nick = document.getElementById(`editNick${i}`)?.value.trim() || '', 
-                              uid = document.getElementById(`editUid${i}`)?.value.trim() || ''; 
-                        if (!nick || !uid) { Swal.showValidationMessage(`Player ${i} tidak lengkap`); return false; } 
-                        if (!/^\d+$/.test(uid)) { Swal.showValidationMessage(`UID harus angka`); return false; } 
-                        newPlayers.push({ nick, uid }); 
-                    } 
-                    const nickCad = document.getElementById("editNickCad")?.value.trim() || '', 
-                          uidCad = document.getElementById("editUidCad")?.value.trim() || ''; 
-                    if (nickCad && uidCad) { 
-                        if (!/^\d+$/.test(uidCad)) { Swal.showValidationMessage("UID Cadangan harus angka"); return false; } 
-                        newPlayers.push({ nick: nickCad, uid: uidCad }); 
-                    } 
-                    return { 
-                        teamName: document.getElementById("editTeamName")?.value.trim() || '', 
-                        perwakilan: document.getElementById("editWakil")?.value.trim() || '', 
-                        whatsapp: document.getElementById("editWhatsapp")?.value.trim() || '', 
-                        players: newPlayers 
-                    }; 
-                }, 
-                background: "#1A1F2E", 
-                color: "#fff" 
-            }); 
-            if (formData && formData.teamName && formData.perwakilan && /^08[0-9]{8,13}$/.test(formData.whatsapp)) { 
-                await db.collection("teams").doc(id).update(formData); 
-                showToast("success", "Data team berhasil diupdate"); 
-                renderPage(); 
-            } else if (formData) showToast("error", "WhatsApp tidak valid"); 
-        };
-        
-        window.cancelTeam = async (id) => { 
-            const { value: pwd } = await Swal.fire({ title: "Cancel Team", input: "password", background: "#1A1F2E", color: "#fff" }); 
-            if (!pwd) return; 
-            const doc = await db.collection("teams").doc(id).get();
-            const team = doc.data(); 
-            if (!team || encryptPassword(pwd) !== team.password) { showToast("error", "Password salah!"); return; } 
-            const confirm = await Swal.fire({ title: "Konfirmasi", text: `Yakin ingin membatalkan team ${team.teamName}?`, icon: "warning", showCancelButton: true, background: "#1A1F2E", color: "#fff" }); 
-            if (confirm.isConfirmed) { 
-                await db.collection("teams").doc(id).update({ status: "cancelled" }); 
-                showToast("success", "Team berhasil dibatalkan"); 
-                renderPage(); 
-            } 
-        };
-        
-        window.copyWhatsapp = (wa) => { 
-            navigator.clipboard.writeText(wa); 
-            showToast("success", "Nomor WhatsApp disalin!"); 
-        };
+        </div>`;
     }
-    
-    function exportCSV(teams) { 
-        let csv = "No,Slot,Nama Team,Perwakilan,WhatsApp,Status\n"; 
-        teams.forEach((t,i)=>csv+=`${i+1},${t.slot},${t.teamName},${t.perwakilan},${t.whatsapp},${t.status}\n`); 
-        const blob=new Blob([csv],{type:"text/csv"}), link=document.createElement("a"); 
-        link.href=URL.createObjectURL(blob); 
-        link.download="peserta_tournament.csv"; 
-        link.click(); 
-        showToast("success","CSV berhasil diexport"); 
+
+    // ========== BANNED ==========
+    function renderBanned(banned) {
+        return `
+        <div class="glass rounded-2xl p-6">
+            <h2 class="text-2xl font-bold text-gold mb-6"><i class="fas fa-ban mr-2"></i>Daftar Team Banned</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Nama Team</th><th>Alasan</th><th>Tanggal BAN</th></tr></thead>
+                    <tbody>
+                        ${banned.length ? banned.map(b => `
+                            <tr><td><strong>${escapeHtml(b.teamName)}</strong></td><td>${escapeHtml(b.reason || 'Melanggar aturan')}</td><td>${formatDate(b.bannedAt)}</td></tr>
+                        `).join('') : '<tr><td colspan="3" class="empty-state"><i class="fas fa-check-circle"></i>Belum ada team yang di-BAN</td></tr>'}
+                    </tbody>
+                </table>
+            </div>
+        </div>`;
     }
-    
-    // ========== BANNED, WINNER, PRIZE PAGES ==========
-    function renderBannedTeams(bannedTeams) { 
-        document.getElementById("mainContent").innerHTML = `<div class="card"><h2><i class="fas fa-ban"></i> Daftar Team yang di-BAN</h2><div class="table-wrapper">\n<table><thead><tr><th>Nama Team</th><th>Alasan BAN</th><th>Tanggal BAN</th></tr></thead><tbody>${bannedTeams.length ? bannedTeams.map(t=>`<tr><td><strong>${escapeHtml(t.teamName)}</strong></td><td>${escapeHtml(t.reason||'Melanggar aturan')}</td><td>${formatDate(t.bannedAt)}</td></tr>`).join('') : '<tr><td colspan="3" class="empty-state">Belum ada team yang di-BAN</td></tr>'}</tbody>\n</table></div></div>`; 
+
+    // ========== WINNERS ==========
+    function renderWinners(winner) {
+        const hasW1 = winner?.winner1Name, hasW2 = winner?.winner2Name, hasW3 = winner?.winner3Name;
+        return `
+        <div class="glass rounded-2xl p-6 text-center">
+            <h2 class="text-2xl font-bold text-gold mb-6"><i class="fas fa-trophy mr-2"></i>Pemenang Tournament</h2>
+            ${hasW1 ? `
+                <div class="mb-6">
+                    <i class="fas fa-crown text-5xl text-gold"></i>
+                    <h3 class="text-3xl font-bold text-gold">JUARA 1</h3>
+                    <p class="text-2xl font-bold text-white">${escapeHtml(winner.winner1Name)}</p>
+                    <p class="text-gray-400">${escapeHtml(winner.winner1Wakil)}</p>
+                </div>` : ''}
+            ${hasW2 ? `
+                <div class="mb-6">
+                    <i class="fas fa-medal text-4xl text-gray-300"></i>
+                    <h3 class="text-2xl font-bold text-gray-300">JUARA 2</h3>
+                    <p class="text-xl font-bold text-white">${escapeHtml(winner.winner2Name)}</p>
+                    <p class="text-gray-400">${escapeHtml(winner.winner2Wakil)}</p>
+                </div>` : ''}
+            ${hasW3 ? `
+                <div class="mb-6">
+                    <i class="fas fa-medal text-4xl text-amber-600"></i>
+                    <h3 class="text-2xl font-bold text-amber-600">JUARA 3</h3>
+                    <p class="text-xl font-bold text-white">${escapeHtml(winner.winner3Name)}</p>
+                    <p class="text-gray-400">${escapeHtml(winner.winner3Wakil)}</p>
+                </div>` : ''}
+            ${!hasW1 && !hasW2 && !hasW3 ? '<p class="text-gray-400">Belum ada pemenang</p>' : ''}
+            ${winner?.winnerAt ? `<p class="text-gray-500 text-sm mt-4">Diumumkan: ${formatDate(winner.winnerAt)}</p>` : ''}
+        </div>`;
     }
-    
-    function renderWinnerPage(winner) { 
-        const hasWinner1 = winner?.winner1Name, 
-              hasWinner2 = winner?.winner2Name,
-              hasWinner3 = winner?.winner3Name;
-        document.getElementById("mainContent").innerHTML = `<div class="card"><h2><i class="fas fa-trophy"></i> Pemenang Tournament</h2>
-            <div class="winner-card">
-                ${hasWinner1 ? `<div style="margin-bottom:2rem;"><i class="fas fa-crown" style="font-size:3rem;color:#FFD600"></i><h1 style="color:#FFD600">🥇 JUARA 1</h1><h2>${escapeHtml(winner.winner1Name)}</h2><p><strong>Perwakilan:</strong> ${escapeHtml(winner.winner1Wakil)}</p></div>` : ''}
-                ${hasWinner2 ? `<div style="margin-bottom:2rem;"><i class="fas fa-medal" style="font-size:3rem;color:#C0C0C0"></i><h1 style="color:#C0C0C0">🥈 JUARA 2</h1><h2>${escapeHtml(winner.winner2Name)}</h2><p><strong>Perwakilan:</strong> ${escapeHtml(winner.winner2Wakil)}</p></div>` : ''}
-                ${hasWinner3 ? `<div><i class="fas fa-medal" style="font-size:3rem;color:#cd7f32"></i><h1 style="color:#cd7f32">🥉 JUARA 3</h1><h2>${escapeHtml(winner.winner3Name)}</h2><p><strong>Perwakilan:</strong> ${escapeHtml(winner.winner3Wakil)}</p></div>` : ''}
-                ${!hasWinner1 && !hasWinner2 && !hasWinner3 ? '<p>Belum ada pemenang</p>' : ''}
-                ${winner?.winnerAt ? `<p><small>Diumumkan: ${formatDate(winner.winnerAt)}</small></p>` : ''}
-            </div>
-        </div>`; 
-    }
-    
-function renderPrizePage() { 
-    document.getElementById("mainContent").innerHTML = `
-    <div class="card">
-        <h2><i class="fas fa-gift"></i> Daftar Hadiah Tournament</h2>
-        <div class="prize-card"><h3><i class="fas fa-medal"></i> Juara 1</h3><p>🎁 1200 Gold + Sertifikat + Trophy</p></div>
-        <div class="prize-card"><h3><i class="fas fa-medal"></i> Juara 2</h3><p>🎁 1000 Gold + Sertifikat</p></div>
-        <div class="prize-card"><h3><i class="fas fa-medal"></i> Juara 3</h3><p>🎁 800 Gold + Sertifikat</p></div>
-        <hr style="margin: 1rem 0;">
-        
-        <!-- Most Kill Mingguan dengan JERSEY -->
-        <div class="prize-card" style="border: 2px solid var(--yellow);">
-            <h3><i class="fas fa-skull-crossbones"></i> 🎁 MOST KILL MINGGU INI</h3>
-            <p>Pemain dengan total kill tertinggi dalam tournament minggu ini berhak mendapatkan <strong>Jersey Limited Edition Bloodstrike Indonesia!</strong></p>
-            <div style="display: flex; justify-content: center; margin: 1rem 0;">
-                <img src="https://imageshack.com/i/plaXjzWkj" alt="Jersey Gaming" style="max-width: 250px; width: 100%; background: #fff; border-radius: 12px; padding: 10px;" onerror="this.src='https://placehold.co/250x200/FFD600/1A1F2E?text=Jersey+JB'">
-            </div>
-            <p style="margin-top: 0.5rem;"><strong>🏆 Jersey Limited Edition 🏆</strong><br>Gratis!</p>
-        </div>
-        
-        <div class="card" style="margin-top: 1.5rem;">
-            <h2><i class="fas fa-calendar-week"></i> 🎁 MONTHLY MISSION EVENT (EVENT BULANAN)</h2>
-            <p>Turnamen ini diadakan setiap bulanan! Selain memperebutkan juara utama di turnamen, kamu juga bisa mengikuti misi bulanan dengan hadiah menarik.</p>
-            
-            <h3><i class="fab fa-tiktok"></i> Misi Konten Kreator JB Tokies</h3>
-            <ul class="mission-list">
-                <li><strong>Tugas Misi:</strong> Buatlah potongan video klip menarik (highlight/moment) saat turnamen berlangsung, ATAU buat video kreatif untuk mempromosikan JB Tokies.</li>
-                <li><strong>Platform Upload:</strong> Upload video tersebut ke akun TikTok kamu.</li>
-                <li><strong>Wajib Tag:</strong> @mamastokies dan @scrimbaseid</li>
-                <li><strong>Wajib Hashtag:</strong> #jbtokies dan #scrimbaseid</li>
-                <li><strong>Deadline Pengumpulan:</strong> Link video yang sudah di-upload paling lambat dikirimkan pada hari Rabu setiap minggunya.</li>
-            </ul>
-            
-                        <!-- Bagian EARPHONE dengan ukuran lebih KECIL dan RAPI -->
-            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 20px; background: var(--gray-light); border-radius: 20px; padding: 1.5rem; margin-top: 1rem;">
-                <div style="flex: 0 0 120px; text-align: center;">
-                    <img src="https://imageshack.com/i/pnVaf4gYj" alt="Earphone Gaming" style="max-width: 100%; height: auto; border-radius: 12px; background: #fff; padding: 8px;" onerror="this.src='https://placehold.co/120x120/FFD600/1A1F2E?text=🎧'">
-                </div>
-                <div style="flex: 2; min-width: 200px;">
-                    <p><strong>🎧 Hadiah:</strong> Konten video yang paling bagus, kreatif, dan menarik akan dipilih menjadi 1 orang pemenang utama dan berhak mendapatkan <strong>Earphone Gaming keren!</strong></p>
-                    <p><small>Salam Sportivitas & Selamat Bertanding! 🎮🔥</small></p>
-                </div>
-            </div>
-            
-            <!-- FORM SUBMIT EARPHONE -->
-            <div style="background: linear-gradient(135deg, var(--gray-light), #1f2436); border-radius: 20px; padding: 1.5rem; margin-top: 1.5rem; border: 1px solid var(--yellow);">
-                <h3 style="color: var(--yellow); margin-bottom: 1rem;"><i class="fas fa-headphones"></i> Daftar Menangkan Earphone Gaming!</h3>
-                <p>Isi form di bawah ini untuk mengikuti kompetisi konten kreator JB Tokies dan berkesempatan memenangkan Earphone Gaming keren!</p>
-                
-                <form id="creatorForm" style="margin-top: 1.5rem;">
-                    <div class="form-group">
-                        <label>Nama Lengkap</label>
-                        <input type="text" id="creatorName" placeholder="Masukkan nama lengkap Anda" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Nama Tim (jika terdaftar di tournament)</label>
-                        <input type="text" id="creatorTeam" placeholder="Nama tim Anda (opsional)">
-                    </div>
-                    <div class="form-group">
-                        <label>Username TikTok</label>
-                        <input type="text" id="creatorTiktok" placeholder="@username Anda" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Link Video TikTok</label>
-                        <input type="url" id="creatorVideoLink" placeholder="https://www.tiktok.com/..." required>
-                    </div>
-                    <div class="form-group">
-                        <label>Email (untuk konfirmasi pemenang)</label>
-                        <input type="email" id="creatorEmail" placeholder="email@example.com" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Nomor WhatsApp</label>
-                        <input type="tel" id="creatorWhatsapp" placeholder="08xxxxxxxxxx" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary"><i class="fab fa-tiktok"></i> Kirim Partisipasi</button>
-                </form>
-                <p style="font-size: 0.7rem; margin-top: 1rem; color: #8ba0c0;"><i class="fas fa-info-circle"></i> Pastikan video sudah di-upload ke TikTok dengan tag @mamastokies dan @scrimbaseid serta hashtag #jbtokies #scrimbaseid.</p>
-            </div>
-        </div>
-        <hr>
-        <p style="text-align:center; margin-top: 1rem;"><small>*Hadiah akan dikirim setelah tournament selesai dan pemenang most kill diverifikasi.</small></p>
-    </div>`;
-    
-    // Event listener untuk form submit
-    const creatorForm = document.getElementById("creatorForm");
-    if (creatorForm) {
-        creatorForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            
-            const name = document.getElementById("creatorName").value.trim();
-            const team = document.getElementById("creatorTeam").value.trim();
-            const tiktok = document.getElementById("creatorTiktok").value.trim();
-            const videoLink = document.getElementById("creatorVideoLink").value.trim();
-            const email = document.getElementById("creatorEmail").value.trim();
-            const whatsapp = document.getElementById("creatorWhatsapp").value.trim();
-            
-            // Validasi
-            if (!name || !tiktok || !videoLink || !email || !whatsapp) {
-                showToast("error", "Mohon lengkapi semua data!");
-                return;
-            }
-            if (!/^08[0-9]{8,13}$/.test(whatsapp)) {
-                showToast("error", "Nomor WhatsApp tidak valid!");
-                return;
-            }
-            if (!videoLink.includes("tiktok.com")) {
-                showToast("error", "Harap masukkan link TikTok yang valid!");
-                return;
-            }
-            
-            showLoading(true);
-            try {
-                // Simpan ke Firestore
-                await db.collection("creatorSubmissions").add({
-                    fullName: name,
-                    teamName: team || "-",
-                    tiktokUsername: tiktok,
-                    videoUrl: videoLink,
-                    email: email,
-                    whatsapp: whatsapp,
-                    submittedAt: new Date().toISOString(),
-                    status: "pending"
+
+    // ========== EVENTS ==========
+    function attachEvents(teams) {
+        // Register form
+        const form = document.getElementById('registerForm');
+        if (form) {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const wakil = document.getElementById('rwakil').value.trim();
+                const wa = document.getElementById('rwa').value.trim();
+                const teamName = document.getElementById('rteam').value.trim();
+                const pass = document.getElementById('rpass').value;
+                if (!/^08[0-9]{8,13}$/.test(wa)) return toast('error', 'WhatsApp tidak valid');
+                if (pass.length < 6) return toast('error', 'Password min 6 karakter');
+
+                const players = [];
+                for (let i = 1; i <= 4; i++) {
+                    const nick = document.getElementById(`rnick${i}`).value.trim();
+                    const uid = document.getElementById(`ruid${i}`).value.trim();
+                    if (!nick || !uid) return toast('error', `Player ${i} tidak lengkap`);
+                    if (!/^\d+$/.test(uid)) return toast('error', `UID Player ${i} harus angka`);
+                    players.push({ nick, uid });
+                }
+                const nick5 = document.getElementById('rnick5').value.trim();
+                const uid5 = document.getElementById('ruid5').value.trim();
+                if (nick5 && uid5) { if (!/^\d+$/.test(uid5)) return toast('error', 'UID Cadangan harus angka'); players.push({ nick: nick5, uid: uid5 }); }
+
+                const existing = await db.collection('teams').where('teamName', '==', teamName).get();
+                if (!existing.empty) return toast('error', 'Nama Team sudah terdaftar!');
+                const banned = await db.collection('bannedTeams').where('teamName', '==', teamName).get();
+                if (!banned.empty) return toast('error', 'Team ini telah di-BAN!');
+
+                const all = (await db.collection('teams').get()).docs.map(d => ({ id: d.id, ...d.data() })).filter(t => t.status === 'active');
+                const slot = await getAvailableSlot(all);
+                if (!slot) return toast('error', 'Slot penuh!');
+
+                showLoading(true);
+                await db.collection('teams').add({ perwakilan: wakil, whatsapp: wa, teamName, players, password: encryptPassword(pass), slot, status: 'active', createdAt: new Date().toISOString() });
+                showLoading(false);
+                toast('success', `Pendaftaran berhasil! Slot: ${slot}`);
+                navigateTo('teams');
+            });
+        }
+
+        // Search filters
+        const searchTeam = document.getElementById('searchTeam');
+        const searchWakil = document.getElementById('searchWakil');
+        const filterSlot = document.getElementById('filterSlot');
+        if (searchTeam || searchWakil || filterSlot) {
+            const filter = () => {
+                const st = searchTeam?.value.toLowerCase() || '';
+                const sw = searchWakil?.value.toLowerCase() || '';
+                const fs = filterSlot?.value || 'all';
+                const rows = document.querySelectorAll('#teamList tr');
+                rows.forEach(row => {
+                    const text = row.innerText.toLowerCase();
+                    const slot = row.querySelector('.slot-badge')?.innerText || '';
+                    const match = text.includes(st) && text.includes(sw) && (fs === 'all' || slot === fs);
+                    row.style.display = match ? '' : 'none';
                 });
-                
-                // Reset form
-                creatorForm.reset();
-                showToast("success", "🎉 Partisipasi Anda berhasil dikirim! Semoga beruntung!");
-            } catch (error) {
-                console.error("Error submitting:", error);
-                showToast("error", "Gagal mengirim data. Silakan coba lagi.");
-            }
-            showLoading(false);
-        });
-    }
-}
-    
-    // ========== INITIALIZATION ==========
-    function init() {
-        setTimeout(()=>{
-            const loadingEl = document.getElementById("loading");
-            if (loadingEl) loadingEl.style.display = "none";
-        }, 500);
-        
-        const hamburger = document.getElementById("hamburger");
-        if (hamburger) {
-            hamburger.addEventListener("click",()=>{
-                const menu = document.getElementById("navMenu");
-                if (menu) menu.classList.toggle("active");
-            });
-        }
-        
-        document.querySelectorAll('.nav-menu a').forEach(link=>{ 
-            link.addEventListener('click',(e)=>{ 
-                e.preventDefault(); 
-                const page = link.getAttribute('data-page');
-                if (page) navigateTo(page); 
-            }); 
-        });
-        
-        const darkModeBtn = document.getElementById("darkModeBtn");
-        let darkMode = true;
-        darkModeBtn.addEventListener("click",()=>{ 
-            darkMode = !darkMode; 
-            if (darkMode) {
-                document.body.classList.remove("light-mode");
-                darkModeBtn.innerHTML = '<i class="fas fa-moon"></i> Mode';
-            } else {
-                document.body.classList.add("light-mode");
-                darkModeBtn.innerHTML = '<i class="fas fa-sun"></i> Mode';
-            }
-        });
-        
-        const scrollBtn = document.getElementById("scrollTopBtn");
-        window.addEventListener("scroll",()=>{
-            if (scrollBtn) scrollBtn.style.display = window.scrollY > 300 ? "flex" : "none";
-        });
-        if (scrollBtn) {
-            scrollBtn.addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}));
-        }
-        
-        // Popup initialization
-        const popup = document.getElementById('popupPoster');
-        const closeBtn = document.getElementById('closeBtn');
-        const actionBtn = document.getElementById('actionBtn');
-        
-        function closePopup() {
-            if (popup) popup.style.display = 'none';
-        }
-        
-        if (closeBtn) closeBtn.addEventListener('click', closePopup);
-        if (actionBtn) actionBtn.addEventListener('click', closePopup);
-        if (popup) {
-            popup.addEventListener('click', function(e) {
-                if (e.target === popup) closePopup();
-            });
-        }
-        
-       // Show popup after 1 second with carousel
-setTimeout(() => {
-    if (popup) {
-        popup.style.display = 'flex';
-        initCarousel(); // Inisialisasi carousel setiap popup dibuka
-    }
-}, 1000);
-        
-        // Sponsor logos
-        const sponsorContainer = document.getElementById('sponsorContainer');
-        if (sponsorContainer) {
-            const sponsorData = [
-                { name: "ScrimBaseID", logo: "https://placehold.co/100x50/FFD700/1A1F2E?text=ScrimBaseID", url: "https://scrimbaseid.netlify.app" },
-                { name: "Sabada Organizer", logo: "https://placehold.co/100x50/FFD700/1A1F2E?text=Sabada", url: "https://sabada-organizer.netlify.app" }
-            ];
-            sponsorData.forEach(sponsor => {
-                const link = document.createElement('a');
-                link.href = sponsor.url;
-                link.target = '_blank';
-                link.style.display = 'inline-block';
-                const img = document.createElement('img');
-                img.src = sponsor.logo;
-                img.alt = sponsor.name;
-                img.className = 'sponsor-img';
-                link.appendChild(img);
-                sponsorContainer.appendChild(link);
-            });
-        }
-        
-        // Logo fallback
-        const footerLogo = document.getElementById('footerLogo');
-        if (footerLogo) {
-            footerLogo.onerror = function() {
-                const parent = this.parentElement;
-                const fallback = document.createElement('div');
-                fallback.style.cssText = 'width:80px;height:80px;background:#FFD700;border-radius:50%;margin:0 auto 15px;display:flex;align-items:center;justify-content:center;font-size:2rem;color:#1a1a1a;font-weight:bold;';
-                fallback.textContent = 'JB';
-                this.style.display = 'none';
-                parent.insertBefore(fallback, this);
             };
+            searchTeam?.addEventListener('input', filter);
+            searchWakil?.addEventListener('input', filter);
+            filterSlot?.addEventListener('change', filter);
         }
-        
-        navigateTo("dashboard");
     }
-    init();
-    
-    // ========== CAROUSEL POPUP 2 GAMBAR ==========
-function initCarousel() {
-    const slides = document.getElementById('carouselSlides');
-    const dots = document.querySelectorAll('.dot');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    let currentIndex = 0;
-    const totalSlides = 2;
-    
-    function updateCarousel() {
-        if (slides) {
-            slides.style.transform = `translateX(-${currentIndex * 100}%)`;
+
+    // ========== ACTIONS ==========
+    window.viewTeam = async (id) => {
+        const doc = await db.collection('teams').doc(id).get();
+        const t = doc.data();
+        if (!t) return;
+        Swal.fire({
+            title: t.teamName,
+            html: `<b>Perwakilan:</b> ${escapeHtml(t.perwakilan)}<br><b>WhatsApp:</b> ${t.whatsapp}<br><b>Slot:</b> ${t.slot}<br><b>Pemain:</b><br>${t.players.map(p => `${escapeHtml(p.nick)} (UID: ${p.uid})`).join('<br>')}<br><b>Daftar:</b> ${formatDate(t.createdAt)}`,
+            icon: 'info',
+            background: '#1A1F2E',
+            color: '#fff'
+        });
+    };
+
+    window.editTeam = async (id) => {
+        const doc = await db.collection('teams').doc(id).get();
+        const team = doc.data();
+        if (!team) return;
+        const { value: pwd } = await Swal.fire({ title: 'Verifikasi Password', input: 'password', background: '#1A1F2E', color: '#fff' });
+        if (!pwd || encryptPassword(pwd) !== team.password) return toast('error', 'Password salah!');
+
+        const playersHtml = team.players.slice(0,4).map((p,i) => `
+            <div class="grid grid-cols-2 gap-3 mt-2">
+                <input id="enick${i+1}" class="input-dark" value="${escapeHtml(p.nick)}">
+                <input id="euid${i+1}" class="input-dark" value="${p.uid}">
+            </div>
+        `).join('');
+        const cad = team.players[4] || { nick: '', uid: '' };
+
+        const { value: form } = await Swal.fire({
+            title: `Edit Team: ${team.teamName}`,
+            html: `
+                <div class="text-left"><label class="text-gold text-sm">Nama Team</label><input id="ename" class="input-dark mt-1" value="${escapeHtml(team.teamName)}"></div>
+                <div class="text-left mt-3"><label class="text-gold text-sm">Perwakilan</label><input id="ewakil" class="input-dark mt-1" value="${escapeHtml(team.perwakilan)}"></div>
+                <div class="text-left mt-3"><label class="text-gold text-sm">WhatsApp</label><input id="ewa" class="input-dark mt-1" value="${team.whatsapp}"></div>
+                <div class="text-left mt-3"><label class="text-gold text-sm font-semibold">Pemain Utama</label>${playersHtml}</div>
+                <div class="text-left mt-3"><label class="text-gold text-sm">Cadangan</label>
+                    <div class="grid grid-cols-2 gap-3 mt-1">
+                        <input id="enick5" class="input-dark" value="${escapeHtml(cad.nick)}">
+                        <input id="euid5" class="input-dark" value="${cad.uid}">
+                    </div>
+                </div>
+            `,
+            width: '600px',
+            preConfirm: () => {
+                const newPlayers = [];
+                for (let i = 1; i <= 4; i++) {
+                    const nick = document.getElementById(`enick${i}`).value.trim();
+                    const uid = document.getElementById(`euid${i}`).value.trim();
+                    if (!nick || !uid) { Swal.showValidationMessage(`Player ${i} tidak lengkap`); return false; }
+                    if (!/^\d+$/.test(uid)) { Swal.showValidationMessage('UID harus angka'); return false; }
+                    newPlayers.push({ nick, uid });
+                }
+                const n5 = document.getElementById('enick5').value.trim();
+                const u5 = document.getElementById('euid5').value.trim();
+                if (n5 && u5) { if (!/^\d+$/.test(u5)) { Swal.showValidationMessage('UID Cadangan harus angka'); return false; } newPlayers.push({ nick: n5, uid: u5 }); }
+                return {
+                    teamName: document.getElementById('ename').value.trim(),
+                    perwakilan: document.getElementById('ewakil').value.trim(),
+                    whatsapp: document.getElementById('ewa').value.trim(),
+                    players: newPlayers
+                };
+            },
+            background: '#1A1F2E',
+            color: '#fff'
+        });
+        if (form && form.teamName && form.perwakilan && /^08[0-9]{8,13}$/.test(form.whatsapp)) {
+            await db.collection('teams').doc(id).update(form);
+            toast('success', 'Team diupdate');
+            renderPage();
+        } else if (form) toast('error', 'WhatsApp tidak valid');
+    };
+
+    window.cancelTeam = async (id) => {
+        const { value: pwd } = await Swal.fire({ title: 'Cancel Team', input: 'password', background: '#1A1F2E', color: '#fff' });
+        if (!pwd) return;
+        const doc = await db.collection('teams').doc(id).get();
+        const team = doc.data();
+        if (!team || encryptPassword(pwd) !== team.password) return toast('error', 'Password salah!');
+        const confirm = await Swal.fire({ title: 'Konfirmasi', text: `Batalkan ${team.teamName}?`, icon: 'warning', showCancelButton: true, background: '#1A1F2E', color: '#fff' });
+        if (confirm.isConfirmed) {
+            await db.collection('teams').doc(id).update({ status: 'cancelled' });
+            toast('success', 'Team dibatalkan');
+            renderPage();
         }
-        // Update dots
-        dots.forEach((dot, index) => {
-            if (index === currentIndex) {
-                dot.classList.add('active');
-            } else {
-                dot.classList.remove('active');
+    };
+
+    window.copyWA = (wa) => { navigator.clipboard.writeText(wa); toast('success', 'WA disalin!'); };
+
+    window.exportTeams = () => {
+        const rows = document.querySelectorAll('#teamList tr');
+        let csv = 'No,Slot,Nama Team,Perwakilan,Player\n';
+        rows.forEach((row, i) => {
+            const cells = row.querySelectorAll('td');
+            if (cells.length > 1) {
+                csv += `${i+1},${cells[1].innerText.trim()},${cells[2].innerText.trim()},${cells[3].innerText.trim()},${cells[4].innerText.trim()}\n`;
             }
         });
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'teams_export.csv';
+        link.click();
+        toast('success', 'CSV diexport!');
+    };
+
+    // ========== POPUP ==========
+    function closePopup() { document.getElementById('popupPoster').style.display = 'none'; }
+
+    // ========== COUNTDOWN ==========
+    function startCountdown() {
+        const el = document.getElementById('countdown');
+        if (!el) return;
+        const update = () => {
+            const diff = countdownTarget - new Date();
+            if (diff <= 0) { el.innerText = 'LIVE!'; return; }
+            const d = Math.floor(diff / 86400000), h = Math.floor((diff % 86400000) / 3600000), m = Math.floor((diff % 3600000) / 60000), s = Math.floor((diff % 60000) / 1000);
+            el.innerText = `${d}d ${h}h ${m}m ${s}s`;
+        };
+        update();
+        setInterval(update, 1000);
     }
-    
-    function nextSlide() {
-        currentIndex = (currentIndex + 1) % totalSlides;
-        updateCarousel();
-    }
-    
-    function prevSlide() {
-        currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
-        updateCarousel();
-    }
-    
-    if (prevBtn) prevBtn.addEventListener('click', prevSlide);
-    if (nextBtn) nextBtn.addEventListener('click', nextSlide);
-    
-    // Click dots
-    dots.forEach((dot, index) => {
-        dot.addEventListener('click', () => {
-            currentIndex = index;
-            updateCarousel();
+
+    // ========== DARK MODE ==========
+    let darkMode = true;
+    function toggleDarkMode() {
+        darkMode = !darkMode;
+        document.body.style.background = darkMode ? '#0a0e1a' : '#f0f2f5';
+        document.querySelectorAll('.glass').forEach(el => {
+            el.style.background = darkMode ? 'rgba(26, 31, 46, 0.8)' : 'rgba(255,255,255,0.8)';
+            el.style.borderColor = darkMode ? 'rgba(255,214,0,0.1)' : 'rgba(0,0,0,0.1)';
         });
-    });
-    
-    // Optional: auto slide every 5 seconds
-    let autoInterval = setInterval(() => {
-        // Hanya auto slide jika popup masih terbuka
+        document.querySelectorAll('.stat-card').forEach(el => {
+            el.style.background = darkMode ? 'linear-gradient(135deg, #1A1F2E, #141824)' : 'linear-gradient(135deg, #ffffff, #f5f5f5)';
+        });
+        document.querySelectorAll('.rank-item').forEach(el => {
+            el.style.background = darkMode ? '#1A1F2E' : '#ffffff';
+        });
+        document.querySelectorAll('.match-card').forEach(el => {
+            el.style.background = darkMode ? '#1A1F2E' : '#ffffff';
+            el.style.borderColor = darkMode ? '#2A2F3E' : '#e0e0e0';
+        });
+        document.querySelectorAll('.input-dark').forEach(el => {
+            el.style.background = darkMode ? '#2A2F3E' : '#f5f5f5';
+            el.style.color = darkMode ? 'white' : '#1A1F2E';
+            el.style.borderColor = darkMode ? '#3A3F4E' : '#d0d0d0';
+        });
+    }
+
+    // ========== INIT ==========
+    function init() {
+        setTimeout(() => { document.getElementById('loading').style.display = 'none'; }, 500);
+
+        // Hamburger
+        document.getElementById('hamburger')?.addEventListener('click', () => {
+            document.getElementById('navMenu')?.classList.toggle('active');
+        });
+
+        // Nav links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                navigateTo(link.dataset.page);
+            });
+        });
+
+        // Scroll top
+        const scrollBtn = document.getElementById('scrollTopBtn');
+        window.addEventListener('scroll', () => {
+            scrollBtn.style.display = window.scrollY > 300 ? 'flex' : 'none';
+        });
+        scrollBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+        // Popup
         const popup = document.getElementById('popupPoster');
-        if (popup && popup.style.display === 'flex') {
-            nextSlide();
-        }
-    }, 5000);
-    
-    // Cleanup interval jika perlu (opsional)
-    window.addEventListener('beforeunload', () => {
-        if (autoInterval) clearInterval(autoInterval);
-    });
-}
+        document.getElementById('closeBtn')?.addEventListener('click', closePopup);
+        popup.addEventListener('click', (e) => { if (e.target === popup) closePopup(); });
+        setTimeout(() => { popup.style.display = 'flex'; }, 1000);
 
-// Panggil initCarousel setelah popup initialization
-// Cari baris "setTimeout(() => { if (popup) popup.style.display = 'flex'; }, 1000);"
-// GANTI dengan kode di bawah ini:
-</script>
+        // Countdown
+        startCountdown();
 
-<!-- LiveChat -->
-<script>
-    window.__lc = window.__lc || {};
-    window.__lc.license = 19699266;
-    window.__lc.integration_name = "manual_channels";
-    window.__lc.product_name = "livechat";
-    (function(n,t,c){function i(n){return e._h?e._h.apply(null,n):e._q.push(n)}var e={_q:[],_h:null,_v:"2.0",on:function(){i(["on",c.call(arguments)])},once:function(){i(["once",c.call(arguments)])},off:function(){i(["off",c.call(arguments)])},get:function(){if(!e._h)throw new Error("[LiveChatWidget] You can't use getters before load.");return i(["get",c.call(arguments)])},call:function(){i(["call",c.call(arguments)])},init:function(){var n=t.createElement("script");n.async=!0,n.type="text/javascript",n.src="https://cdn.livechatinc.com/tracking.js",t.head.appendChild(n)}};!n.__lc.asyncInit&&e.init(),n.LiveChatWidget=n.LiveChatWidget||e}(window,document,[].slice))
+        // Start
+        navigateTo('dashboard');
+    }
+
+    // ========== HELPER: getAvailableSlot ==========
+    async function getAvailableSlot(teams) {
+        const taken = teams.map(t => t.slot);
+        for (const slot of SLOTS) if (!taken.includes(slot)) return slot;
+        return null;
+    }
+
+    // ========== RUN ==========
+    document.addEventListener('DOMContentLoaded', init);
 </script>
-<noscript><a href="https://www.livechat.com/chat-with/19699266/" rel="nofollow">Chat with us</a>, powered by <a href="https://www.livechat.com/?welcome" rel="noopener nofollow" target="_blank">LiveChat</a></noscript>
 
 </body>
 </html>
